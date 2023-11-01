@@ -54,12 +54,12 @@ export default function Home() {
 
       <ul className="flex gap-x-10 overflow-scroll max-w-full">
         {clients.map((client) => (
-          <li>
+          <li key={client.name}>
             <p>{client.name}</p>
-            {client.products.map((product) => (
-              <li className="flex items-center">
+            {client.products.map((product, index) => (
+              <li key={index} className="flex items-center">
                 <p className="w-[200px]">{product.name}</p>
-                <p className='w-20'>{product.amount}</p>
+                <p className="w-20">{product.amount}</p>
                 <p>{product.price}zł</p>
               </li>
             ))}
