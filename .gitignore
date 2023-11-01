@@ -29,7 +29,7 @@ yarn-error.log*
 .env*.local
 
 .idea
-public/files
+*.xlsx
 
 # vercel
 .vercel
