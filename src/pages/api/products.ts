@@ -1,6 +1,7 @@
 import { authComarch } from "@/backend/comarch-erp/login";
 import axios from "axios";
-import { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from "next";
+import { ERPProduct } from "@/shared/types";
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,8 +11,8 @@ export default async function handler(
 
   if (!token) res.status(401).json({});
 
-  const { data } = await axios.get<any[]>(
-    "https://app.erpxt.pl/api2/public/v1.4/invoices",
+  const { data } = await axios.get<ERPProduct[]>(
+    "https://app.erpxt.pl/api2/public/products",
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -19,5 +20,5 @@ export default async function handler(
     },
   );
 
-  res.status(200).json(data.slice(0, 2));
+  res.status(200).json(data);
 }

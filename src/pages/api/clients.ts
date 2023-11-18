@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { serverDB } from "@/backend/supabase-client";
 import * as XLSX from "xlsx";
+import { STORAGE_KEY } from "@/shared/storage";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,7 +12,7 @@ export default async function handler(
   }
 
   const { data } = await serverDB.storage
-    .from("laundry-files")
+    .from(STORAGE_KEY)
     .download(`sheets/${req.query["filename"]}`);
 
   if (!data) return res.status(400);
@@ -32,6 +33,8 @@ export default async function handler(
   const test = docs.map((document) => {
     const [name] = document;
 
+    const betterName = name.filter((el) => el !== undefined);
+
     const startPoint = document.findIndex((el) => el.includes("asortyment"));
 
     const products = document.slice(startPoint + 1).map((product, _, arr) => {
@@ -43,7 +46,7 @@ export default async function handler(
     });
 
     return {
-      name: name[1],
+      name: betterName[0],
       products,
     };
   });

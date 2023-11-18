@@ -13,11 +13,11 @@ export const FileDropzone = ({ onFileChange }: FileDropzoneProps) => {
 
   return (
     <>
-      <div className="w-full h-[200px] mb-6 border-teal-200 border-dotted border-2 bg-teal-50 rounded-2xl flex flex-col justify-center items-center gap-y-4">
+      <div className="w-full h-[200px] mb-6 border-gray-200 border-dotted border-2 bg-white rounded-2xl flex flex-col justify-center items-center gap-y-4">
         <p>Upuść plik lub wybierz z dysku</p>
         <button
           onClick={chooseFile}
-          className="px-5 py-2.5 rounded-full bg-teal-700 text-white"
+          className="px-5 py-2.5 rounded-full bg-teal-700 text-white cursor-pointer"
         >
           Wybierz plik
         </button>

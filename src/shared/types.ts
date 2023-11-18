@@ -1,4 +1,4 @@
-export interface Product {
+export interface SpreadsheetProduct {
   name: string;
   amount: number;
   price: number;
@@ -6,7 +6,7 @@ export interface Product {
 
 export interface Client {
   name: string;
-  products: Product[];
+  products: SpreadsheetProduct[];
 }
 
 interface PurchasingParty {
@@ -55,7 +55,7 @@ interface Invoice {
   Items: Item[];
 }
 
-enum PaymentStatus {
+export enum PaymentStatus {
   NotPaid,
   Paid,
   PartiallyPaid,
@@ -66,14 +66,19 @@ enum InvoiceType {
   Brutto,
 }
 
-interface CreateItem {
-  ProductId: string;
+export interface CreateItem {
+  ProductId: number;
   Quantity: number;
 }
 
-interface CreateInvoice {
-  PurchasingPartyId: string;
-  PaymentTypeId: string;
+export interface ClientProduct extends CreateItem {
+  Name: string;
+  Price: number;
+}
+
+export interface CreateInvoice {
+  PurchasingPartyId: number;
+  PaymentTypeId: number;
   ProductCurrencyPrice: string;
   PaymentStatus?: PaymentStatus;
   OSSProcedureCountryCode?: string;
@@ -87,4 +92,51 @@ interface CreateInvoice {
   ProductDescription?: string;
   Description?: string;
   IssueDate?: string;
+}
+
+export interface ERPProduct {
+  Description: string;
+  Id: number;
+  ItemCode: string;
+  Name: string;
+  ProductCode: string;
+  ProductType: number;
+  Quantity: number;
+  Rate: number;
+  SaleGrossPrice: number;
+  SaleNetPrice: number;
+  UnitOfMeasurement: string;
+}
+
+export interface ERPProductReadModel {
+  id: number;
+  name: string;
+}
+
+export interface PaymentMethod {
+  Name: string;
+  Primary: boolean;
+  Deadline: number;
+  Type: number;
+  Id: number;
+}
+
+export interface Customer {
+  Name: string;
+  CountryCode: string;
+  CustomerTaxNumber: string;
+  CustomerCode: string;
+  Mail: string;
+  PhoneNumber: string;
+  CustomerType: number;
+  Address: {
+    Street: string;
+    BuildingNumber: string;
+    FlatNumber: string;
+    PostalCode: string;
+    City: string;
+    Id: number;
+  };
+  CustomerStatus: number;
+  Id: number;
 }
