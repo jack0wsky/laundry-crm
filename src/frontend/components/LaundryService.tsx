@@ -1,5 +1,6 @@
 import { DayInput } from "@/frontend/components/DayInput";
 import { LaundryProduct } from "@/shared/supabase";
+import { useState } from "react";
 
 interface ProductProps {
   product: LaundryProduct;
