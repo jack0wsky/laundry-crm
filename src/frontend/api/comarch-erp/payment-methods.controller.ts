@@ -13,7 +13,10 @@ export const useListPaymentMethods = () => {
   );
 
   return {
-    paymentMethods: data || [],
+    paymentMethods: (data || []).map((item) => ({
+      name: item.Name,
+      id: item.Id,
+    })),
     loading: isLoading,
     error,
   };

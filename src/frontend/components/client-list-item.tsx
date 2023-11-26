@@ -7,6 +7,7 @@ import {
 } from "@/shared/types";
 import { ClientProducts } from "@/frontend/components/client-products";
 import { ToggleIcon } from "@/frontend/icons/toggle.icon";
+import { customers } from "@/frontend/customers";
 
 interface ClientListItemProps {
   client: Client;
@@ -15,6 +16,13 @@ interface ClientListItemProps {
   onGenerateClick: (name: string) => void;
   generatedInvoices: string[];
 }
+
+const findCustomer = (objectName: string) => {
+  const trimmedName = objectName.replace(/^LIPIEC 2023$/, "");
+  return customers.find((customer) =>
+    customer.objects.includes(trimmedName.toLowerCase()),
+  );
+};
 
 export const ClientListItem = ({
   client,
@@ -28,6 +36,8 @@ export const ClientListItem = ({
   const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState(
     transfer?.Id || 0,
   );
+
+  const customer = findCustomer(client.name);
 
   const usedProducts: ClientProduct[] = client.products
     .filter((item) => item.amount > 0)
@@ -66,6 +76,7 @@ export const ClientListItem = ({
   return (
     <div className="p-4 bg-white flex flex-col rounded-md">
       <div className="flex w-full justify-between">
+        <p>{customer?.nip}</p>
         <p>{client.name}</p>
 
         <button onClick={() => setToggleProducts((prevState) => !prevState)}>

@@ -1,121 +1,146 @@
-import { Inter } from "next/font/google";
 import { useState } from "react";
-import axios from "axios";
-import { Client } from "@/shared/types";
-import { clientDB } from "@/backend/supabase-client";
-import { FileDropzone } from "@/frontend/components/file-dropzone";
-import { UploadedFile } from "@/frontend/components/uploaded-file";
-import { ClientListItem } from "@/frontend/components/client-list-item";
-import { useListProducts } from "@/frontend/api/erp-products.controller";
+import { format } from "date-fns";
+import classNames from "classnames";
 import { useListPaymentMethods } from "@/frontend/api/comarch-erp/payment-methods.controller";
-import { STORAGE_KEY } from "@/shared/storage";
-
-const inter = Inter({ subsets: ["latin"] });
+import { Listbox } from "@headlessui/react";
+import { clientDB } from "@/backend/supabase-client";
+import { useListHotels } from "@/frontend/api/laundry/hotels.controller";
+import { Hotel } from "@/shared/supabase";
+import { AuthProvider } from "@/frontend/Auth.context";
+import { Login } from "@/frontend/components/Login";
+import { ReportProductsTable } from "@/frontend/ReportProductsTable";
+import { useLogout } from "@/frontend/api/auth.controller";
 
 export default function Home() {
-  const [files, setFiles] = useState<File[]>([]);
-  const [clients, setClients] = useState<Client[]>([]);
-  const [generatedInvoices, setGeneratedInvoices] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [activeHotel, setActiveHotel] = useState<Hotel | null>(null);
+  const [openModal, setOpenModal] = useState(false);
 
-  const { products } = useListProducts();
+  const { hotels } = useListHotels();
   const { paymentMethods } = useListPaymentMethods();
+  const { logout } = useLogout();
 
-  const parseFile = async () => {
-    const { data } = await axios.get<{ clients: Client[] }>(
-      `/api/clients?filename=${files[0].name}`,
+  const transfer = paymentMethods.find((method) => method.name === "Przelew");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<{
+    name: string;
+    id: number;
+  }>({ name: transfer?.name || "Przelew", id: transfer?.id || 0 });
+
+  const migrate = async () => {
+    const data = {
+      name: "STOWARZYSZENIE UNICORN",
+      id: 11623200,
+      nip: 6751213389,
+      objects: ["unicorn"],
+      products: [
+        { productName: "poszwa", price: 3.0, productId: 10763537 },
+        { productName: "poszewka", price: 1.73, productId: 10763541 },
+        { productName: "prześcieradło małe", price: 2.95, productId: 10763549 },
+        { productName: "ręcznik duży", price: 2.28, productId: 10763553 },
+        { productName: "ręcznik mały", price: 1.97, productId: 10763554 },
+        { productName: "stopka", price: 1.97, productId: 10763592 },
+        { productName: "podkład", price: 5.32, productId: 10763594 },
+        { productName: "zasłona", price: 14.44, productId: 10763604 },
+        { productName: "koc", price: 15.66, productId: 10763610 },
+        { productName: "narzuta", price: 9.52, productId: 10763609 },
+        { productName: "obrus", price: 5.48, productId: 10763608 },
+        { productName: "kołdra", price: 15.66, productId: 10763595 },
+        { productName: "ścierka", price: 0.89, productId: 10763597 },
+      ],
+    };
+
+    await clientDB.from("pricing").insert(
+      data.products.map((item) => ({
+        price: item.price,
+        product: item.productId,
+        customer: data.name,
+      })),
     );
-
-    return data.clients;
   };
 
-  const overwriteAlreadyUploadedFile = async (file: File) => {
-    await clientDB.storage
-      .from(STORAGE_KEY)
-      .update(`sheets/${file.name}`, file, { upsert: true });
-  };
-
-  const sendFile = async () => {
-    try {
-      if (!files.length) return;
-      setLoading(true);
-
-      const { error } = await clientDB.storage
-        .from(STORAGE_KEY)
-        .remove([`sheets/${files[0].name}`]);
-
-      if (!error) {
-        const { data } = await clientDB.storage
-          .from(STORAGE_KEY)
-          .upload(`sheets/${files[0].name}`, files[0]);
-
-        if (data?.path) {
-          const clients = await parseFile();
-          setClients(clients);
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const closeModal = () => setOpenModal(false);
 
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      <section className="w-[400px]">
-        <FileDropzone
-          onFileChange={(file) =>
-            setFiles((prevState) => {
-              return [file, ...prevState];
-            })
-          }
-        />
-
-        {files.length > 0 && (
-          <ul className="w-full my-4">
-            {files.map((file) => (
-              <UploadedFile
-                key={file.name}
-                file={file}
-                onRemoveClick={() => {
-                  setFiles([]);
-                  setClients([]);
-                }}
-              />
+    <AuthProvider>
+      <Login />
+      <main className="w-full flex h-full relative">
+        <nav className="w-[300px] bg-white h-full fixed">
+          <ul className="w-[300px] bg-white h-full overflow-y-auto max-h-screen p-3">
+            <button onClick={() => logout()}>logout</button>
+            {hotels.map((hotel) => (
+              <li key={hotel.id} className="w-full">
+                <button
+                  onClick={() => setActiveHotel(hotel)}
+                  className={classNames(
+                    "px-3 py-2 hover:bg-blue-100 w-full text-left capitalize rounded-lg",
+                    {
+                      "bg-blue-500 text-white hover:bg-blue-500":
+                        activeHotel?.id === hotel.id,
+                    },
+                  )}
+                >
+                  {hotel.name}
+                </button>
+              </li>
             ))}
           </ul>
-        )}
+        </nav>
 
-        {clients.length === 0 && (
-          <button
-            onClick={sendFile}
-            className="px-6 py-2.5 bg-teal-700 w-full flex items-center justify-center text-white rounded-full disabled:bg-teal-700/40 cursor-pointer"
-            disabled={files.length === 0 || loading}
-          >
-            {loading ? "Przesyłanie..." : "Prześlij plik"}
-          </button>
-        )}
-      </section>
+        {activeHotel && (
+          <div className="ml-[300px] min-w-3/4 overflow-x-auto w-auto relative">
+            <div className="flex h-[80px] justify-between p-2">
+              <div className="flex flex-col">
+                <h2 className="text-2xl">{format(new Date(), "MMMM yyyy")}</h2>
+                <p>NIP: {activeHotel.customer.nip}</p>
+              </div>
 
-      {clients.length > 0 && (
-        <ul className="flex flex-col gap-y-3">
-          {clients.map((client) => (
-            <ClientListItem
-              client={client}
-              key={client.name}
-              erpProducts={products}
-              paymentMethods={paymentMethods}
-              onGenerateClick={(clientName) =>
-                setGeneratedInvoices((prevState) => [...prevState, clientName])
-              }
-              generatedInvoices={generatedInvoices}
+              <div className="flex items-center gap-x-4 h-auto">
+                <div className="relative w-36 h-12">
+                  <div className="absolute top-0 w-full">
+                    <Listbox
+                      value={selectedPaymentMethod}
+                      onChange={(value) => setSelectedPaymentMethod(value)}
+                    >
+                      <div className="relative mt-1">
+                        <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                          <span className="block truncate text-base">
+                            {selectedPaymentMethod.name}
+                          </span>
+                          <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"></span>
+                        </Listbox.Button>
+                        <Listbox.Options className="bg-white py-2 mt-1 rounded-md">
+                          {paymentMethods.map((method) => (
+                            <Listbox.Option
+                              key={method.id}
+                              value={method}
+                              className="px-2 py-1 cursor-pointer hover:bg-gray-100"
+                            >
+                              {method.name}
+                            </Listbox.Option>
+                          ))}
+                        </Listbox.Options>
+                      </div>
+                    </Listbox>
+                  </div>
+                </div>
+
+                <button
+                  className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+                  onClick={() => setOpenModal(true)}
+                >
+                  Generuj fakturę
+                </button>
+              </div>
+            </div>
+
+            <ReportProductsTable
+              activeHotel={activeHotel}
+              paymentMethodId={selectedPaymentMethod.id}
+              openModal={openModal}
+              onCloseModalClick={closeModal}
             />
-          ))}
-        </ul>
-      )}
-    </main>
+          </div>
+        )}
+      </main>
+    </AuthProvider>
   );
 }
