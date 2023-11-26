@@ -1,19 +1,18 @@
 import { DayInput } from "@/frontend/components/DayInput";
 import { LaundryProduct } from "@/shared/supabase";
-import { useState } from "react";
 
 interface ProductProps {
   product: LaundryProduct;
   onChange: (value: number, day: number) => void;
   productReport: { date: string; amount: number }[];
+  days: number[];
 }
 export const LaundryService = ({
   product,
   onChange,
   productReport,
+  days,
 }: ProductProps) => {
-  const days = Array.from({ length: 31 }, (_, i) => i + 1);
-
   const report = productReport.map((item) => ({
     ...item,
     day: new Date(item.date).getDate(),

@@ -17,10 +17,10 @@ export const useListProducts = () => {
   };
 };
 
-export const useListMonthReport = (hotelId?: string) => {
+export const useListMonthReport = (yearAndMonth: string, hotelId?: string) => {
   const { data } = useQuery(
-    ["report", hotelId],
-    () => db.getReport(hotelId || ""),
+    ["report", yearAndMonth, hotelId],
+    () => db.getReport(hotelId || "", yearAndMonth),
     {
       enabled: !!hotelId,
     },

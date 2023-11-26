@@ -78,12 +78,12 @@ export const db = {
     return data;
   },
 
-  getReport: async (hotelId: string) => {
+  getReport: async (hotelId: string, yearAndMonth: string) => {
     const { data } = await clientDB
       .from(Table.Reports)
       .select("*, product(id, name)")
       .eq("hotel", hotelId);
 
-    return data;
+    return (data || []).filter((item) => item.date.includes(yearAndMonth));
   },
 };

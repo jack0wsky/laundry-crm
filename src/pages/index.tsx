@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { format } from "date-fns";
 import classNames from "classnames";
 import { useListPaymentMethods } from "@/frontend/api/comarch-erp/payment-methods.controller";
 import { Listbox } from "@headlessui/react";
@@ -8,16 +7,55 @@ import { useListHotels } from "@/frontend/api/laundry/hotels.controller";
 import { Hotel } from "@/shared/supabase";
 import { AuthProvider } from "@/frontend/Auth.context";
 import { Login } from "@/frontend/components/Login";
-import { ReportProductsTable } from "@/frontend/ReportProductsTable";
+import { ReportProductsTable } from "@/frontend/components/ReportProductsTable";
 import { useLogout } from "@/frontend/api/auth.controller";
+import { LeftArrowIcon } from "@/frontend/components/left-arrow.icon";
+import { RightArrowIcon } from "@/frontend/components/right-arrow.icon";
+
+const months = [
+  "Styczeń",
+  "Luty",
+  "Marzec",
+  "Kwiecień",
+  "Maj",
+  "Czerwiec",
+  "Lipiec",
+  "Sierpień",
+  "Wrzesień",
+  "Październik",
+  "Listopad",
+  "Grudzień",
+];
 
 export default function Home() {
   const [activeHotel, setActiveHotel] = useState<Hotel | null>(null);
   const [openModal, setOpenModal] = useState(false);
+  const [activeDate, setActiveDate] = useState({
+    month: new Date().getMonth(),
+    year: new Date().getFullYear(),
+  });
 
   const { hotels } = useListHotels();
   const { paymentMethods } = useListPaymentMethods();
   const { logout } = useLogout();
+
+  const nextMonth = () => {
+    setActiveDate((prev) => {
+      if (prev.month === 11) {
+        return { month: 0, year: prev.year + 1 };
+      }
+      return { ...prev, month: prev.month + 1 };
+    });
+  };
+
+  const previousMonth = () => {
+    setActiveDate((prev) => {
+      if (prev.month === 0) {
+        return { month: 11, year: prev.year - 1 };
+      }
+      return { ...prev, month: prev.month - 1 };
+    });
+  };
 
   const transfer = paymentMethods.find((method) => method.name === "Przelew");
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<{
@@ -89,7 +127,23 @@ export default function Home() {
           <div className="ml-[300px] min-w-3/4 overflow-x-auto w-auto relative">
             <div className="flex h-[80px] justify-between p-2">
               <div className="flex flex-col">
-                <h2 className="text-2xl">{format(new Date(), "MMMM yyyy")}</h2>
+                <div className="flex items-center gap-x-3 mb-4">
+                  <button
+                    onClick={previousMonth}
+                    className="w-10 h-10 rounded-full bg-white flex justify-center items-center"
+                  >
+                    <LeftArrowIcon />
+                  </button>
+                  <h2 className="text-2xl">
+                    {months[activeDate.month]} {activeDate.year}
+                  </h2>
+                  <button
+                    className="w-10 h-10 rounded-full bg-white flex justify-center items-center"
+                    onClick={nextMonth}
+                  >
+                    <RightArrowIcon />
+                  </button>
+                </div>
                 <p>NIP: {activeHotel.customer.nip}</p>
               </div>
 
@@ -134,6 +188,8 @@ export default function Home() {
 
             <ReportProductsTable
               activeHotel={activeHotel}
+              activeYear={activeDate.year}
+              activeMonth={activeDate.month}
               paymentMethodId={selectedPaymentMethod.id}
               openModal={openModal}
               onCloseModalClick={closeModal}

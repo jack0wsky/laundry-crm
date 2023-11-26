@@ -21,8 +21,6 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
     setIsLogged(!!accessToken);
   }, [accessToken]);
 
-  console.log("is logged", isLogged);
-
   return (
     <AuthContext.Provider value={{ isLogged }}>{children}</AuthContext.Provider>
   );
