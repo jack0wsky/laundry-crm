@@ -8,7 +8,7 @@ import { STORAGE_KEY } from "@/shared/storage";
 import { FileDropzone } from "@/frontend/components/file-dropzone";
 import { UploadedFile } from "@/frontend/components/uploaded-file";
 import { ClientListItem } from "@/frontend/components/client-list-item";
-import {Inter} from "next/font/google";
+import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -93,23 +93,6 @@ export const FileUploader = () => {
           </button>
         )}
       </section>
-
-      {clients.length > 0 && (
-        <ul className="flex flex-col gap-y-3">
-          {clients.map((client) => (
-            <ClientListItem
-              client={client}
-              key={client.name}
-              erpProducts={products}
-              paymentMethods={paymentMethods}
-              onGenerateClick={(clientName) =>
-                setGeneratedInvoices((prevState) => [...prevState, clientName])
-              }
-              generatedInvoices={generatedInvoices}
-            />
-          ))}
-        </ul>
-      )}
     </main>
   );
 };
