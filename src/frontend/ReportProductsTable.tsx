@@ -55,7 +55,8 @@ export const ReportProductsTable = ({
               {days.map((day) => (
                 <li
                   key={day}
-                  className="text-center min-w-[80px] h-full flex items-center justify-center"
+                  style={{ minWidth: "80px" }}
+                  className="text-center  h-full flex items-center justify-center"
                 >
                   {day}
                 </li>
