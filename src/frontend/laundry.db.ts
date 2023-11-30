@@ -32,13 +32,19 @@ export const db = {
   },
 
   getHotels: async () => {
-    const { data } = await clientDB.from(Table.Hotels).select("*, customer(*)");
+    const { data } = await clientDB
+      .from(Table.Hotels)
+      .select("*, customer(*)")
+      .order("order", { ascending: true });
 
     return data;
   },
 
   getProducts: async () => {
-    const { data } = await clientDB.from(Table.Products).select("*");
+    const { data } = await clientDB
+      .from(Table.Products)
+      .select("*")
+      .order("order", { ascending: true });
 
     return data;
   },
@@ -73,7 +79,7 @@ export const db = {
     const { data } = await clientDB
       .from(Table.Pricing)
       .select("*")
-      .eq("customer", customerName);
+      .eq("hotel", customerName);
 
     return data;
   },

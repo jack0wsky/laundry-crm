@@ -19,7 +19,10 @@ export const DayInput = ({ name, onChange, defaultValue }: DayInputProps) => {
       onChange={(event) => {
         setValue(Number(event.target.value));
       }}
-      onBlur={() => onChange(value)}
+      onBlur={(event) => {
+        if (event.target.value === "") return;
+        onChange(value);
+      }}
       className="w-[80px] p-2 rounded-md"
     />
   );

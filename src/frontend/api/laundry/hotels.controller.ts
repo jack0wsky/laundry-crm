@@ -17,27 +17,20 @@ export const useListProducts = () => {
   };
 };
 
-export const useListMonthReport = (yearAndMonth: string, hotelId?: string) => {
-  const { data } = useQuery(
-    ["report", yearAndMonth, hotelId],
-    () => db.getReport(hotelId || "", yearAndMonth),
-    {
-      enabled: !!hotelId,
-    },
+export const useListMonthReport = (yearAndMonth: string, hotelId: string) => {
+  const { data, refetch } = useQuery(["report", yearAndMonth, hotelId], () =>
+    db.getReport(hotelId, yearAndMonth),
   );
 
   return {
     report: data || [],
+    fetchData: refetch,
   };
 };
 
-export const useListPricing = (customerName?: string) => {
-  const { data } = useQuery(
-    ["pricing", customerName],
-    () => db.getPricing(customerName || ""),
-    {
-      enabled: !!customerName,
-    },
+export const useListPricing = (hotelName: string) => {
+  const { data } = useQuery(["pricing", hotelName], () =>
+    db.getPricing(hotelName),
   );
 
   return {

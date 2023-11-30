@@ -29,7 +29,10 @@ export const ReportProductsTable = ({
 }: ReportProductsTableProps) => {
   const { products: laundryProducts } = useListProducts();
   const yearAndMonth = format(new Date(activeYear, activeMonth), "yyyy-MM");
-  const { report } = useListMonthReport(yearAndMonth, activeHotel.id);
+  const { report, fetchData } = useListMonthReport(
+    yearAndMonth,
+    activeHotel.id,
+  );
 
   const days = Array.from(
     { length: getDaysInMonth(new Date(activeYear, activeMonth)) },
@@ -43,7 +46,7 @@ export const ReportProductsTable = ({
         summary={report}
         onClose={onCloseModalClick}
         paymentMethodId={paymentMethodId}
-        customerName={activeHotel?.customer.name || ""}
+        hotelName={activeHotel.name}
       />
       <section className="w-full flex flex-col pb-7">
         <div className="w-full flex">

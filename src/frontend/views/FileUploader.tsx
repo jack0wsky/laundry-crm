@@ -7,10 +7,6 @@ import { clientDB } from "@/backend/supabase-client";
 import { STORAGE_KEY } from "@/shared/storage";
 import { FileDropzone } from "@/frontend/components/file-dropzone";
 import { UploadedFile } from "@/frontend/components/uploaded-file";
-import { ClientListItem } from "@/frontend/components/client-list-item";
-import { Inter } from "next/font/google";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const FileUploader = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -57,7 +53,7 @@ export const FileUploader = () => {
 
   return (
     <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
+      className={`flex min-h-screen flex-col items-center justify-between p-24`}
     >
       <section className="w-[400px]">
         <FileDropzone

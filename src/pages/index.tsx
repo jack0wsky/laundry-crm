@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import classNames from "classnames";
 import { useListPaymentMethods } from "@/frontend/api/comarch-erp/payment-methods.controller";
 import { Listbox } from "@headlessui/react";
@@ -38,6 +38,12 @@ export default function Home() {
   const { hotels } = useListHotels();
   const { paymentMethods } = useListPaymentMethods();
   const { logout } = useLogout();
+
+  useEffect(() => {
+    if (hotels.length === 0) return setActiveHotel(null);
+
+    setActiveHotel(hotels[0]);
+  }, [hotels]);
 
   const nextMonth = () => {
     setActiveDate((prev) => {
@@ -102,16 +108,15 @@ export default function Home() {
       <Login />
       <main className="w-full flex h-full relative">
         <nav className="w-[300px] bg-white h-full fixed">
-          <ul className="w-[300px] bg-white h-full overflow-y-auto max-h-screen p-3">
-            <button onClick={() => logout()}>logout</button>
+          <ul className="w-[300px] bg-gray-900 text-white h-full overflow-y-auto max-h-screen p-3">
             {hotels.map((hotel) => (
               <li key={hotel.id} className="w-full">
                 <button
                   onClick={() => setActiveHotel(hotel)}
                   className={classNames(
-                    "px-3 py-2 hover:bg-blue-100 w-full text-left capitalize rounded-lg",
+                    "px-3 py-2 w-full text-left capitalize rounded-lg opacity-70 hover:opacity-100 hover:bg-gray-800 transition-all",
                     {
-                      "bg-blue-500 text-white hover:bg-blue-500":
+                      "bg-blue-500 text-white opacity-100":
                         activeHotel?.id === hotel.id,
                     },
                   )}
