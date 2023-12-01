@@ -1,6 +1,4 @@
-interface IconProps {
-  className?: string;
-}
+import type { IconProps } from "@/frontend/icons/types";
 
 export const CancelIcon = ({ className }: IconProps) => {
   return (

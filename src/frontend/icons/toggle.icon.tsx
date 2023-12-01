@@ -1,6 +1,4 @@
-interface IconProps {
-  className?: string;
-}
+import type { IconProps } from "@/frontend/icons/types";
 
 export const ToggleIcon = ({ className }: IconProps) => {
   return (

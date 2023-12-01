@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { db } from "@/frontend/laundry.db";
 
 export const useListHotels = () => {
@@ -35,5 +35,18 @@ export const useListPricing = (hotelName: string) => {
 
   return {
     pricing: data || [],
+  };
+};
+
+export const useAddPrice = () => {
+  const { mutate, isLoading, error } = useMutation(
+    (payload: { hotelName: string; price: number; productId: number }) =>
+      db.setPrices([]),
+  );
+
+  return {
+    addPrice: mutate,
+    isLoading,
+    error,
   };
 };

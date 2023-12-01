@@ -83,7 +83,7 @@ export interface Database {
           customer: string | null;
           id: string;
           price: number;
-          product: number | null;
+          product: { id: number | null; name: string };
         };
         Insert: {
           customer?: string | null;

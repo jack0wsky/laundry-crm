@@ -23,7 +23,7 @@ export const GenerateInvoiceModal = ({
 
   const allProducts = pricing
     .map((item) => {
-      const el = summary.find((el) => el.product.id === item.product);
+      const el = summary.find((el) => el.product.id === item.product.id);
 
       return {
         id: el?.product.id,
@@ -54,9 +54,7 @@ export const GenerateInvoiceModal = ({
 
   return (
     <Dialog open={isVisible} onClose={onClose} className="z-50 bg-gray-800">
-      <div
-        className={`fixed inset-0 flex items-center justify-center bg-gray-900/80 p-4 text-white`}
-      >
+      <div className="fixed inset-0 flex items-center justify-center bg-gray-900/80 p-4 text-white">
         <Dialog.Overlay />
         <Dialog.Panel className="min-w-[400px] bg-white rounded-2xl text-black p-4">
           <div className="w-full flex justify-between mb-3">
@@ -84,12 +82,14 @@ export const GenerateInvoiceModal = ({
             <p>{sumUpPrice.toFixed(2)} zł</p>
           </div>
 
-          <button
-            className="text-center w-full py-3 bg-blue-500 text-white"
-            onClick={generateInvoice}
-          >
-            Utwórz fakturę
-          </button>
+          {sumUpPrice > 0 && (
+            <button
+              className="text-center w-full py-3 bg-blue-500 text-white"
+              onClick={generateInvoice}
+            >
+              Utwórz fakturę
+            </button>
+          )}
         </Dialog.Panel>
       </div>
     </Dialog>

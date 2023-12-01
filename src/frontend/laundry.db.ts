@@ -78,7 +78,7 @@ export const db = {
   getPricing: async (customerName: string) => {
     const { data } = await clientDB
       .from(Table.Pricing)
-      .select("*")
+      .select("*, product(id, name)")
       .eq("hotel", customerName);
 
     return data;
@@ -91,5 +91,11 @@ export const db = {
       .eq("hotel", hotelId);
 
     return (data || []).filter((item) => item.date.includes(yearAndMonth));
+  },
+
+  setPrices: async (
+    items: { hotel: string; product: number; price: number }[],
+  ) => {
+    await clientDB.from(Table.Pricing).upsert(items);
   },
 };
