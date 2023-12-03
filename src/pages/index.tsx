@@ -95,7 +95,7 @@ export default function Home() {
         />
 
         {activeHotel && (
-          <div className="ml-[300px] min-w-3/4 overflow-x-auto w-auto relative">
+          <div className="ml-[300px] min-w-3/4 overflow-x-auto relative w-full min-h-screen">
             <Header
               hotelName={activeHotel.name}
               activeDate={activeDate}

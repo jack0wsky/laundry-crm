@@ -29,12 +29,13 @@ export const useListMonthReport = (yearAndMonth: string, hotelId: string) => {
 };
 
 export const useListPricing = (hotelName: string) => {
-  const { data } = useQuery(["pricing", hotelName], () =>
+  const { data, isLoading } = useQuery(["pricing", hotelName], () =>
     db.getPricing(hotelName),
   );
 
   return {
     pricing: data || [],
+    loading: isLoading,
   };
 };
 

@@ -1,11 +1,3 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[];
-
 export interface Customer {
   id: number;
   name: string;
@@ -83,7 +75,7 @@ export interface Database {
           customer: string | null;
           id: string;
           price: number;
-          product: { id: number | null; name: string };
+          product: LaundryProduct;
         };
         Insert: {
           customer?: string | null;

@@ -34,6 +34,7 @@ export const LaundryService = ({
           day={item.day}
           defaultValue={item.amount}
           onChange={(value) => {
+            console.log("onchange", value, item.day);
             onChange(value, item.day);
           }}
           name={product.name}

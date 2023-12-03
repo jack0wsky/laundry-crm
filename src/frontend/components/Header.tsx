@@ -52,8 +52,9 @@ export const Header = ({
 
         <div className="flex items-center gap-x-6">
           <button
+            disabled
             onClick={() => setPricingModal(true)}
-            className="px-5 h-12 rounded-xl flex justify-center items-center border border-gray-300 font-medium hover:bg-white hover:border-white transition-colors"
+            className="px-5 h-12 rounded-xl flex justify-center items-center border border-gray-300 font-medium enabled:hover:bg-white enabled:hover:border-white transition-colors disabled:text-gray-500"
           >
             Cennik
           </button>
