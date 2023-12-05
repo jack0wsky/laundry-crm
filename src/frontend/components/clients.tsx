@@ -23,7 +23,7 @@ export const Clients = ({ hotels, onClick, activeHotel }: ClientsProps) => {
                 },
               )}
             >
-              {hotel.name}
+              {hotel.displayName || hotel.name}
             </button>
           </li>
         ))}

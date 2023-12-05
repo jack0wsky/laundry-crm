@@ -7,6 +7,7 @@ export interface Customer {
 export interface Hotel {
   id: string;
   name: string;
+  displayName: string | null;
   customer: Customer;
 }
 
@@ -15,8 +16,15 @@ export interface LaundryProduct {
   name: string;
 }
 
+export interface Pricing {
+  id: string;
+  price: number;
+  product: LaundryProduct;
+  hotel: string;
+}
+
 export interface ReportItem {
-  amount: number | null;
+  amount: number;
   date: string;
   hotel: string | null;
   id: string;
@@ -45,11 +53,7 @@ export interface Database {
         Relationships: [];
       };
       hotels: {
-        Row: {
-          customer: Customer;
-          id: string;
-          name: string;
-        };
+        Row: Hotel;
         Insert: {
           customer?: string | null;
           id?: string;
@@ -72,10 +76,10 @@ export interface Database {
       };
       pricing: {
         Row: {
-          customer: string | null;
           id: string;
           price: number;
           product: LaundryProduct;
+          hotel: string;
         };
         Insert: {
           customer?: string | null;

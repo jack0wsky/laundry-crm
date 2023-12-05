@@ -46,10 +46,10 @@ export const ReportProductsTable = ({
     <>
       <GenerateInvoiceModal
         isVisible={openModal}
+        pricing={pricing}
         summary={report}
         onClose={onCloseModalClick}
         paymentMethodId={paymentMethodId}
-        hotelName={activeHotel.name}
       />
 
       {loading && (

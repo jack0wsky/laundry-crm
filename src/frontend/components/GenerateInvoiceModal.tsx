@@ -1,7 +1,6 @@
 import { Dialog } from "@headlessui/react";
 import { CreateInvoice, PaymentStatus } from "@/shared/types";
-import { ReportItem } from "@/shared/supabase";
-import { useListPricing } from "@/frontend/api/laundry/hotels.controller";
+import { ReportItem, Pricing } from "@/shared/supabase";
 import { CancelIcon } from "@/frontend/icons/cancel.icon";
 
 interface GenerateInvoiceModalProps {
@@ -9,7 +8,7 @@ interface GenerateInvoiceModalProps {
   onClose: () => void;
   paymentMethodId: number;
   summary: ReportItem[];
-  hotelName: string;
+  pricing: Pricing[];
 }
 
 export const GenerateInvoiceModal = ({
@@ -17,24 +16,28 @@ export const GenerateInvoiceModal = ({
   onClose,
   paymentMethodId,
   summary,
-  hotelName,
+  pricing,
 }: GenerateInvoiceModalProps) => {
-  const { pricing } = useListPricing(hotelName);
+  const getAmounts = () => {
+    const arr: {
+      amount: number;
+      product: { id: number; name: string };
+      price: number;
+    }[] = [];
 
-  const allProducts = pricing
-    .map((item) => {
-      const el = summary.find((el) => el.product.id === item.product.id);
+    for (const item of summary) {
+      const product = pricing.find((el) => el.product.id === item.product.id);
+      const exists = arr.find((el) => el.product.id === item.product.id);
+      if (exists) {
+        exists.amount += item.amount || 0;
+      } else {
+        arr.push({ ...item, price: product?.price as number });
+      }
+    }
+    return arr;
+  };
 
-      return {
-        id: el?.product.id,
-        name: el?.product.name || null,
-        price: item.price,
-        amount: el?.amount,
-      };
-    })
-    .filter((item) => !!item.name);
-
-  const sumUpPrice = allProducts.reduce((acc, item) => {
+  const sumUpPrice = getAmounts().reduce((acc, item) => {
     return (acc += item.price * (item.amount as number));
   }, 0);
 
@@ -44,9 +47,9 @@ export const GenerateInvoiceModal = ({
       PurchasingPartyId: 0,
       ProductCurrencyPrice: sumUpPrice.toFixed(2),
       PaymentStatus: PaymentStatus.NotPaid,
-      Items: allProducts.map((product) => ({
+      Items: getAmounts().map((product) => ({
         Quantity: product.amount as number,
-        ProductId: product.id as number,
+        ProductId: product.product.id as number,
       })),
     };
     console.log("generated", mockObject);
@@ -67,11 +70,11 @@ export const GenerateInvoiceModal = ({
           </div>
 
           <ul className="flex flex-col gap-y-2">
-            {allProducts.map((product) => (
-              <li key={product.name} className="flex">
-                <p className="capitalize w-1/2">{product.name}</p>
+            {getAmounts().map((product) => (
+              <li key={product.product.name} className="flex">
+                <p className="capitalize w-1/2">{product.product.name}</p>
                 <p className="w-1/3">
-                  {product.amount} x {product.price} zł
+                  {product.amount} x {product.price.toFixed(2)} zł
                 </p>
               </li>
             ))}
