@@ -74,7 +74,7 @@ export const GenerateInvoiceModal = ({
               <li key={product.product.name} className="flex">
                 <p className="capitalize w-1/2">{product.product.name}</p>
                 <p className="w-1/3">
-                  {product.amount} x {product.price.toFixed(2)} zł
+                  {product.amount} x {product.price} zł
                 </p>
               </li>
             ))}
