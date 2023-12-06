@@ -31,13 +31,17 @@ export const GenerateInvoiceModal = ({
       if (exists) {
         exists.amount += item.amount || 0;
       } else {
-        arr.push({ ...item, price: product?.price as number });
+        if (!!product?.price && item.amount > 0) {
+          arr.push({ ...item, price: product.price });
+        }
       }
     }
     return arr;
   };
 
-  const sumUpPrice = getAmounts().reduce((acc, item) => {
+  const providedProducts = getAmounts();
+
+  const sumUpPrice = providedProducts.reduce((acc, item) => {
     return (acc += item.price * (item.amount as number));
   }, 0);
 
@@ -70,11 +74,11 @@ export const GenerateInvoiceModal = ({
           </div>
 
           <ul className="flex flex-col gap-y-2">
-            {getAmounts().map((product) => (
+            {providedProducts.map((product) => (
               <li key={product.product.name} className="flex">
                 <p className="capitalize w-1/2">{product.product.name}</p>
                 <p className="w-1/3">
-                  {product.amount} x {product.price} zł
+                  {product.amount} x {product.price.toFixed(2)} zł
                 </p>
               </li>
             ))}
