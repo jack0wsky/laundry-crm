@@ -9,8 +9,9 @@ interface ClientsProps {
 
 export const Clients = ({ hotels, onClick, activeHotel }: ClientsProps) => {
   return (
-    <nav className="w-[300px] bg-white h-full fixed">
-      <ul className="w-[300px] bg-gray-900 text-white h-full overflow-y-auto max-h-screen p-3">
+    <nav className="w-[300px] bg-gray-900 h-full fixed p-3">
+      <p className='text-white font-bold opacity-30'>Klienci</p>
+      <ul className="w-full bg-gray-900 text-white h-full overflow-y-auto max-h-screen mt-3">
         {hotels.map((hotel) => (
           <li key={hotel.id} className="w-full">
             <button

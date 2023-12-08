@@ -79,7 +79,8 @@ export const db = {
     const { data } = await clientDB
       .from(Table.Pricing)
       .select("*, product(id, name)")
-      .eq("hotel", customerName);
+      .eq("hotel", customerName)
+      .order("order", { ascending: true });
 
     return data;
   },
