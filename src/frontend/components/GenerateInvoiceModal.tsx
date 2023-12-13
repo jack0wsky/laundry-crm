@@ -2,6 +2,7 @@ import { Dialog } from "@headlessui/react";
 import { CreateInvoice, PaymentStatus } from "@/shared/types";
 import { ReportItem, Pricing } from "@/shared/supabase";
 import { CancelIcon } from "@/frontend/icons/cancel.icon";
+import { getAmounts } from "@/frontend/utils/get-total-hotel-usage";
 
 interface GenerateInvoiceModalProps {
   isVisible: boolean;
@@ -18,28 +19,7 @@ export const GenerateInvoiceModal = ({
   summary,
   pricing,
 }: GenerateInvoiceModalProps) => {
-  const getAmounts = () => {
-    const arr: {
-      amount: number;
-      product: { id: number; name: string };
-      price: number;
-    }[] = [];
-
-    for (const item of summary) {
-      const product = pricing.find((el) => el.product.id === item.product.id);
-      const exists = arr.find((el) => el.product.id === item.product.id);
-      if (exists) {
-        exists.amount += item.amount || 0;
-      } else {
-        if (!!product?.price && item.amount > 0) {
-          arr.push({ ...item, price: product.price });
-        }
-      }
-    }
-    return arr;
-  };
-
-  const providedProducts = getAmounts();
+  const providedProducts = getAmounts(summary, pricing);
 
   const sumUpPrice = providedProducts.reduce((acc, item) => {
     return (acc += item.price * (item.amount as number));
@@ -51,7 +31,7 @@ export const GenerateInvoiceModal = ({
       PurchasingPartyId: 0,
       ProductCurrencyPrice: sumUpPrice.toFixed(2),
       PaymentStatus: PaymentStatus.NotPaid,
-      Items: getAmounts().map((product) => ({
+      Items: providedProducts.map((product) => ({
         Quantity: product.amount as number,
         ProductId: product.product.id as number,
       })),

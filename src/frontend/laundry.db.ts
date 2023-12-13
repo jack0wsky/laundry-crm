@@ -94,6 +94,26 @@ export const db = {
     return (data || []).filter((item) => item.date.includes(yearAndMonth));
   },
 
+  getAllReports: async (yearAndMonth: string) => {
+    const { data } = await clientDB
+      .from(Table.Reports)
+      .select("*, hotel(id, pricing(*))");
+
+    const filtered = (data || []).filter(
+      (item) => item.date.includes(yearAndMonth) && item.amount > 0,
+    );
+
+    return filtered.map((item) => ({
+      ...item,
+      hotel: {
+        ...item.hotel,
+        pricing: item.hotel.pricing.find(
+          (price: any) => price.product === item.product,
+        ),
+      },
+    }));
+  },
+
   setPrices: async (
     items: { hotel: string; product: number; price: number }[],
   ) => {
