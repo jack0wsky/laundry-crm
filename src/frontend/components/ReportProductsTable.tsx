@@ -10,6 +10,7 @@ import { GenerateInvoiceModal } from "@/frontend/components/GenerateInvoiceModal
 import { Hotel } from "@/shared/supabase";
 import { getDaysInMonth } from "date-fns";
 import { DayNumbersList } from "@/frontend/components/DayNumbersList";
+import { useEffect } from "react";
 
 interface ReportProductsTableProps {
   activeHotel: Hotel;
