@@ -33,6 +33,7 @@ export default function Hotel() {
       />
 
       <ReportProductsTable
+        key={activeHotel.id}
         activeHotel={activeHotel}
         activeYear={activeDate.year}
         activeMonth={activeDate.month}

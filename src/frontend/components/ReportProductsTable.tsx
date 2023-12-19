@@ -43,17 +43,17 @@ export const ReportProductsTable = ({
     { length: getDaysInMonth(new Date(activeYear, activeMonth)) },
     (_, i) => i + 1,
   );
+  const wrapper = document.querySelector(".wrapper");
 
   useEffect(() => {
-    if (!container.current) return;
+    const daysTillToday = new Date().getDate() - 1;
 
-    const today = new Date().getDate() - 1;
+    if (!wrapper) return;
 
-    container.current?.scrollBy({
-      left: COLUMN_WIDTH * today,
-      behavior: "smooth",
-    });
-  }, [container.current]);
+    setTimeout(() => {
+      wrapper.scroll({ left: COLUMN_WIDTH * daysTillToday });
+    }, 800);
+  }, [wrapper, activeHotel.id]);
 
   const customerProducts = pricing;
 
@@ -93,7 +93,7 @@ export const ReportProductsTable = ({
             )}
 
             <div
-              className="flex flex-col gap-x-3 overflow-x-auto w-full"
+              className="flex flex-col gap-x-3 overflow-x-auto w-full wrapper"
               ref={container}
             >
               {customerProducts.length > 0 && (

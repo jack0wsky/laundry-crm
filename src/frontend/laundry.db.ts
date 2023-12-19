@@ -86,13 +86,12 @@ export const db = {
     return data;
   },
 
-  getAllPricings: async (): Promise<Pricing[]> => {
+  getAllPricings: async () => {
     const { data } = await clientDB
       .from(Table.Pricing)
-      .select("*, product(id, name)")
-      .order("order", { ascending: true });
+      .select("*, product(id, name), hotel(id, name)");
 
-    return data as Pricing[];
+    return data;
   },
 
   getReport: async (hotelId: string, yearAndMonth: string) => {
@@ -109,9 +108,7 @@ export const db = {
       .from(Table.Reports)
       .select("*, product(id, name)");
 
-    return (data || []).filter(
-      (item) => item.date.includes(yearAndMonth) && item.amount > 0,
-    );
+    return (data || []).filter((item) => item.date.includes(yearAndMonth));
   },
 
   setPrices: async (
