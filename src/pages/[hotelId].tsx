@@ -23,7 +23,7 @@ export default function Hotel() {
   if (!activeHotel) return null;
 
   return (
-    <div className="ml-[300px] min-w-3/4 overflow-x-auto relative w-full min-h-screen">
+    <div className="ml-[300px] min-w-3/4 overflow-x-hidden w-full min-h-screen">
       <Header
         hotelName={activeHotel.name}
         activeDate={activeDate}

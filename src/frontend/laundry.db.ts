@@ -1,4 +1,5 @@
 import { clientDB } from "@/backend/supabase-client";
+import { Pricing, ReportItem } from "@/shared/supabase";
 
 enum Table {
   Pricing = "pricing",
@@ -85,6 +86,15 @@ export const db = {
     return data;
   },
 
+  getAllPricings: async (): Promise<Pricing[]> => {
+    const { data } = await clientDB
+      .from(Table.Pricing)
+      .select("*, product(id, name)")
+      .order("order", { ascending: true });
+
+    return data as Pricing[];
+  },
+
   getReport: async (hotelId: string, yearAndMonth: string) => {
     const { data } = await clientDB
       .from(Table.Reports)
@@ -94,24 +104,14 @@ export const db = {
     return (data || []).filter((item) => item.date.includes(yearAndMonth));
   },
 
-  getAllReports: async (yearAndMonth: string) => {
+  getAllReports: async (yearAndMonth: string): Promise<ReportItem[]> => {
     const { data } = await clientDB
       .from(Table.Reports)
-      .select("*, hotel(id, pricing(*))");
+      .select("*, product(id, name)");
 
-    const filtered = (data || []).filter(
+    return (data || []).filter(
       (item) => item.date.includes(yearAndMonth) && item.amount > 0,
     );
-
-    return filtered.map((item) => ({
-      ...item,
-      hotel: {
-        ...item.hotel,
-        pricing: item.hotel.pricing.find(
-          (price: any) => price.product === item.product,
-        ),
-      },
-    }));
   },
 
   setPrices: async (

@@ -1,6 +1,5 @@
 import { LeftArrowIcon } from "@/frontend/components/left-arrow.icon";
 import { RightArrowIcon } from "@/frontend/components/right-arrow.icon";
-import { Listbox } from "@headlessui/react";
 import { useState } from "react";
 import { PricingModal } from "@/frontend/components/PricingModal";
 

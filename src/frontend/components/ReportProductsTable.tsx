@@ -10,7 +10,7 @@ import { GenerateInvoiceModal } from "@/frontend/components/GenerateInvoiceModal
 import { Hotel } from "@/shared/supabase";
 import { getDaysInMonth } from "date-fns";
 import { DayNumbersList } from "@/frontend/components/DayNumbersList";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 interface ReportProductsTableProps {
   activeHotel: Hotel;
@@ -21,6 +21,8 @@ interface ReportProductsTableProps {
   activeYear: number;
 }
 
+const COLUMN_WIDTH = 80 + 12;
+
 export const ReportProductsTable = ({
   activeHotel,
   paymentMethodId,
@@ -29,6 +31,7 @@ export const ReportProductsTable = ({
   activeMonth,
   activeYear,
 }: ReportProductsTableProps) => {
+  const container = useRef<HTMLDivElement | null>(null);
   const yearAndMonth = format(new Date(activeYear, activeMonth), "yyyy-MM");
   const { report, fetchData } = useListMonthReport(
     yearAndMonth,
@@ -40,6 +43,14 @@ export const ReportProductsTable = ({
     { length: getDaysInMonth(new Date(activeYear, activeMonth)) },
     (_, i) => i + 1,
   );
+
+  useEffect(() => {
+    if (!container.current) return;
+
+    const today = new Date().getDate() - 1;
+
+    container.current?.scrollBy({ left: COLUMN_WIDTH * today });
+  }, [container.current]);
 
   const customerProducts = pricing;
 
@@ -78,7 +89,10 @@ export const ReportProductsTable = ({
               </div>
             )}
 
-            <div className="flex flex-col gap-x-3 overflow-x-auto w-full">
+            <div
+              className="flex flex-col gap-x-3 overflow-x-auto w-full"
+              ref={container}
+            >
               {customerProducts.length > 0 && (
                 <DayNumbersList
                   activeYear={activeYear}

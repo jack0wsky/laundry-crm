@@ -15,7 +15,7 @@ export const DayNumbersList = ({
   );
 
   return (
-    <ol className="flex gap-x-3 h-[40px] items-center w-full">
+    <ol className="flex gap-x-3 h-[40px] items-center w-full sticky top-0">
       {days.map((day) => (
         <li
           key={day}

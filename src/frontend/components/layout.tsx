@@ -9,8 +9,6 @@ export const Layout = ({ children }: PropsWithChildren<{}>) => {
   const router = useRouter();
   const { hotels } = useListHotels();
 
-  // console.log("hotels", hotels);
-
   const activeUrl = (router.query.hotelId || router.route) as string;
 
   return (
