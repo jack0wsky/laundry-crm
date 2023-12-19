@@ -49,7 +49,10 @@ export const ReportProductsTable = ({
 
     const today = new Date().getDate() - 1;
 
-    container.current?.scrollBy({ left: COLUMN_WIDTH * today });
+    container.current?.scrollBy({
+      left: COLUMN_WIDTH * today,
+      behavior: "smooth",
+    });
   }, [container.current]);
 
   const customerProducts = pricing;
