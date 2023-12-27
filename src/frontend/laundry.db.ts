@@ -1,4 +1,4 @@
-import { clientDB } from "@/backend/supabase-client";
+import { clientDB } from "@/frontend/utils/supabase-client";
 import { Pricing, ReportItem } from "@/shared/supabase";
 
 enum Table {

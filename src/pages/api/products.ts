@@ -1,12 +1,9 @@
-import { authComarch } from "@/backend/comarch-erp/login";
+import { authComarch } from "@/frontend/utils/comarch-login";
 import axios from "axios";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ERPProduct } from "@/shared/types";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
+export default async function handler(_: NextApiRequest, res: NextApiResponse) {
   const { token } = await authComarch();
 
   if (!token) res.status(401).json({});

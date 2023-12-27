@@ -3,7 +3,7 @@ import { Client } from "@/shared/types";
 import { useListProducts } from "@/frontend/api/erp-products.controller";
 import { useListPaymentMethods } from "@/frontend/api/comarch-erp/payment-methods.controller";
 import axios from "axios";
-import { clientDB } from "@/backend/supabase-client";
+import { clientDB } from "@/frontend/utils/supabase-client";
 import { STORAGE_KEY } from "@/shared/storage";
 import { FileDropzone } from "@/frontend/components/file-dropzone";
 import { UploadedFile } from "@/frontend/components/uploaded-file";

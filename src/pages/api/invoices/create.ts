@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { authComarch } from "@/backend/comarch-erp/login";
+import { authComarch } from "@/frontend/utils/comarch-login";
 import axios from "axios";
 import { CreateInvoice } from "@/shared/types";
 

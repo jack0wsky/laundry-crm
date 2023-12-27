@@ -1,11 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { authComarch } from "@/backend/comarch-erp/login";
+import { authComarch } from "@/frontend/utils/comarch-login";
 import axios from "axios";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
+export default async function handler(_: NextApiRequest, res: NextApiResponse) {
   const { token } = await authComarch();
 
   const { data, status } = await axios.get(

@@ -1,10 +1,7 @@
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
+export default async function handler(_: NextApiRequest, res: NextApiResponse) {
   const id = process.env.ERP_CLIENT_ID;
   const secret = process.env.ERP_CLIENT_SECRET;
 

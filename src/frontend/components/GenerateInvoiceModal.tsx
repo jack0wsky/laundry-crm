@@ -3,6 +3,7 @@ import { CreateInvoice, PaymentStatus } from "@/shared/types";
 import { ReportItem, Pricing } from "@/shared/supabase";
 import { CancelIcon } from "@/frontend/icons/cancel.icon";
 import { getAmounts } from "@/frontend/utils/get-total-hotel-usage";
+import axios from "axios";
 
 interface GenerateInvoiceModalProps {
   isVisible: boolean;
@@ -25,7 +26,7 @@ export const GenerateInvoiceModal = ({
     return (acc += item.price * (item.amount as number));
   }, 0);
 
-  const generateInvoice = () => {
+  const generateInvoice = async () => {
     const mockObject: CreateInvoice = {
       PaymentTypeId: paymentMethodId,
       PurchasingPartyId: 0,
@@ -37,6 +38,8 @@ export const GenerateInvoiceModal = ({
       })),
     };
     console.log("generated", mockObject);
+
+    // const { data } = await axios.post("/api/invoices/create", mockObject);
   };
 
   return (
