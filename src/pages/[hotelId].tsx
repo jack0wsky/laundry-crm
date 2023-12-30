@@ -3,7 +3,6 @@ import { useListHotels } from "@/frontend/api/laundry/hotels.controller";
 import { useRouter } from "next/router";
 import { Header } from "@/frontend/components/Header";
 import { ReportProductsTable } from "@/frontend/components/ReportProductsTable";
-import { usePaymentMethod } from "@/frontend/components/use-payment-method";
 import { useActiveMonth } from "@/frontend/components/use-active-month";
 
 export default function Hotel() {
@@ -12,7 +11,6 @@ export default function Hotel() {
 
   const [openModal, setOpenModal] = useState(false);
 
-  const { selectedPaymentMethod } = usePaymentMethod();
   const { previousMonth, nextMonth, activeDate } = useActiveMonth();
   const closeModal = () => setOpenModal(false);
 
@@ -37,7 +35,6 @@ export default function Hotel() {
         activeHotel={activeHotel}
         activeYear={activeDate.year}
         activeMonth={activeDate.month}
-        paymentMethodId={selectedPaymentMethod.id}
         openModal={openModal}
         onCloseModalClick={closeModal}
       />

@@ -6,11 +6,11 @@ import { getAmounts } from "@/frontend/utils/get-total-hotel-usage";
 import { useCreateInvoice } from "@/frontend/api/comarch-erp/invoices.controller";
 import { CheckIcon } from "@/frontend/icons/check.icon";
 import { Button } from "@/frontend/components/shared/Button";
+import { usePaymentMethod } from "@/frontend/components/use-payment-method";
 
 interface GenerateInvoiceModalProps {
   isVisible: boolean;
   onClose: () => void;
-  paymentMethodId: number;
   summary: ReportItem[];
   pricing: Pricing[];
 }
@@ -18,7 +18,6 @@ interface GenerateInvoiceModalProps {
 export const GenerateInvoiceModal = ({
   isVisible,
   onClose,
-  paymentMethodId,
   summary,
   pricing,
 }: GenerateInvoiceModalProps) => {
@@ -38,9 +37,8 @@ export const GenerateInvoiceModal = ({
               summary={summary}
               onClose={onClose}
               pricing={pricing}
-              paymentMethodId={paymentMethodId}
               onCreate={{
-                action: (payload) => {},
+                action: createInvoice,
                 loading: isLoading,
               }}
             />
@@ -59,16 +57,16 @@ interface InvoiceSummaryProps {
   };
   summary: ReportItem[];
   pricing: Pricing[];
-  paymentMethodId: number;
 }
 const InvoiceSummary = ({
   summary,
   pricing,
   onClose,
   onCreate,
-  paymentMethodId,
 }: InvoiceSummaryProps) => {
   const providedProducts = getAmounts(summary, pricing);
+  const { selectedPaymentMethod, paymentMethods, changePaymentMethod } =
+    usePaymentMethod();
 
   const sumUpPrice = providedProducts.reduce((acc, item) => {
     return (acc += item.price * (item.amount as number));
@@ -76,7 +74,7 @@ const InvoiceSummary = ({
 
   const generateInvoice = async () => {
     const mockObject: CreateInvoice = {
-      PaymentTypeId: paymentMethodId,
+      PaymentTypeId: selectedPaymentMethod,
       PurchasingPartyId: 0,
       ProductCurrencyPrice: sumUpPrice.toFixed(2),
       PaymentStatus: PaymentStatus.NotPaid,
@@ -87,7 +85,7 @@ const InvoiceSummary = ({
     };
     console.log("generated", mockObject);
 
-    // onCreate.action(mockObject);
+    onCreate.action(mockObject);
   };
 
   return (
@@ -117,15 +115,30 @@ const InvoiceSummary = ({
         <p>{sumUpPrice.toFixed(2)} zł</p>
       </div>
 
-      {sumUpPrice > 0 && (
-        <Button
-          className="w-full"
-          onClick={generateInvoice}
-          disabled={onCreate.loading}
+      <div className="flex items-center">
+        <select
+          onChange={(event) => changePaymentMethod(Number(event.target.value))}
         >
-          {onCreate.loading ? "Generowanie faktury..." : "Utwórz fakturę"}
-        </Button>
-      )}
+          {paymentMethods.map((method) => (
+            <option
+              selected={method.id === 10238815}
+              key={method.id}
+              value={method.id}
+            >
+              {method.name}
+            </option>
+          ))}
+        </select>
+        {sumUpPrice > 0 && (
+          <Button
+            className="w-full"
+            onClick={generateInvoice}
+            disabled={onCreate.loading}
+          >
+            {onCreate.loading ? "Generowanie faktury..." : "Utwórz fakturę"}
+          </Button>
+        )}
+      </div>
     </>
   );
 };

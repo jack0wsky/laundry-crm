@@ -14,7 +14,6 @@ import { useEffect, useRef } from "react";
 
 interface ReportProductsTableProps {
   activeHotel: Hotel;
-  paymentMethodId: number;
   openModal: boolean;
   onCloseModalClick: () => void;
   activeMonth: number;
@@ -25,7 +24,6 @@ const COLUMN_WIDTH = 80 + 12;
 
 export const ReportProductsTable = ({
   activeHotel,
-  paymentMethodId,
   openModal,
   onCloseModalClick,
   activeMonth,
@@ -33,10 +31,7 @@ export const ReportProductsTable = ({
 }: ReportProductsTableProps) => {
   const container = useRef<HTMLDivElement | null>(null);
   const yearAndMonth = format(new Date(activeYear, activeMonth), "yyyy-MM");
-  const { report, fetchData } = useListMonthReport(
-    yearAndMonth,
-    activeHotel.id,
-  );
+  const { report } = useListMonthReport(yearAndMonth, activeHotel.id);
   const { pricing, loading } = useListPricing(activeHotel.name);
 
   const days = Array.from(
@@ -66,7 +61,6 @@ export const ReportProductsTable = ({
         pricing={pricing}
         summary={report}
         onClose={onCloseModalClick}
-        paymentMethodId={paymentMethodId}
       />
 
       {loading && (
