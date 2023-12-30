@@ -23,7 +23,7 @@ export default function Hotel() {
   return (
     <div className="ml-[300px] min-w-3/4 overflow-x-hidden w-full min-h-screen">
       <Header
-        hotelName={activeHotel.name}
+        activeHotel={activeHotel}
         activeDate={activeDate}
         onPreviousArrowClick={previousMonth}
         onNextArrowClick={nextMonth}

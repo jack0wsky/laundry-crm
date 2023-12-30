@@ -31,7 +31,7 @@ export const ReportProductsTable = ({
 }: ReportProductsTableProps) => {
   const container = useRef<HTMLDivElement | null>(null);
   const yearAndMonth = format(new Date(activeYear, activeMonth), "yyyy-MM");
-  const { report } = useListMonthReport(yearAndMonth, activeHotel.id);
+  const { reports } = useListMonthReport(yearAndMonth, activeHotel.id);
   const { pricing, loading } = useListPricing(activeHotel.name);
 
   const days = Array.from(
@@ -41,7 +41,7 @@ export const ReportProductsTable = ({
   const wrapper = document.querySelector(".wrapper");
 
   useEffect(() => {
-    const reportsWithAmount = report.filter((item) => item.amount > 0);
+    const reportsWithAmount = reports.filter((item) => item.amount > 0);
     const obj = reportsWithAmount[reportsWithAmount.length - 1];
     const daysTillToday = new Date(obj ? obj.date : new Date()).getDate() - 1;
 
@@ -50,7 +50,7 @@ export const ReportProductsTable = ({
     setTimeout(() => {
       wrapper.scroll({ left: COLUMN_WIDTH * daysTillToday });
     }, 800);
-  }, [wrapper, activeHotel.id, report.length]);
+  }, [wrapper, activeHotel.id, reports.length]);
 
   const customerProducts = pricing;
 
@@ -59,7 +59,7 @@ export const ReportProductsTable = ({
       <GenerateInvoiceModal
         isVisible={openModal}
         pricing={pricing}
-        summary={report}
+        summary={reports}
         onClose={onCloseModalClick}
       />
 
@@ -101,7 +101,7 @@ export const ReportProductsTable = ({
 
               <div className="flex flex-col gap-y-2">
                 {customerProducts.map(({ product }) => {
-                  const productReport = report.filter(
+                  const productReport = reports.filter(
                     (item) => item.product.id === product.id,
                   );
 

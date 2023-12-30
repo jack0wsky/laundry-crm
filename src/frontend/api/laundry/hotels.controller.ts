@@ -16,7 +16,7 @@ export const useListMonthReport = (yearAndMonth: string, hotelId: string) => {
   );
 
   return {
-    report: data || [],
+    reports: data || [],
     fetchData: refetch,
   };
 };

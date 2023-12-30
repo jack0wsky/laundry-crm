@@ -135,7 +135,7 @@ const InvoiceSummary = ({
             onClick={generateInvoice}
             disabled={onCreate.loading}
           >
-            {onCreate.loading ? "Generowanie faktury..." : "Utwórz fakturę"}
+            {onCreate.loading ? "Generowanie faktury..." : "Generuj fakturę"}
           </Button>
         )}
       </div>
