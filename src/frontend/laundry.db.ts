@@ -83,15 +83,7 @@ export const db = {
       .eq("hotel", customerName)
       .order("order", { ascending: true });
 
-    return data;
-  },
-
-  getAllPricings: async () => {
-    const { data } = await clientDB
-      .from(Table.Pricing)
-      .select("*, product(id, name), hotel(id, name)");
-
-    return data;
+    return data as Pricing[];
   },
 
   getReport: async (hotelId: string, yearAndMonth: string) => {
@@ -103,17 +95,16 @@ export const db = {
     return (data || []).filter((item) => item.date.includes(yearAndMonth));
   },
 
-  getAllReports: async (yearAndMonth: string): Promise<ReportItem[]> => {
-    const { data } = await clientDB
-      .from(Table.Reports)
-      .select("*, product(id, name)");
-
-    return (data || []).filter((item) => item.date.includes(yearAndMonth));
-  },
-
   setPrices: async (
     items: { hotel: string; product: number; price: number }[],
   ) => {
     await clientDB.from(Table.Pricing).upsert(items);
+  },
+
+  updatePrice: async (id: string, updatedPrice: number) => {
+    await clientDB
+      .from(Table.Pricing)
+      .update({ price: updatedPrice })
+      .eq("id", id);
   },
 };

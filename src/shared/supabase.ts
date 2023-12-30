@@ -19,6 +19,7 @@ export interface LaundryProduct {
 export interface Pricing {
   id: string;
   price: number;
+  order: number;
   product: LaundryProduct;
   hotel: string;
 }

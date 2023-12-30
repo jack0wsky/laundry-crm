@@ -46,14 +46,16 @@ export const ReportProductsTable = ({
   const wrapper = document.querySelector(".wrapper");
 
   useEffect(() => {
-    const daysTillToday = new Date().getDate() - 1;
+    const reportsWithAmount = report.filter((item) => item.amount > 0);
+    const obj = reportsWithAmount[reportsWithAmount.length - 1];
+    const daysTillToday = new Date(obj ? obj.date : new Date()).getDate() - 1;
 
     if (!wrapper) return;
 
     setTimeout(() => {
       wrapper.scroll({ left: COLUMN_WIDTH * daysTillToday });
     }, 800);
-  }, [wrapper, activeHotel.id]);
+  }, [wrapper, activeHotel.id, report.length]);
 
   const customerProducts = pricing;
 
@@ -78,7 +80,7 @@ export const ReportProductsTable = ({
         </div>
       )}
       {customerProducts.length > 0 && (
-        <section className="w-full flex flex-col pb-7 min-h-screen px-4">
+        <section className="w-full flex flex-col pb-7 min-h-screen px-4 relative">
           <div className="w-full flex">
             {customerProducts.length > 0 && (
               <div className="w-[200px]">
@@ -93,7 +95,7 @@ export const ReportProductsTable = ({
             )}
 
             <div
-              className="flex flex-col gap-x-3 overflow-x-auto w-full wrapper"
+              className="flex flex-col gap-x-3 overflow-x-auto w-full wrapper relative"
               ref={container}
             >
               {customerProducts.length > 0 && (
@@ -117,6 +119,7 @@ export const ReportProductsTable = ({
                         amount: amount || 0,
                         date,
                       }))}
+                      activeMonth={activeMonth}
                       product={product}
                       onChange={async (value, day) => {
                         const date = format(

@@ -3,7 +3,9 @@ import { CreateInvoice, PaymentStatus } from "@/shared/types";
 import { ReportItem, Pricing } from "@/shared/supabase";
 import { CancelIcon } from "@/frontend/icons/cancel.icon";
 import { getAmounts } from "@/frontend/utils/get-total-hotel-usage";
-import axios from "axios";
+import { useCreateInvoice } from "@/frontend/api/comarch-erp/invoices.controller";
+import { CheckIcon } from "@/frontend/icons/check.icon";
+import { Button } from "@/frontend/components/shared/Button";
 
 interface GenerateInvoiceModalProps {
   isVisible: boolean;
@@ -20,6 +22,52 @@ export const GenerateInvoiceModal = ({
   summary,
   pricing,
 }: GenerateInvoiceModalProps) => {
+  const { createInvoice, isLoading, successfullyCreated, data } =
+    useCreateInvoice();
+
+  return (
+    <Dialog open={isVisible} onClose={onClose} className="z-50 bg-gray-800">
+      <div className="fixed inset-0 flex items-center justify-center bg-gray-900/80 p-4 text-white">
+        <Dialog.Overlay />
+        <Dialog.Panel className="min-w-[400px] bg-white rounded-2xl text-black p-4">
+          {successfullyCreated && (
+            <GenerateInvoiceSuccess onClose={onClose} invoiceId={data?.id} />
+          )}
+          {!successfullyCreated && (
+            <InvoiceSummary
+              summary={summary}
+              onClose={onClose}
+              pricing={pricing}
+              paymentMethodId={paymentMethodId}
+              onCreate={{
+                action: (payload) => {},
+                loading: isLoading,
+              }}
+            />
+          )}
+        </Dialog.Panel>
+      </div>
+    </Dialog>
+  );
+};
+
+interface InvoiceSummaryProps {
+  onClose: () => void;
+  onCreate: {
+    loading: boolean;
+    action: (payload: CreateInvoice) => void;
+  };
+  summary: ReportItem[];
+  pricing: Pricing[];
+  paymentMethodId: number;
+}
+const InvoiceSummary = ({
+  summary,
+  pricing,
+  onClose,
+  onCreate,
+  paymentMethodId,
+}: InvoiceSummaryProps) => {
   const providedProducts = getAmounts(summary, pricing);
 
   const sumUpPrice = providedProducts.reduce((acc, item) => {
@@ -39,49 +87,76 @@ export const GenerateInvoiceModal = ({
     };
     console.log("generated", mockObject);
 
-    // const { data } = await axios.post("/api/invoices/create", mockObject);
+    // onCreate.action(mockObject);
   };
 
   return (
-    <Dialog open={isVisible} onClose={onClose} className="z-50 bg-gray-800">
-      <div className="fixed inset-0 flex items-center justify-center bg-gray-900/80 p-4 text-white">
-        <Dialog.Overlay />
-        <Dialog.Panel className="min-w-[400px] bg-white rounded-2xl text-black p-4">
-          <div className="w-full flex justify-between mb-3">
-            <Dialog.Title className="font-semibold text-xl">
-              Wygeneruj fakture
-            </Dialog.Title>
-            <button onClick={onClose}>
-              <CancelIcon className="text-3xl" />
-            </button>
-          </div>
-
-          <ul className="flex flex-col gap-y-2">
-            {providedProducts.map((product) => (
-              <li key={product.product.name} className="flex">
-                <p className="capitalize w-1/2">{product.product.name}</p>
-                <p className="w-1/3">
-                  {product.amount} x {product.price.toFixed(2)} zł
-                </p>
-              </li>
-            ))}
-          </ul>
-
-          <div className="w-full flex items-center justify-between font-bold my-4">
-            <p>W sumie:</p>
-            <p>{sumUpPrice.toFixed(2)} zł</p>
-          </div>
-
-          {sumUpPrice > 0 && (
-            <button
-              className="text-center w-full py-3 bg-blue-500 text-white"
-              onClick={generateInvoice}
-            >
-              Utwórz fakturę
-            </button>
-          )}
-        </Dialog.Panel>
+    <>
+      <div className="w-full flex justify-between mb-3">
+        <Dialog.Title className="font-semibold text-xl">
+          Wygeneruj fakture
+        </Dialog.Title>
+        <button onClick={onClose}>
+          <CancelIcon className="text-3xl" />
+        </button>
       </div>
-    </Dialog>
+
+      <ul className="flex flex-col gap-y-2">
+        {providedProducts.map((product) => (
+          <li key={product.product.name} className="flex">
+            <p className="capitalize w-1/2">{product.product.name}</p>
+            <p className="w-1/3">
+              {product.amount} x {product.price.toFixed(2)} zł
+            </p>
+          </li>
+        ))}
+      </ul>
+
+      <div className="w-full flex items-center justify-between font-bold my-4">
+        <p>W sumie:</p>
+        <p>{sumUpPrice.toFixed(2)} zł</p>
+      </div>
+
+      {sumUpPrice > 0 && (
+        <Button
+          className="w-full"
+          onClick={generateInvoice}
+          disabled={onCreate.loading}
+        >
+          {onCreate.loading ? "Generowanie faktury..." : "Utwórz fakturę"}
+        </Button>
+      )}
+    </>
+  );
+};
+
+interface GenerateInvoiceSuccessProps {
+  onClose: () => void;
+  invoiceId: string | undefined;
+}
+const GenerateInvoiceSuccess = ({
+  onClose,
+  invoiceId,
+}: GenerateInvoiceSuccessProps) => {
+  const redirectUrl = `https://app.erpxt.pl/index.html#/invoice/${invoiceId}`;
+  return (
+    <div>
+      <div className="flex w-full justify-center items-center flex-col py-4 mb-4">
+        <div className="h-20 w-20 rounded-full bg-green-500 flex justify-center items-center mb-5">
+          <CheckIcon className="text-5xl text-white" />
+        </div>
+        <h2 className="font-medium text-2xl text-gray-800">
+          Faktura utworzona
+        </h2>
+      </div>
+      <div className="flex items-center w-full gap-x-3">
+        <Button href={redirectUrl} variant="secondary" className="w-full">
+          Zobacz fakturę
+        </Button>
+        <Button variant="secondary" className="w-full" onClick={onClose}>
+          Zamknij
+        </Button>
+      </div>
+    </div>
   );
 };

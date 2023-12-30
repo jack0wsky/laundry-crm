@@ -1,19 +1,12 @@
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { db } from "@/frontend/laundry.db";
+import { Pricing } from "@/shared/supabase";
 
 export const useListHotels = () => {
   const { data } = useQuery("hotels", () => db.getHotels());
 
   return {
     hotels: data || [],
-  };
-};
-
-export const useListProducts = () => {
-  const { data } = useQuery("products", () => db.getProducts());
-
-  return {
-    products: data || [],
   };
 };
 
@@ -29,8 +22,9 @@ export const useListMonthReport = (yearAndMonth: string, hotelId: string) => {
 };
 
 export const useListPricing = (hotelName: string) => {
-  const { data, isLoading } = useQuery(["pricing", hotelName], () =>
-    db.getPricing(hotelName),
+  const { data, isLoading } = useQuery<Pricing[], Error>(
+    ["pricing", hotelName],
+    () => db.getPricing(hotelName),
   );
 
   return {
@@ -39,14 +33,26 @@ export const useListPricing = (hotelName: string) => {
   };
 };
 
-export const useAddPrice = () => {
-  const { mutate, isLoading, error } = useMutation(
-    (payload: { hotelName: string; price: number; productId: number }) =>
-      db.setPrices([]),
-  );
+interface UpdateHotelPricing {
+  id: string;
+  price: number;
+  hotelName: string;
+}
+
+export const useUpdatePrice = () => {
+  const queryClient = useQueryClient();
+  const { mutate, isLoading, error } = useMutation<
+    void,
+    Error,
+    UpdateHotelPricing
+  >((payload) => db.updatePrice(payload.id, payload.price), {
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries(["pricing", variables.hotelName]);
+    },
+  });
 
   return {
-    addPrice: mutate,
+    updatePrice: mutate,
     isLoading,
     error,
   };

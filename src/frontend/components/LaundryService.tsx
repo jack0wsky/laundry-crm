@@ -1,17 +1,20 @@
 import { DayInput } from "@/frontend/components/DayInput";
 import { LaundryProduct } from "@/shared/supabase";
+import { months } from "@/shared/constants";
 
 interface ProductProps {
   product: LaundryProduct;
   onChange: (value: number, day: number) => void;
   productReport: { date: string; amount: number }[];
   days: number[];
+  activeMonth: number;
 }
 export const LaundryService = ({
   product,
   onChange,
   productReport,
   days,
+  activeMonth,
 }: ProductProps) => {
   const report = productReport.map((item) => ({
     ...item,
@@ -32,9 +35,9 @@ export const LaundryService = ({
         <DayInput
           key={`${product.name}-${item.day}-${item.amount}`}
           day={item.day}
+          monthName={months[activeMonth]}
           defaultValue={item.amount}
           onChange={(value) => {
-            console.log("onchange", value, item.day);
             onChange(value, item.day);
           }}
           name={product.name}

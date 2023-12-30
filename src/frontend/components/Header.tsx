@@ -2,21 +2,8 @@ import { LeftArrowIcon } from "@/frontend/components/left-arrow.icon";
 import { RightArrowIcon } from "@/frontend/components/right-arrow.icon";
 import { useState } from "react";
 import { PricingModal } from "@/frontend/components/PricingModal";
-
-const months = [
-  "Styczeń",
-  "Luty",
-  "Marzec",
-  "Kwiecień",
-  "Maj",
-  "Czerwiec",
-  "Lipiec",
-  "Sierpień",
-  "Wrzesień",
-  "Październik",
-  "Listopad",
-  "Grudzień",
-];
+import { Button } from "@/frontend/components/shared/Button";
+import { months } from "@/shared/constants";
 
 interface HeaderProps {
   activeDate: {
@@ -50,19 +37,14 @@ export const Header = ({
         <h2 className="text-2xl capitalize font-bold">{hotelName}</h2>
 
         <div className="flex items-center gap-x-6">
-          <button
-            disabled
+          <Button
+            // disabled
+            variant="secondary"
             onClick={() => setPricingModal(true)}
-            className="px-5 h-12 rounded-xl flex justify-center items-center border border-gray-300 font-medium enabled:hover:bg-white enabled:hover:border-white transition-colors disabled:text-gray-500"
           >
             Cennik
-          </button>
-          <button
-            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium"
-            onClick={onGenerateInvoiceClick}
-          >
-            Generuj fakturę
-          </button>
+          </Button>
+          <Button onClick={onGenerateInvoiceClick}>Generuj fakturę</Button>
         </div>
       </div>
 
