@@ -19,7 +19,13 @@ export default async function handler(
     const { data, status } = await axios.post(
       "https://app.erpxt.pl/api2/public/v1.4/invoices",
       req.body,
-      { headers: { Authorization: `Bearer ${token}` } },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+        },
+      },
     );
 
     return res.status(status).json(data);

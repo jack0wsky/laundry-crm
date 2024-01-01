@@ -7,7 +7,6 @@ import { CheckIcon } from "@/frontend/icons/check.icon";
 import { Button } from "@/frontend/components/shared/Button";
 import { usePaymentMethod } from "@/frontend/components/use-payment-method";
 import axios from "axios";
-import { useMutation } from "react-query";
 
 interface GenerateInvoiceModalProps {
   isVisible: boolean;
@@ -17,31 +16,6 @@ interface GenerateInvoiceModalProps {
   customerId: number;
 }
 
-const useGenerateInvoice = () => {
-  const { mutate, isLoading, data } = useMutation(
-    async (payload: CreateInvoice) => {
-      const { data: tokenData } = await axios.get("/api/erp/auth");
-      const { data } = await axios.post(
-        "https://app.erpxt.pl/api2/public/v1.4/invoices",
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${tokenData.token}`,
-            "Access-Control-Allow-Origin": "*",
-          },
-        },
-      );
-      return data;
-    },
-  );
-
-  return {
-    generateInvoice: mutate,
-    loading: isLoading,
-    invoiceId: data,
-  };
-};
-
 export const GenerateInvoiceModal = ({
   isVisible,
   onClose,
@@ -49,7 +23,11 @@ export const GenerateInvoiceModal = ({
   pricing,
   customerId,
 }: GenerateInvoiceModalProps) => {
-  const { generateInvoice, loading } = useGenerateInvoice();
+  const generateInvoice = async (payload: CreateInvoice) => {
+    const { data } = await axios.post("/api/invoices/create", payload);
+
+    if (data) onClose();
+  };
 
   return (
     <Dialog open={isVisible} onClose={onClose} className="z-50 bg-gray-800">
@@ -63,7 +41,7 @@ export const GenerateInvoiceModal = ({
             customerId={customerId}
             onCreate={{
               action: generateInvoice,
-              loading,
+              loading: false,
             }}
           />
         </Dialog.Panel>

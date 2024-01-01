@@ -1,5 +1,5 @@
 import { useListPaymentMethods } from "@/frontend/api/comarch-erp/payment-methods.controller";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const usePaymentMethod = () => {
   const { paymentMethods } = useListPaymentMethods();
@@ -9,6 +9,11 @@ export const usePaymentMethod = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<number>(
     transfer?.id || 0,
   );
+
+  useEffect(() => {
+    if (!transfer) return;
+    setSelectedPaymentMethod(transfer.id);
+  }, [transfer]);
 
   return {
     paymentMethods,
