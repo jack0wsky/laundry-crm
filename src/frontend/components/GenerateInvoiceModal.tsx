@@ -7,6 +7,8 @@ import { useCreateInvoice } from "@/frontend/api/comarch-erp/invoices.controller
 import { CheckIcon } from "@/frontend/icons/check.icon";
 import { Button } from "@/frontend/components/shared/Button";
 import { usePaymentMethod } from "@/frontend/components/use-payment-method";
+import { authComarch } from "@/frontend/utils/comarch-login";
+import axios from "axios";
 
 interface GenerateInvoiceModalProps {
   isVisible: boolean;
@@ -21,28 +23,36 @@ export const GenerateInvoiceModal = ({
   summary,
   pricing,
 }: GenerateInvoiceModalProps) => {
-  const { createInvoice, isLoading, successfullyCreated, data } =
-    useCreateInvoice();
+  const createInvoice = async (payload: CreateInvoice) => {
+    const { data: tokenData } = await axios.get("/api/erp/auth");
 
+    const { data, status } = await axios.post(
+      "https://app.erpxt.pl/api2/public/v1.4/invoices",
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${tokenData.token}`,
+          "Access-Control-Allow-Origin": "*",
+        },
+      },
+    );
+
+    console.log(data, status);
+  };
   return (
     <Dialog open={isVisible} onClose={onClose} className="z-50 bg-gray-800">
       <div className="fixed inset-0 flex items-center justify-center bg-gray-900/80 p-4 text-white">
         <Dialog.Overlay />
         <Dialog.Panel className="min-w-[400px] bg-white rounded-2xl text-black p-4">
-          {successfullyCreated && (
-            <GenerateInvoiceSuccess onClose={onClose} invoiceId={data?.id} />
-          )}
-          {!successfullyCreated && (
-            <InvoiceSummary
-              summary={summary}
-              onClose={onClose}
-              pricing={pricing}
-              onCreate={{
-                action: createInvoice,
-                loading: isLoading,
-              }}
-            />
-          )}
+          <InvoiceSummary
+            summary={summary}
+            onClose={onClose}
+            pricing={pricing}
+            onCreate={{
+              action: createInvoice,
+              loading: false,
+            }}
+          />
         </Dialog.Panel>
       </div>
     </Dialog>
@@ -76,7 +86,7 @@ const InvoiceSummary = ({
     const mockObject: CreateInvoice = {
       PaymentTypeId: selectedPaymentMethod,
       PurchasingPartyId: 0,
-      ProductCurrencyPrice: sumUpPrice.toFixed(2),
+      ProductCurrencyPrice: Number(sumUpPrice.toFixed(2)),
       PaymentStatus: PaymentStatus.NotPaid,
       Items: providedProducts.map((product) => ({
         Quantity: product.amount as number,

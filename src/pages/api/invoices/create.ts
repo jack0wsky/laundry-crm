@@ -7,16 +7,23 @@ interface Request extends NextApiRequest {
   body: CreateInvoice;
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   const { token } = await authComarch();
 
   if (!token) res.status(401).json({});
 
-  const { data, status } = await axios.post(
-    "https://app.erpxt.pl/api2/public/v1.4/invoices",
-    req.body,
-    { headers: { Authorization: `Bearer ${token}` } },
-  );
+  try {
+    const { data, status } = await axios.post(
+      "https://app.erpxt.pl/api2/public/v1.4/invoices",
+      req.body,
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
 
-  res.status(status).json(data);
+    return res.status(status).json(data);
+  } catch (error) {
+    console.log(error);
+  }
 }

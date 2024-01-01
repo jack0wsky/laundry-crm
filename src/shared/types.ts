@@ -79,7 +79,7 @@ export interface ClientProduct extends CreateItem {
 export interface CreateInvoice {
   PurchasingPartyId: number;
   PaymentTypeId: number;
-  ProductCurrencyPrice: string;
+  ProductCurrencyPrice: number;
   PaymentStatus?: PaymentStatus;
   OSSProcedureCountryCode?: string;
   IsOSSProcedure?: boolean;
