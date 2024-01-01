@@ -60,6 +60,7 @@ export const ReportProductsTable = ({
         isVisible={openModal}
         pricing={pricing}
         summary={reports}
+        customerId={activeHotel.customer.id}
         onClose={onCloseModalClick}
       />
 

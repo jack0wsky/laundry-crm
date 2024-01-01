@@ -3,42 +3,54 @@ import { CreateInvoice, PaymentStatus } from "@/shared/types";
 import { ReportItem, Pricing } from "@/shared/supabase";
 import { CancelIcon } from "@/frontend/icons/cancel.icon";
 import { getAmounts } from "@/frontend/utils/get-total-hotel-usage";
-import { useCreateInvoice } from "@/frontend/api/comarch-erp/invoices.controller";
 import { CheckIcon } from "@/frontend/icons/check.icon";
 import { Button } from "@/frontend/components/shared/Button";
 import { usePaymentMethod } from "@/frontend/components/use-payment-method";
-import { authComarch } from "@/frontend/utils/comarch-login";
 import axios from "axios";
+import { useMutation } from "react-query";
 
 interface GenerateInvoiceModalProps {
   isVisible: boolean;
   onClose: () => void;
   summary: ReportItem[];
   pricing: Pricing[];
+  customerId: number;
 }
+
+const useGenerateInvoice = () => {
+  const { mutate, isLoading, data } = useMutation(
+    async (payload: CreateInvoice) => {
+      const { data: tokenData } = await axios.get("/api/erp/auth");
+      const { data } = await axios.post(
+        "https://app.erpxt.pl/api2/public/v1.4/invoices",
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${tokenData.token}`,
+            "Access-Control-Allow-Origin": "*",
+          },
+        },
+      );
+      return data;
+    },
+  );
+
+  return {
+    generateInvoice: mutate,
+    loading: isLoading,
+    invoiceId: data,
+  };
+};
 
 export const GenerateInvoiceModal = ({
   isVisible,
   onClose,
   summary,
   pricing,
+  customerId,
 }: GenerateInvoiceModalProps) => {
-  const createInvoice = async (payload: CreateInvoice) => {
-    const { data: tokenData } = await axios.get("/api/erp/auth");
+  const { generateInvoice, loading } = useGenerateInvoice();
 
-    const { data, status } = await axios.post(
-      "https://app.erpxt.pl/api2/public/v1.4/invoices",
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${tokenData.token}`,
-          "Access-Control-Allow-Origin": "*",
-        },
-      },
-    );
-
-    console.log(data, status);
-  };
   return (
     <Dialog open={isVisible} onClose={onClose} className="z-50 bg-gray-800">
       <div className="fixed inset-0 flex items-center justify-center bg-gray-900/80 p-4 text-white">
@@ -48,9 +60,10 @@ export const GenerateInvoiceModal = ({
             summary={summary}
             onClose={onClose}
             pricing={pricing}
+            customerId={customerId}
             onCreate={{
-              action: createInvoice,
-              loading: false,
+              action: generateInvoice,
+              loading,
             }}
           />
         </Dialog.Panel>
@@ -67,12 +80,14 @@ interface InvoiceSummaryProps {
   };
   summary: ReportItem[];
   pricing: Pricing[];
+  customerId: number;
 }
 const InvoiceSummary = ({
   summary,
   pricing,
   onClose,
   onCreate,
+  customerId,
 }: InvoiceSummaryProps) => {
   const providedProducts = getAmounts(summary, pricing);
   const { selectedPaymentMethod, paymentMethods, changePaymentMethod } =
@@ -85,12 +100,14 @@ const InvoiceSummary = ({
   const generateInvoice = async () => {
     const mockObject: CreateInvoice = {
       PaymentTypeId: selectedPaymentMethod,
-      PurchasingPartyId: 0,
+      PurchasingPartyId: customerId,
       ProductCurrencyPrice: Number(sumUpPrice.toFixed(2)),
       PaymentStatus: PaymentStatus.NotPaid,
+      BankAccountId: 10158354,
       Items: providedProducts.map((product) => ({
         Quantity: product.amount as number,
         ProductId: product.product.id as number,
+        ProductCurrencyPrice: product.price,
       })),
     };
     console.log("generated", mockObject);
@@ -143,7 +160,7 @@ const InvoiceSummary = ({
           <Button
             className="w-full"
             onClick={generateInvoice}
-            disabled={onCreate.loading}
+            disabled={paymentMethods.length === 0 || onCreate.loading}
           >
             {onCreate.loading ? "Generowanie faktury..." : "Generuj fakturę"}
           </Button>

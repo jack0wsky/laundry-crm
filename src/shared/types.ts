@@ -85,7 +85,7 @@ export interface CreateInvoice {
   IsOSSProcedure?: boolean;
   ReceivingPartyId?: string;
   PaymentDeadline?: string;
-  BankAccountId?: string;
+  BankAccountId?: number;
   SalesDate?: string;
   InvoiceType?: InvoiceType;
   Items?: CreateItem[];
