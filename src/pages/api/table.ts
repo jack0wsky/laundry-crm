@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import PDFTable from "pdfkit-table";
 import path from "node:path";
-import { serverDB } from "@/frontend/utils/supabase-client";
-import { constructPdfFileName } from "@/frontend/utils/construct-pdf-file-name";
+import { clientDB } from "@/modules/services/laundry.db";
+import { constructPdfFileName } from "@/modules/utils/construct-pdf-file-name";
 
 interface Request extends NextApiRequest {
   body: {
@@ -93,7 +93,7 @@ export default async function handler(req: Request, res: NextApiResponse) {
   doc.on("data", buffers.push.bind(buffers));
   doc.on("end", async () => {
     try {
-      await serverDB.storage
+      await clientDB.storage
         .from("sheets")
         .upload(
           constructPdfFileName(hotelName, month, year),

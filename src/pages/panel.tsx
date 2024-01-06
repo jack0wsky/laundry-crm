@@ -1,3 +1,3 @@
-import { MainPanel } from "@/frontend/views/MainPanel";
+import { MainPanel } from "@/modules/hotels/MainPanel";
 
 export default MainPanel;

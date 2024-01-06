@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { useListHotels } from "@/frontend/api/laundry/hotels.controller";
-import { AuthProvider } from "@/frontend/Auth.context";
-import { Login } from "@/frontend/components/Login";
+import { useListHotels } from "@/modules/hotels/api/hotels.controller";
+import { AuthProvider } from "@/modules/auth/Auth.context";
+import { LoginModal } from "@/modules/auth/LoginModal";
 import { useRouter } from "next/router";
 
 export default function Home() {
@@ -17,7 +17,7 @@ export default function Home() {
 
   return (
     <AuthProvider>
-      <Login />
+      <LoginModal />
     </AuthProvider>
   );
 }

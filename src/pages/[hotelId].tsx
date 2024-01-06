@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useListHotels } from "@/frontend/api/laundry/hotels.controller";
+import { useListHotels } from "@/modules/hotels/api/hotels.controller";
 import { useRouter } from "next/router";
-import { Header } from "@/frontend/components/Header";
-import { ReportProductsTable } from "@/frontend/components/ReportProductsTable";
-import { useActiveMonth } from "@/frontend/components/use-active-month";
+import { Header } from "@/modules/shared/Header";
+import { ReportProductsTable } from "@/modules/hotels/reports/ReportProductsTable";
+import { useActiveMonth } from "@/modules/utils/useActiveMonth";
 
 export default function Hotel() {
   const router = useRouter();

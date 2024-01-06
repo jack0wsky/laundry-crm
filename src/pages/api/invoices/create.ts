@@ -1,19 +1,20 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { authComarch } from "@/frontend/utils/comarch-login";
+import { authComarch } from "@/modules/comarch/comarch-login";
+import { CreateInvoice } from "@/modules/hotels/reports/types";
 import axios from "axios";
-import { CreateInvoice } from "@/shared/types";
 
 interface Request extends NextApiRequest {
   body: CreateInvoice;
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
+export default async function handler(req: Request, res: NextApiResponse) {
   const { token } = await authComarch();
 
-  if (!token) res.status(401).json({});
+  if (!token) return res.status(401).json({});
+
+  if (req.method !== "POST") {
+    return res.status(400).json({ error: "Only POST method allowed" });
+  }
 
   try {
     const { data, status } = await axios.post(
