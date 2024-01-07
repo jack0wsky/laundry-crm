@@ -30,7 +30,7 @@ export const LaundryService = ({
   });
 
   return (
-    <div className="flex gap-x-3 w-full">
+    <div className="flex w-full gap-x-3">
       {renderDays.map((item) => (
         <DayInput
           key={`${product.name}-${item.day}-${item.amount}`}

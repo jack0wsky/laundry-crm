@@ -1,23 +1,17 @@
-import { useListPaymentMethods } from "@/modules/comarch/api/payment-methods.controller";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export const usePaymentMethod = () => {
-  const { paymentMethods } = useListPaymentMethods();
+  const paymentMethods = [
+    { id: 10238815, name: "Przelew" },
+    { id: 10238814, name: "Gotówka" },
+  ];
 
-  const transfer = paymentMethods.find((method) => method.name === "Przelew");
-
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<number>(
-    transfer?.id || 0,
-  );
-
-  useEffect(() => {
-    if (!transfer) return;
-    setSelectedPaymentMethod(transfer.id);
-  }, [transfer]);
+  const [selectedPaymentMethodId, setSelectedPaymentMethodId] =
+    useState<number>(paymentMethods[0].id);
 
   return {
     paymentMethods,
-    selectedPaymentMethod,
-    changePaymentMethod: setSelectedPaymentMethod,
+    selectedPaymentMethodId,
+    changePaymentMethod: setSelectedPaymentMethodId,
   };
 };

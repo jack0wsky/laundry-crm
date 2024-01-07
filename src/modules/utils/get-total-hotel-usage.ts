@@ -1,12 +1,14 @@
 import type { ReportItem } from "@/modules/services/supabase.types";
 import type { Pricing } from "@/modules/hotels/pricing/types";
 
+export interface ProvidedProduct {
+  amount: number;
+  product: { id: number; name: string };
+  price: number;
+}
+
 export const getAmounts = (summary: ReportItem[], pricing: Pricing[]) => {
-  const arr: {
-    amount: number;
-    product: { id: number; name: string };
-    price: number;
-  }[] = [];
+  const arr: ProvidedProduct[] = [];
 
   for (const item of summary) {
     const product = pricing.find((el) => el.product.id === item.product.id);

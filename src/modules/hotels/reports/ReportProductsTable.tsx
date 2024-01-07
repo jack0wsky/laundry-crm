@@ -40,13 +40,20 @@ export const ReportProductsTable = ({
 
   useEffect(() => {
     const reportsWithAmount = reports.filter((item) => item.amount > 0);
-    const obj = reportsWithAmount[reportsWithAmount.length - 1];
-    const daysTillToday = new Date(obj ? obj.date : new Date()).getDate() - 1;
+    const latestReport = reportsWithAmount[reportsWithAmount.length - 1];
+    const daysTillToday =
+      new Date(latestReport ? latestReport.date : new Date()).getDate() - 1;
 
     if (!wrapper) return;
 
     setTimeout(() => {
-      wrapper.scroll({ left: COLUMN_WIDTH * daysTillToday });
+      if (reportsWithAmount.length === 0) {
+        wrapper.scrollTo({ left: 0 });
+      } else {
+        wrapper.scroll({
+          left: COLUMN_WIDTH * daysTillToday,
+        });
+      }
     }, 800);
   }, [wrapper, activeHotel.id, reports.length]);
 
@@ -88,7 +95,7 @@ export const ReportProductsTable = ({
             )}
 
             <div
-              className="flex flex-col gap-x-3 overflow-x-auto w-full wrapper relative"
+              className="flex flex-col gap-x-3 w-full overflow-x-auto wrapper relative"
               ref={container}
             >
               {customerProducts.length > 0 && (
@@ -97,8 +104,7 @@ export const ReportProductsTable = ({
                   activeMonth={activeMonth}
                 />
               )}
-
-              <div className="flex flex-col gap-y-2">
+              <div className="flex flex-col gap-y-2 pt-10">
                 {customerProducts.map(({ product }) => {
                   const productReport = reports.filter(
                     (item) => item.product.id === product.id,

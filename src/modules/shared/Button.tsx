@@ -19,7 +19,7 @@ export const Button = ({
           "flex justify-center items-center px-6 py-3 rounded-xl font-medium disabled:opacity-40",
           {
             "bg-blue-600 hover:bg-blue-700 text-white": variant === "primary",
-            "bg-white active:hover:bg-gray-100 text-gray-800 border border-gray-300 disabled:text-gray-500":
+            "bg-white hover:bg-gray-200 text-gray-800 border border-gray-300 disabled:text-gray-500":
               variant === "secondary",
           },
           className,
@@ -40,7 +40,7 @@ export const Button = ({
         "flex justify-center items-center px-6 py-3 rounded-xl font-medium disabled:opacity-40",
         {
           "bg-blue-600 hover:bg-blue-700 text-white": variant === "primary",
-          "bg-white active:hover:bg-gray-100 text-gray-800 border border-gray-300 disabled:text-gray-500":
+          "bg-white hover:bg-gray-100 text-gray-800 border border-gray-300 disabled:text-gray-500":
             variant === "secondary",
         },
         className,
