@@ -12,13 +12,13 @@ export const HotelsListing = ({ activeUrl }: HotelsListingProps) => {
   return (
     <>
       <p className="text-white font-bold opacity-30 mt-4">Hotele</p>
-      <ul className="w-full bg-gray-900 text-white h-5/6 overflow-y-scroll max-h-screen mt-3">
+      <ul className="bg-gray-900 text-white h-full overflow-y-auto mt-3">
         {hotels.map((hotel) => (
-          <li key={hotel.id} className="w-full h-min">
+          <li key={hotel.id} className="w-full">
             <Link
               href={`/${hotel.id}`}
               className={classNames(
-                "flex px-3 py-2 w-full text-left capitalize rounded-lg transition-all",
+                "flex px-3 h-10 items-center w-full text-left capitalize rounded-lg transition-all",
                 {
                   "bg-blue-800 text-white": activeUrl === hotel.id,
                   "opacity-70 hover:opacity-100 hover:bg-gray-800":

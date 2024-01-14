@@ -9,20 +9,22 @@ export const SideNavigation = () => {
 
   const activeUrl = (router.query.hotelId || router.route) as string;
 
+  const ROUTE = "/turnovers";
+
   return (
-    <nav className="w-[300px] bg-gray-900 h-screen fixed p-3">
+    <nav className="w-[300px] bg-gray-900 flex flex-col h-full fixed p-3">
       <Link
-        href="/panel"
+        href={ROUTE}
         className={classNames(
           "flex px-3 py-2 w-full text-left capitalize rounded-lg transition-all text-white",
           {
-            "bg-blue-800": activeUrl === "/panel",
+            "bg-blue-800": activeUrl === ROUTE,
             "opacity-70 hover:opacity-100 hover:bg-gray-800":
-              activeUrl !== "/panel",
+              activeUrl !== ROUTE,
           },
         )}
       >
-        Panel główny
+        Obroty
       </Link>
 
       <HotelsListing activeUrl={activeUrl} />

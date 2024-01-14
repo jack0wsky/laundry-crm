@@ -80,7 +80,7 @@ export const ReportProductsTable = ({
         </div>
       )}
       {customerProducts.length > 0 && (
-        <section className="w-full flex flex-col pb-7 min-h-screen px-4 relative">
+        <section className="w-full flex flex-col pb-5 px-4 relative">
           <div className="w-full flex">
             {customerProducts.length > 0 && (
               <div className="w-[200px]">

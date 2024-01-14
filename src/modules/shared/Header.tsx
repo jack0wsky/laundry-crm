@@ -9,6 +9,7 @@ import type { Hotel } from "@/modules/hotels/types";
 import { format } from "date-fns";
 import { useListMonthReport } from "@/modules/hotels/reports/api/reports.controller";
 import { db } from "@/modules/services/laundry.db";
+import { PDFFileIcon } from "@/modules/shared/icons/pdf-file.icon";
 
 interface HeaderProps {
   activeDate: {
@@ -91,7 +92,11 @@ export const Header = ({
           <Button variant="secondary" onClick={() => setPricingModal(true)}>
             Cennik
           </Button>
-          <Button variant="secondary" onClick={generatePDF}>
+          <Button
+            variant="secondary"
+            onClick={generatePDF}
+            prefix={<PDFFileIcon className="text-xl" />}
+          >
             Generuj zestawienie
           </Button>
           <Button onClick={onGenerateInvoiceClick}>Zobacz podsumowanie</Button>
@@ -100,22 +105,25 @@ export const Header = ({
 
       <div className="flex h-[80px] justify-between">
         <div className="flex flex-col">
-          <div className="flex items-center gap-x-3 mb-4">
-            <button
-              onClick={onPreviousArrowClick}
-              className="w-10 h-10 rounded-full bg-white flex justify-center items-center"
-            >
-              <LeftArrowIcon />
-            </button>
+          <div className="flex items-center gap-x-4 mb-4">
             <h2 className="text-2xl">
               {MONTHS[activeDate.month]} {activeDate.year}
             </h2>
-            <button
-              className="w-10 h-10 rounded-full bg-white flex justify-center items-center"
-              onClick={onNextArrowClick}
-            >
-              <RightArrowIcon />
-            </button>
+
+            <div className='flex items-center gap-x-3'>
+              <button
+                onClick={onPreviousArrowClick}
+                className="w-10 h-10 rounded-full bg-white flex justify-center items-center"
+              >
+                <LeftArrowIcon />
+              </button>
+              <button
+                className="w-10 h-10 rounded-full bg-white flex justify-center items-center"
+                onClick={onNextArrowClick}
+              >
+                <RightArrowIcon />
+              </button>
+            </div>
           </div>
         </div>
       </div>
