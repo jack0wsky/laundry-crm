@@ -49,7 +49,6 @@ export const MonthTurnover = ({ monthIndex, year }: MonthTurnoverProps) => {
 
       {prices.length === 0 || (calculatingTurnover && <p>Obliczanie...</p>)}
 
-      <p>{total * 1.23}</p>
       {!calculatingTurnover && (
         <p className="text-xl">
           {(total * 1.23).toLocaleString("pl-PL", { maximumFractionDigits: 2 })}{" "}
