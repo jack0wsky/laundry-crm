@@ -1,6 +1,7 @@
 import type { Database } from "@/modules/services/supabase.types";
 import type { Hotel } from "@/modules/hotels/types";
 import type { Pricing } from "@/modules/hotels/pricing/types";
+import type { Product } from "@/modules/comarch/types";
 import { createClient } from "@supabase/supabase-js";
 import { constructPdfFileName } from "@/modules/utils/construct-pdf-file-name";
 
@@ -19,6 +20,13 @@ enum Table {
   Customers = "customers",
   Products = "products",
   Reports = "reports",
+}
+
+export interface CreatePricingItemPayload {
+  price: number;
+  product: number;
+  hotel: string;
+  order: number;
 }
 
 export const db = {
@@ -47,10 +55,10 @@ export const db = {
   getHotels: async () => {
     const { data } = await clientDB
       .from(Table.Hotels)
-      .select("*, customer(*)")
+      .select<"*, customer(*)", Hotel>("*, customer(*)")
       .order("order", { ascending: true });
 
-    return data as Hotel[];
+    return data || [];
   },
 
   reportProductAmount: async (
@@ -83,11 +91,11 @@ export const db = {
   getPricing: async (customerName: string) => {
     const { data } = await clientDB
       .from(Table.Pricing)
-      .select("*, product(id, name)")
+      .select<"*, product(id, name)", Pricing>("*, product(id, name)")
       .eq("hotel", customerName)
       .order("order", { ascending: true });
 
-    return data as Pricing[];
+    return data || [];
   },
 
   getReport: async (hotelId: string, yearAndMonth: string) => {
@@ -106,6 +114,12 @@ export const db = {
       .eq("id", id);
   },
 
+  addPrice: async (payload: CreatePricingItemPayload) => {
+    await clientDB
+      .from(Table.Pricing)
+      .insert<CreatePricingItemPayload>(payload);
+  },
+
   downloadPDF: async (
     activeHotelName: string,
     activeMonth: number,
@@ -119,5 +133,13 @@ export const db = {
       );
 
     return data;
+  },
+
+  listProducts: async (): Promise<Product[]> => {
+    const { data } = await clientDB
+      .from(Table.Products)
+      .select<"*", Product>("*");
+
+    return data || [];
   },
 };

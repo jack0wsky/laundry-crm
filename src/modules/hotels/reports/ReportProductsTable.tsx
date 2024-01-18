@@ -57,6 +57,21 @@ export const ReportProductsTable = ({
     }, 800);
   }, [wrapper, activeHotel.id, reports.length]);
 
+  const saveReport = async (productId: number, amount: number, day: number) => {
+    const date = format(new Date(activeYear, activeMonth, day), "yyyy-MM-dd");
+
+    const report = await db.getReportForDate(activeHotel.id, date, productId);
+    const lastReport = report[0];
+
+    await db.reportProductAmount(
+      activeHotel.id,
+      amount,
+      date,
+      productId,
+      !!lastReport ? lastReport.id : uuid(),
+    );
+  };
+
   const customerProducts = pricing;
 
   return (
@@ -106,41 +121,23 @@ export const ReportProductsTable = ({
               )}
               <div className="flex flex-col gap-y-2 pt-10">
                 {customerProducts.map(({ product }) => {
-                  const productReport = reports.filter(
-                    (item) => item.product.id === product.id,
-                  );
+                  const productReport = reports
+                    .filter((item) => item.product.id === product.id)
+                    .map(({ amount, date }) => ({
+                      amount: amount || 0,
+                      date,
+                    }));
 
                   return (
                     <LaundryService
                       key={`${product.id}-${activeHotel.id}-${product.name}`}
                       days={days}
-                      productReport={productReport.map(({ amount, date }) => ({
-                        amount: amount || 0,
-                        date,
-                      }))}
+                      productReport={productReport}
                       activeMonth={activeMonth}
                       product={product}
-                      onChange={async (value, day) => {
-                        const date = format(
-                          new Date(activeYear, activeMonth, day),
-                          "yyyy-MM-dd",
-                        );
-
-                        const report = await db.getReportForDate(
-                          activeHotel.id,
-                          date,
-                          product.id,
-                        );
-                        const lastReport = report[0];
-
-                        await db.reportProductAmount(
-                          activeHotel.id,
-                          value,
-                          date,
-                          product.id,
-                          !!lastReport ? lastReport.id : uuid(),
-                        );
-                      }}
+                      onChange={(value, day) =>
+                        saveReport(product.id, value, day)
+                      }
                     />
                   );
                 })}
