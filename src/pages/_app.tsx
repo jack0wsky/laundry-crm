@@ -9,7 +9,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={client}>
       <Head>
-        <title>L&apos;aqua</title>
+        <title>CRM | L&apos;aqua</title>
       </Head>
       <Layout>
         <Component {...pageProps} />
