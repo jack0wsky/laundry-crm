@@ -132,7 +132,7 @@ interface ProductsListingProps {
 }
 const ProductsListing = ({ products }: ProductsListingProps) => {
   return (
-    <ul className="flex flex-col gap-y-1">
+    <ul className="flex flex-col gap-y-1 h-[190px] overflow-y-auto">
       {products.map((product) => (
         <li
           key={product.product.name}
