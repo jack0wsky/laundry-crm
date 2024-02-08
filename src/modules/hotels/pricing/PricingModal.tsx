@@ -24,7 +24,7 @@ export const PricingModal = ({
 
   return (
     <Dialog open={isVisible} onClose={onClose} className="z-50 bg-gray-800">
-      <div className="fixed inset-0 flex items-center justify-center bg-gray-900/80 p-4 text-white">
+      <div className="fixed inset-0 flex items-center justify-center bg-gray-900/80 p-4 text-white z-20">
         <Dialog.Overlay />
 
         <Dialog.Panel className="min-w-[450px] bg-white rounded-2xl text-black p-4">
