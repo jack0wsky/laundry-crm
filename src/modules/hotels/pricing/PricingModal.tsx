@@ -15,6 +15,7 @@ interface PricingModalProps {
   onClose: () => void;
 }
 
+// TODO make reusable component with modal base
 export const PricingModal = ({
   hotelName,
   isVisible,
