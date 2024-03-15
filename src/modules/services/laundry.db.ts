@@ -102,9 +102,10 @@ export const db = {
     const { data } = await clientDB
       .from(Table.Reports)
       .select("*, product(id, name)")
-      .eq("hotel", hotelId);
+      .eq("hotel", hotelId)
+      .filter("date", "gte", `${yearAndMonth}-01`);
 
-    return (data || []).filter((item) => item.date.includes(yearAndMonth));
+    return data || [];
   },
 
   updatePrice: async (id: string, updatedPrice: number) => {

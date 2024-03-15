@@ -1,8 +1,9 @@
 import { LaundryService } from "@/modules/hotels/reports/LaundryService";
 import { format } from "date-fns";
-import { db } from "@/modules/services/laundry.db";
-import { v4 as uuid } from "uuid";
-import { useListMonthReport } from "@/modules/hotels/reports/api/reports.controller";
+import {
+  useCreateReport,
+  useListMonthReport,
+} from "@/modules/hotels/reports/api/reports.controller";
 import { useListPricing } from "@/modules/hotels/pricing/api/pricing.controller";
 import { GenerateInvoiceModal } from "@/modules/hotels/reports/GenerateInvoiceModal";
 import type { Hotel } from "@/modules/hotels/types";
@@ -32,6 +33,8 @@ export const ReportProductsTable = ({
   const { reports } = useListMonthReport(yearAndMonth, activeHotel.id);
   const { pricing, loading } = useListPricing(activeHotel.name);
 
+  const { addReport } = useCreateReport(activeHotel.id, yearAndMonth);
+
   const days = Array.from(
     { length: getDaysInMonth(new Date(activeYear, activeMonth)) },
     (_, i) => i + 1,
@@ -60,16 +63,7 @@ export const ReportProductsTable = ({
   const saveReport = async (productId: number, amount: number, day: number) => {
     const date = format(new Date(activeYear, activeMonth, day), "yyyy-MM-dd");
 
-    const report = await db.getReportForDate(activeHotel.id, date, productId);
-    const lastReport = report[0];
-
-    await db.reportProductAmount(
-      activeHotel.id,
-      amount,
-      date,
-      productId,
-      !!lastReport ? lastReport.id : uuid(),
-    );
+    addReport({ amount, date, productId });
   };
 
   const customerProducts = pricing;
