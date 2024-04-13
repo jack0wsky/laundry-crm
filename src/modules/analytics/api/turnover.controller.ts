@@ -6,13 +6,15 @@ import {
   ProvidedProduct,
 } from "@/modules/utils/get-total-hotel-usage";
 import { useMemo } from "react";
+import { useListHotels } from "@/modules/hotels/api/hotels.controller";
 
 export const useGetTurnover = (yearAndMonth: string) => {
+  const { hotels, fetched } = useListHotels();
+
   const { data, isPending } = useQuery({
     queryKey: ["turnover", yearAndMonth],
     queryFn: async () => {
       const allPrices: ProvidedProduct[] = [];
-      const hotels = await db.getHotels();
 
       await Promise.all(
         (hotels || []).map(async (hotel) => {
@@ -25,6 +27,7 @@ export const useGetTurnover = (yearAndMonth: string) => {
       return allPrices;
     },
     refetchOnMount: true,
+    enabled: fetched,
   });
 
   const totalTurnover = useMemo(() => {
