@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { client } from "@/modules/services/react-query.client";
-import { QueryClientProvider } from "react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import Head from "next/head";
 import { Layout } from "@/modules/shared/Layout";
 

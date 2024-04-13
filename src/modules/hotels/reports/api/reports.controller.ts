@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { db } from "@/modules/services/laundry.db";
 import { v4 as uuid } from "uuid";
 
@@ -8,10 +8,10 @@ const listMonthReportQueryKey = (yearAndMonth: string, hotelId: string) => [
   hotelId,
 ];
 export const useListMonthReport = (yearAndMonth: string, hotelId: string) => {
-  const { data, refetch } = useQuery(
-    listMonthReportQueryKey(yearAndMonth, hotelId),
-    () => db.getReport(hotelId, yearAndMonth),
-  );
+  const { data, refetch } = useQuery({
+    queryKey: listMonthReportQueryKey(yearAndMonth, hotelId),
+    queryFn: () => db.getReport(hotelId, yearAndMonth),
+  });
 
   return {
     reports: data || [],
@@ -19,22 +19,19 @@ export const useListMonthReport = (yearAndMonth: string, hotelId: string) => {
   };
 };
 
+interface CreateReportPayload {
+  amount: number;
+  date: string;
+  productId: number;
+}
 export const useCreateReport = (
   activeHotelId: string,
   yearAndMonth: string,
 ) => {
   const queryClient = useQueryClient();
 
-  const { mutate, isLoading } = useMutation(
-    async ({
-      amount,
-      date,
-      productId,
-    }: {
-      amount: number;
-      date: string;
-      productId: number;
-    }) => {
+  const { mutate, isPending } = useMutation({
+    mutationFn: async ({ amount, date, productId }: CreateReportPayload) => {
       const report = await db.getReportForDate(activeHotelId, date, productId);
       const lastReport = report[0];
 
@@ -46,17 +43,15 @@ export const useCreateReport = (
         !!lastReport ? lastReport.id : uuid(),
       );
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(
-          listMonthReportQueryKey(yearAndMonth, activeHotelId),
-        );
-      },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: listMonthReportQueryKey(yearAndMonth, activeHotelId),
+      });
     },
-  );
+  });
 
   return {
     addReport: mutate,
-    loading: isLoading,
+    loading: isPending,
   };
 };

@@ -6,7 +6,7 @@ import { InvoiceSummary } from "@/modules/hotels/reports/generate-invoice/Invoic
 import { SuccessStateView } from "@/modules/hotels/reports/generate-invoice/SucessStateView";
 import axios from "axios";
 import { useState } from "react";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 interface GenerateInvoiceModalProps {
   isVisible: boolean;
@@ -27,19 +27,17 @@ export const GenerateInvoiceModal = ({
 
   const {
     data: invoiceId,
-    isLoading,
+    isPending,
     mutate: generateInvoice,
-  } = useMutation<number, Error, CreateInvoice>(
-    async (payload: CreateInvoice) => {
+  } = useMutation<number, Error, CreateInvoice>({
+    mutationFn: async (payload: CreateInvoice) => {
       const { data } = await axios.post("/api/invoices/create", payload);
       return data;
     },
-    {
-      onSuccess: () => {
-        setInvoiceCreated(true);
-      },
+    onSuccess: () => {
+      setInvoiceCreated(true);
     },
-  );
+  });
 
   return (
     <Dialog open={isVisible} onClose={onClose} className="bg-gray-800">
@@ -61,7 +59,7 @@ export const GenerateInvoiceModal = ({
               customerId={customerId}
               onCreate={{
                 action: generateInvoice,
-                loading: isLoading,
+                loading: isPending,
               }}
             />
           )}

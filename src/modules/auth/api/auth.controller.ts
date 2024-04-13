@@ -1,9 +1,15 @@
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import { db } from "@/modules/services/laundry.db";
-import { useQueryClient, useQuery } from "react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { hotelsQueryKey } from "@/modules/hotels/api/hotels.controller";
+
+const sessionQueryKey = () => ["session"];
 
 export const useCheckSession = () => {
-  const { data } = useQuery("session", () => db.checkSession());
+  const { data } = useQuery({
+    queryKey: sessionQueryKey(),
+    queryFn: () => db.checkSession(),
+  });
 
   return {
     accessToken: data?.accessToken,
@@ -13,36 +19,35 @@ export const useCheckSession = () => {
 
 export const useLogout = () => {
   const queryClient = useQueryClient();
-  const { mutate, isLoading, error } = useMutation(() => db.logout(), {
+  const { mutate, isPending, error } = useMutation({
+    mutationFn: () => db.logout(),
     onSuccess: () => {
-      queryClient.invalidateQueries("session");
-      queryClient.invalidateQueries("hotels");
+      void queryClient.invalidateQueries({ queryKey: sessionQueryKey() });
+      void queryClient.invalidateQueries({ queryKey: hotelsQueryKey() });
     },
   });
 
   return {
     logout: mutate,
-    isLoading,
+    isLoading: isPending,
     error,
   };
 };
 
 export const useLogin = () => {
   const queryClient = useQueryClient();
-  const { mutate, isLoading, error } = useMutation(
-    (payload: { email: string; password: string }) =>
+  const { mutate, isPending, error } = useMutation({
+    mutationFn: (payload: { email: string; password: string }) =>
       db.login(payload.email, payload.password),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("session");
-        queryClient.invalidateQueries("hotels");
-      },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: sessionQueryKey() });
+      void queryClient.invalidateQueries({ queryKey: hotelsQueryKey() });
     },
-  );
+  });
 
   return {
     login: mutate,
-    isLoading,
+    isLoading: isPending,
     error,
   };
 };

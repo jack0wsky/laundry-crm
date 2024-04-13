@@ -1,8 +1,11 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { db } from "@/modules/services/laundry.db";
 
 export const useListProducts = () => {
-  const { data, isLoading } = useQuery([], () => db.listProducts());
+  const { data, isLoading } = useQuery({
+    queryKey: ["products"],
+    queryFn: () => db.listProducts(),
+  });
 
   return {
     products: data || [],

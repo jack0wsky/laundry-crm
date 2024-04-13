@@ -1,5 +1,6 @@
 import { eachMonthOfInterval } from "date-fns";
 import { MonthTurnover } from "@/modules/analytics/MonthTurnover";
+import { useMemo } from "react";
 
 const startTime = new Date("2023-12-01");
 
@@ -24,19 +25,21 @@ const timeline = eachMonthOfInterval({
   .sort((a, b) => (a.year > b.year ? -1 : 1));
 
 export const TurnoversListing = () => {
-  const timelineGrouped = timeline.reduce<{ year: number; months: number[] }[]>(
-    (acc, value) => {
-      if (acc.findIndex((item) => item.year === value.year) === -1) {
-        acc = [...acc, { year: value.year, months: [] }];
-      }
+  const timelineGrouped = useMemo(() => {
+    return timeline.reduce<{ year: number; months: number[] }[]>(
+      (acc, value) => {
+        if (acc.findIndex((item) => item.year === value.year) === -1) {
+          acc = [...acc, { year: value.year, months: [] }];
+        }
 
-      acc[acc.findIndex((item) => item.year === value.year)].months.push(
-        Number(value.month),
-      );
-      return acc;
-    },
-    [],
-  );
+        acc[acc.findIndex((item) => item.year === value.year)].months.push(
+          Number(value.month),
+        );
+        return acc;
+      },
+      [],
+    );
+  }, [timeline]);
 
   return (
     <ul className="mt-12">
