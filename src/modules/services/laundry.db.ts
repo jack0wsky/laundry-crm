@@ -52,6 +52,14 @@ export const db = {
     };
   },
 
+  addNewClient: async (payload: { nip: number; name: string }) => {
+    await clientDB.from(Table.Customers).insert(payload);
+  },
+
+  addNewHotel: async (payload: { name: string, customer: string, order: number }) => {
+    await clientDB.from(Table.Hotels).insert(payload);
+  },
+
   getHotels: async () => {
     const { data } = await clientDB
       .from(Table.Hotels)
