@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { PencilIcon } from "@/modules/shared/icons/pencil.icon";
 import { Button } from "@/modules/shared/Button";
 import { useUpdateHotelName } from "@/modules/hotels/api/hotels.controller";
@@ -12,9 +12,16 @@ export const HotelName = ({ id, name }: HotelNameProps) => {
   const [editMode, setEditMode] = useState(false);
   const [hotelName, setHotelName] = useState(name);
 
+  useEffect(() => {
+    setHotelName(name);
+  }, []);
+
   const { updateName } = useUpdateHotelName({
     onSuccess: () => setEditMode(false),
   });
+
+  const isValid =
+    hotelName.trim() === "" || hotelName.toLowerCase() === name.toLowerCase();
 
   return (
     <div className="flex items-center gap-x-2">
@@ -40,7 +47,10 @@ export const HotelName = ({ id, name }: HotelNameProps) => {
           <Button variant="secondary" onClick={() => setEditMode(false)}>
             Anuluj
           </Button>
-          <Button onClick={() => updateName({ name: hotelName, id })}>
+          <Button
+            disabled={isValid}
+            onClick={() => updateName({ name: hotelName, id })}
+          >
             Zapisz
           </Button>
         </div>
