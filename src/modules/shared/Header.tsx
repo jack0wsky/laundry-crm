@@ -10,6 +10,7 @@ import { format } from "date-fns";
 import { useListMonthReport } from "@/modules/hotels/reports/api/reports.controller";
 import { db } from "@/modules/services/laundry.db";
 import { PDFFileIcon } from "@/modules/shared/icons/pdf-file.icon";
+import { HotelName } from "@/modules/shared/HotelName";
 
 interface HeaderProps {
   activeDate: {
@@ -79,7 +80,11 @@ export const Header = ({
         />
       )}
       <div className="w-full flex justify-between items-center py-5">
-        <h2 className="text-2xl capitalize font-bold">{activeHotel.name}</h2>
+        <HotelName
+          key={activeHotel.name}
+          id={activeHotel.id}
+          name={activeHotel.name}
+        />
 
         <div className="flex items-center gap-x-6">
           <a
@@ -110,7 +115,7 @@ export const Header = ({
               {MONTHS[activeDate.month]} {activeDate.year}
             </h2>
 
-            <div className='flex items-center gap-x-3'>
+            <div className="flex items-center gap-x-3">
               <button
                 onClick={onPreviousArrowClick}
                 className="w-10 h-10 rounded-full bg-white flex justify-center items-center"

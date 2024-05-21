@@ -143,4 +143,8 @@ export const db = {
 
     return data || [];
   },
+
+  updateHotelName: async (id: string, name: string) => {
+    await clientDB.from("hotels").update({ name }).eq("id", id);
+  },
 };
