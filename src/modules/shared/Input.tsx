@@ -16,7 +16,7 @@ export const Input = ({
 }: InputProps) => {
   return (
     <label className="flex flex-col gap-y-1">
-      <span className="ml-5 text-xs text-palette-gray-500">{label}</span>
+      <span className="ml-5 text-sm text-palette-gray-500">{label}</span>
       <input
         className="px-5 py-3 border border-gray-200 rounded-lg"
         {...register(registerName)}

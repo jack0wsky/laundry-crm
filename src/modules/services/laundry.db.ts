@@ -29,44 +29,61 @@ export interface CreatePricingItemPayload {
   order: number;
 }
 
+interface Customer {
+  id: number;
+  name: string;
+  nip: number;
+}
+
 export const db = {
-  login: async (email: string, password: string) => {
-    const { data } = await clientDB.auth.signInWithPassword({
-      email,
-      password,
-    });
+  auth: {
+    login: async (email: string, password: string) => {
+      const { data } = await clientDB.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    localStorage.setItem("laundry-token", data.session?.access_token as string);
-  },
+      localStorage.setItem(
+        "laundry-token",
+        data.session?.access_token as string,
+      );
+    },
 
-  logout: async () => {
-    await clientDB.auth.signOut();
-    localStorage.removeItem("laundry-token");
-  },
+    logout: async () => {
+      await clientDB.auth.signOut();
+      localStorage.removeItem("laundry-token");
+    },
 
-  checkSession: async () => {
-    const { data } = await clientDB.auth.getSession();
-    return {
-      accessToken: data.session?.access_token,
-      expiration: data.session?.expires_at,
-    };
+    checkSession: async () => {
+      const { data } = await clientDB.auth.getSession();
+      return {
+        accessToken: data.session?.access_token,
+        expiration: data.session?.expires_at,
+      };
+    },
   },
 
   addNewClient: async (payload: { nip: number; name: string }) => {
     await clientDB.from(Table.Customers).insert(payload);
   },
 
-  addNewHotel: async (payload: { name: string, customer: string, order: number }) => {
-    await clientDB.from(Table.Hotels).insert(payload);
-  },
+  hotels: {
+    addNew: async (payload: {
+      name: string;
+      customer: string;
+      order: number;
+    }) => {
+      await clientDB.from(Table.Hotels).insert(payload);
+    },
 
-  getHotels: async () => {
-    const { data } = await clientDB
-      .from(Table.Hotels)
-      .select<"*, customer(*)", Hotel>("*, customer(*)")
-      .order("order", { ascending: true });
+    getAll: async () => {
+      const { data } = await clientDB
+        .from(Table.Hotels)
+        .select<"*, customer(*)", Hotel>("*, customer(*)")
+        .order("order", { ascending: true });
 
-    return data || [];
+      return data || [];
+    },
   },
 
   reportProductAmount: async (
@@ -116,17 +133,19 @@ export const db = {
     return data || [];
   },
 
-  updatePrice: async (id: string, updatedPrice: number) => {
-    await clientDB
-      .from(Table.Pricing)
-      .update({ price: updatedPrice })
-      .eq("id", id);
-  },
+  pricing: {
+    updateOne: async (id: string, updatedPrice: number) => {
+      await clientDB
+        .from(Table.Pricing)
+        .update({ price: updatedPrice })
+        .eq("id", id);
+    },
 
-  addPrice: async (payload: CreatePricingItemPayload) => {
-    await clientDB
-      .from(Table.Pricing)
-      .insert<CreatePricingItemPayload>(payload);
+    addNew: async (payload: CreatePricingItemPayload) => {
+      await clientDB
+        .from(Table.Pricing)
+        .insert<CreatePricingItemPayload>(payload);
+    },
   },
 
   downloadPDF: async (
@@ -154,5 +173,13 @@ export const db = {
 
   updateHotelName: async (id: string, name: string) => {
     await clientDB.from("hotels").update({ name }).eq("id", id);
+  },
+
+  listCustomers: async () => {
+    const { data } = await clientDB
+      .from(Table.Customers)
+      .select<"*", Customer>("*");
+
+    return data || [];
   },
 };

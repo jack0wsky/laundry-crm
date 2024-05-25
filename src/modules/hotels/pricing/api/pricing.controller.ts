@@ -29,7 +29,7 @@ export const useUpdatePrice = () => {
     Error,
     UpdateHotelPricing
   >({
-    mutationFn: (payload) => db.updatePrice(payload.id, payload.price),
+    mutationFn: (payload) => db.pricing.updateOne(payload.id, payload.price),
     onSuccess: (_, variables) => {
       void queryClient.invalidateQueries({
         queryKey: listPricing(variables.hotelName),
@@ -51,7 +51,7 @@ export const useAddPricingItem = () => {
     Error,
     CreatePricingItemPayload
   >({
-    mutationFn: (payload) => db.addPrice(payload),
+    mutationFn: (payload) => db.pricing.addNew(payload),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: listPricing(variables.hotel) });
     },

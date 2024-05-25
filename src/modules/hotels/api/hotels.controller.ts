@@ -7,7 +7,7 @@ export const hotelsQueryKey = () => ["hotels"];
 export const useListHotels = () => {
   const { data, isPending, isSuccess } = useQuery<Hotel[], Error>({
     queryKey: hotelsQueryKey(),
-    queryFn: () => db.getHotels(),
+    queryFn: () => db.hotels.getAll(),
     staleTime: Infinity,
   });
 
@@ -52,7 +52,7 @@ export const useAddCustomer = (options?: { onSuccess: () => void }) => {
   };
 };
 
-export const useAddHotel = () => {
+export const useAddHotel = (options?: { onSuccess: () => void }) => {
   const { hotels } = useListHotels();
   const queryClient = useQueryClient();
 
@@ -60,9 +60,10 @@ export const useAddHotel = () => {
 
   const { mutate, isPending } = useMutation({
     mutationFn: (hotel: { name: string; customer: string }) =>
-      db.addNewHotel({ ...hotel, order: lastHotel.order + 5 }),
+      db.hotels.addNew({ ...hotel, order: lastHotel.order + 5 }),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: hotelsQueryKey() });
+      options?.onSuccess();
     },
   });
 

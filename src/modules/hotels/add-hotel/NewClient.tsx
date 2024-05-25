@@ -39,44 +39,41 @@ export const NewClient = ({ onGoBack }: NewClientProps) => {
   }
 
   return (
-    <>
-      <form onSubmit={handleSubmit(saveCustomer)}>
-        <p className="mb-5 text-black">Nowy klient</p>
-        <fieldset className="flex flex-col gap-y-5">
-          <Input
-            label="NIP"
-            register={register}
-            registerName="nip"
-            error={nipError}
-          />
-          <Input
-            label="Nazwa firmy"
-            register={register}
-            registerName="name"
-            error={nameError}
-          />
-        </fieldset>
+    <form onSubmit={handleSubmit(saveCustomer)}>
+      <p className="mb-5 text-black">Nowy klient</p>
+      <fieldset className="flex flex-col gap-y-5">
+        <Input
+          label="NIP"
+          register={register}
+          registerName="nip"
+          error={nipError}
+        />
+        <Input
+          label="Nazwa firmy"
+          register={register}
+          registerName="name"
+          error={nameError}
+        />
+      </fieldset>
 
-        <div className="flex items-center w-full gap-x-3 mt-6">
-          <Button
-            variant="secondary"
-            type="button"
-            onClick={onGoBack}
-            className="w-full"
-          >
-            Wróć
-          </Button>
-          <Button
-            variant="primary"
-            type="submit"
-            disabled={!isValid}
-            className="w-full"
-            onClick={() => {}}
-          >
-            Dalej
-          </Button>
-        </div>
-      </form>
-    </>
+      <div className="flex items-center w-full gap-x-3 mt-6">
+        <Button
+          variant="secondary"
+          type="button"
+          onClick={onGoBack}
+          className="w-full"
+        >
+          Wróć
+        </Button>
+        <Button
+          variant="primary"
+          type="submit"
+          disabled={!isValid}
+          className="w-full"
+        >
+          Dalej
+        </Button>
+      </div>
+    </form>
   );
 };

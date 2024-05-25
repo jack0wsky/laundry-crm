@@ -8,7 +8,7 @@ const sessionQueryKey = () => ["session"];
 export const useCheckSession = () => {
   const { data } = useQuery({
     queryKey: sessionQueryKey(),
-    queryFn: () => db.checkSession(),
+    queryFn: () => db.auth.checkSession(),
   });
 
   return {
@@ -20,7 +20,7 @@ export const useCheckSession = () => {
 export const useLogout = () => {
   const queryClient = useQueryClient();
   const { mutate, isPending, error } = useMutation({
-    mutationFn: () => db.logout(),
+    mutationFn: () => db.auth.logout(),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: sessionQueryKey() });
       void queryClient.invalidateQueries({ queryKey: hotelsQueryKey() });
@@ -38,7 +38,7 @@ export const useLogin = () => {
   const queryClient = useQueryClient();
   const { mutate, isPending, error } = useMutation({
     mutationFn: (payload: { email: string; password: string }) =>
-      db.login(payload.email, payload.password),
+      db.auth.login(payload.email, payload.password),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: sessionQueryKey() });
       void queryClient.invalidateQueries({ queryKey: hotelsQueryKey() });
