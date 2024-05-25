@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { HotelsListing } from "@/modules/hotels/HotelsListing";
 import { useRouter } from "next/router";
 import { AddHotelModal } from "@/modules/hotels/add-hotel/AddHotelModal";
+import { CurrentUser } from "@/modules/shared/CurrentUser";
 
 export const SideNavigation = () => {
   const router = useRouter();
@@ -15,6 +16,7 @@ export const SideNavigation = () => {
 
   return (
     <nav className="w-[300px] bg-gray-900 flex flex-col h-full fixed p-3">
+      <CurrentUser />
       <Link
         href={ROUTE}
         className={classNames(

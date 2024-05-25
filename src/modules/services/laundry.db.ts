@@ -56,9 +56,11 @@ export const db = {
 
     checkSession: async () => {
       const { data } = await clientDB.auth.getSession();
+
       return {
         accessToken: data.session?.access_token,
         expiration: data.session?.expires_at,
+        user: data.session?.user,
       };
     },
   },

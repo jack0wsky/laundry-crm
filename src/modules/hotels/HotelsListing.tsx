@@ -15,14 +15,12 @@ export const HotelsListing = ({ activeUrl }: HotelsListingProps) => {
 
       {loading && (
         <div className="w-full flex flex-col">
-          <div className="w-full h-7 my-2 rounded-lg bg-white/10 animate-pulse" />
-          <div className="w-full h-7 my-2 rounded-lg bg-white/10 animate-pulse" />
-          <div className="w-full h-7 my-2 rounded-lg bg-white/10 animate-pulse" />
-          <div className="w-full h-7 my-2 rounded-lg bg-white/10 animate-pulse" />
-          <div className="w-full h-7 my-2 rounded-lg bg-white/10 animate-pulse" />
-          <div className="w-full h-7 my-2 rounded-lg bg-white/10 animate-pulse" />
-          <div className="w-full h-7 my-2 rounded-lg bg-white/10 animate-pulse" />
-          <div className="w-full h-7 my-2 rounded-lg bg-white/10 animate-pulse" />
+          {Array.from({ length: 8 }).map((_, index) => (
+            <div
+              key={index}
+              className="w-full h-7 my-2 rounded-lg bg-white/10 animate-pulse"
+            />
+          ))}
         </div>
       )}
 

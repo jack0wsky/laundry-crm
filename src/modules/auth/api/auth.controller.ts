@@ -14,6 +14,7 @@ export const useCheckSession = () => {
   return {
     accessToken: data?.accessToken,
     expiration: data?.expiration,
+    user: data?.user,
   };
 };
 
