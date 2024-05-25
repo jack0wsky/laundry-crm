@@ -79,7 +79,11 @@ export const db = {
       customer: string;
       order: number;
     }) => {
-      await clientDB.from(Table.Hotels).insert(payload);
+      const { data } = await clientDB
+        .from(Table.Hotels)
+        .insert(payload)
+        .select<"*", Hotel>();
+      return data;
     },
 
     getAll: async () => {

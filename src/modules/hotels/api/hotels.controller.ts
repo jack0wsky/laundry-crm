@@ -52,7 +52,9 @@ export const useAddCustomer = (options?: { onSuccess: () => void }) => {
   };
 };
 
-export const useAddHotel = (options?: { onSuccess: () => void }) => {
+export const useAddHotel = (options?: {
+  onSuccess: (hotelId: string) => void;
+}) => {
   const { hotels } = useListHotels();
   const queryClient = useQueryClient();
 
@@ -61,9 +63,11 @@ export const useAddHotel = (options?: { onSuccess: () => void }) => {
   const { mutate, isPending } = useMutation({
     mutationFn: (hotel: { name: string; customer: string }) =>
       db.hotels.addNew({ ...hotel, order: lastHotel.order + 5 }),
-    onSuccess: () => {
+    onSuccess: (data) => {
       void queryClient.invalidateQueries({ queryKey: hotelsQueryKey() });
-      options?.onSuccess();
+
+      if (!data) return;
+      options?.onSuccess(data[0].id);
     },
   });
 

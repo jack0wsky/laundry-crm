@@ -6,6 +6,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/modules/shared/Button";
 import { useAddHotel } from "@/modules/hotels/api/hotels.controller";
+import { useRouter } from "next/router";
 
 const schema = z.object({
   customerName: z.string(),
@@ -21,11 +22,18 @@ interface ExistingClientProps {
 export const ExistingClient = ({ onSubmitted }: ExistingClientProps) => {
   const { customers } = useListCustomers();
 
+  const router = useRouter();
+
   const { handleSubmit, setValue, register, formState } = useForm<FormValues>({
     resolver: zodResolver(schema),
   });
 
-  const { addHotel, loading } = useAddHotel({ onSuccess: onSubmitted });
+  const { addHotel, loading } = useAddHotel({
+    onSuccess: async (hotelId) => {
+      await router.push(`/${hotelId}`);
+      onSubmitted();
+    },
+  });
 
   return (
     <form
