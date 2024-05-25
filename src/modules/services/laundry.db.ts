@@ -68,6 +68,10 @@ export const db = {
   },
 
   hotels: {
+    updateHotelName: async (id: string, name: string) => {
+      await clientDB.from("hotels").update({ name }).eq("id", id);
+    },
+
     addNew: async (payload: {
       name: string;
       customer: string;
@@ -169,10 +173,6 @@ export const db = {
       .select<"*", Product>("*");
 
     return data || [];
-  },
-
-  updateHotelName: async (id: string, name: string) => {
-    await clientDB.from("hotels").update({ name }).eq("id", id);
   },
 
   listCustomers: async () => {

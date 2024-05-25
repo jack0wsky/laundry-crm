@@ -69,7 +69,6 @@ export const HotelName = ({ onEdit, customerData }: HotelNameProps) => {
         <Button
           className="w-full mt-6"
           variant="primary"
-          onClick={() => {}}
           disabled={!formState.isValid}
           type="submit"
         >

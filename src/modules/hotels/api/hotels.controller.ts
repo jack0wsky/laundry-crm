@@ -23,7 +23,7 @@ export const useUpdateHotelName = (options?: { onSuccess: () => void }) => {
 
   const { mutate } = useMutation({
     mutationFn: ({ id, name }: { id: string; name: string }) =>
-      db.updateHotelName(id, name),
+      db.hotels.updateHotelName(id, name),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: hotelsQueryKey() });
       options?.onSuccess();
