@@ -9,4 +9,5 @@ export interface Hotel {
   name: string;
   displayName: string | null;
   customer: Customer;
+  order: number;
 }

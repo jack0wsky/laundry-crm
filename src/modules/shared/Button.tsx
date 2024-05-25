@@ -14,7 +14,7 @@ export const Button = ({
   prefix,
   ...props
 }: PropsWithChildren<ButtonProps>) => {
-  if (props.onClick) {
+  if (props.onClick || props.type === "submit" || props.type === "button") {
     return (
       <button
         className={classNames(

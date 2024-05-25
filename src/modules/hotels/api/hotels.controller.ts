@@ -7,7 +7,7 @@ export const hotelsQueryKey = () => ["hotels"];
 export const useListHotels = () => {
   const { data, isPending, isSuccess } = useQuery<Hotel[], Error>({
     queryKey: hotelsQueryKey(),
-    queryFn: () => db.getHotels(),
+    queryFn: () => db.hotels.getAll(),
     staleTime: Infinity,
   });
 
@@ -32,5 +32,43 @@ export const useUpdateHotelName = (options?: { onSuccess: () => void }) => {
 
   return {
     updateName: mutate,
+  };
+};
+
+export interface AddCustomerPayload {
+  nip: number;
+  name: string;
+}
+
+export const useAddCustomer = (options?: { onSuccess: () => void }) => {
+  const { mutate, isPending } = useMutation({
+    mutationFn: (payload: AddCustomerPayload) => db.addNewClient(payload),
+    onSuccess: options?.onSuccess,
+  });
+
+  return {
+    addCustomer: mutate,
+    loading: isPending,
+  };
+};
+
+export const useAddHotel = (options?: { onSuccess: () => void }) => {
+  const { hotels } = useListHotels();
+  const queryClient = useQueryClient();
+
+  const lastHotel = hotels.sort((a, b) => b.order - a.order)[0];
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (hotel: { name: string; customer: string }) =>
+      db.hotels.addNew({ ...hotel, order: lastHotel.order + 5 }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: hotelsQueryKey() });
+      options?.onSuccess();
+    },
+  });
+
+  return {
+    addHotel: mutate,
+    loading: isPending,
   };
 };
