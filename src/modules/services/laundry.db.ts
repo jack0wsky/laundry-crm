@@ -35,6 +35,13 @@ interface Customer {
   nip: number;
 }
 
+interface AddCustomerPayload {
+  id: number;
+  name: string;
+  nip: number;
+  laundryId: string;
+}
+
 export const db = {
   auth: {
     login: async (email: string, password: string) => {
@@ -181,11 +188,16 @@ export const db = {
     return data || [];
   },
 
-  listCustomers: async () => {
-    const { data } = await clientDB
-      .from(Table.Customers)
-      .select<"*", Customer>("*");
+  customers: {
+    addNew: async (payload: AddCustomerPayload) => {
+      const { status } = await clientDB.from(Table.Customers).insert(payload);
+    },
+    listAll: async () => {
+      const { data } = await clientDB
+        .from(Table.Customers)
+        .select<"*", Customer>("*");
 
-    return data || [];
+      return data || [];
+    },
   },
 };

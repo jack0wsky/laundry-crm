@@ -4,7 +4,7 @@ export interface Product {
   order: number;
 }
 
-enum CustomerType {
+export enum CustomerType {
   Individual,
   Company,
 }
@@ -18,6 +18,7 @@ enum CustomerStatus {
 }
 
 export interface ComarchCustomer {
+  Id: number;
   Name: string;
   CountryCode: string;
   CustomerTaxNumber: string;
@@ -34,7 +35,24 @@ export interface ComarchCustomer {
     Id: string;
   };
   CustomerStatus: CustomerStatus;
-  Id: number;
+}
+
+export interface CreateComarchCustomerPayload {
+  Name: string;
+  CountryCode?: string;
+  CustomerTaxNumber?: string;
+  CustomerCode?: string;
+  Mail?: string;
+  PhoneNumber?: string;
+  CustomerType?: CustomerType;
+  Address?: {
+    Street: string;
+    BuildingNumber: string;
+    FlatNumber: string;
+    City: string;
+    PostalCode: string;
+  };
+  CustomerStatus?: CustomerStatus;
 }
 
 export interface ComarchCustomerReadModel {

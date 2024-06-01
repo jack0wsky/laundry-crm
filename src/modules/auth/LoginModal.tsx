@@ -17,7 +17,7 @@ export const LoginModal = () => {
   if (isLogged) return null;
 
   return (
-    <Dialog className="z-50 bg-gray-800" open={true} onClose={() => {}}>
+    <Dialog className="z-50 bg-gray-800" open onClose={() => {}}>
       <div
         className={`fixed inset-0 flex items-center justify-center bg-gray-900/80 p-4 text-white`}
       >
