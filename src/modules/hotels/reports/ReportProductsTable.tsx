@@ -5,19 +5,11 @@ import {
   useListMonthReport,
 } from "@/modules/hotels/reports/api/reports.controller";
 import { useListPricing } from "@/modules/hotels/pricing/api/pricing.controller";
-import type { GenerateInvoiceModalProps } from "@/modules/hotels/reports/GenerateInvoiceModal";
-import dynamic, { LoaderComponent } from "next/dynamic";
+import { GenerateInvoiceModal } from "@/modules/hotels/reports/GenerateInvoiceModal";
 import type { Hotel } from "@/modules/hotels/types";
 import { getDaysInMonth } from "date-fns";
 import { DayNumbersList } from "@/modules/hotels/reports/DayNumbersList";
 import { useEffect, useRef } from "react";
-
-const GenerateInvoiceModal = dynamic(
-  () =>
-    import(
-      "../../hotels/reports/GenerateInvoiceModal"
-    ) as unknown as LoaderComponent<GenerateInvoiceModalProps>,
-);
 
 interface ReportProductsTableProps {
   activeHotel: Hotel;
