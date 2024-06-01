@@ -8,7 +8,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 
-interface GenerateInvoiceModalProps {
+export interface GenerateInvoiceModalProps {
   isVisible: boolean;
   onClose: () => void;
   summary: ReportItem[];

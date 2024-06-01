@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { LeftArrowIcon } from "@/modules/shared/icons/left-arrow.icon";
 import { RightArrowIcon } from "@/modules/shared/icons/right-arrow.icon";
-import { PricingModal } from "@/modules/hotels/pricing/PricingModal";
+import dynamic, { LoaderComponent } from "next/dynamic";
+import type { PricingModalProps } from "@/modules/hotels/pricing/PricingModal";
 import { Button } from "@/modules/shared/Button";
 import { MONTHS } from "@/modules/utils/months";
 import axios from "axios";
@@ -11,6 +12,16 @@ import { useListMonthReport } from "@/modules/hotels/reports/api/reports.control
 import { db } from "@/modules/services/laundry.db";
 import { PDFFileIcon } from "@/modules/shared/icons/pdf-file.icon";
 import { HotelName } from "@/modules/shared/HotelName";
+
+const PricingModal = dynamic(
+  () =>
+    import(
+      "../hotels/pricing/PricingModal"
+    ) as unknown as LoaderComponent<PricingModalProps>,
+  {
+    ssr: false,
+  },
+);
 
 interface HeaderProps {
   activeDate: {

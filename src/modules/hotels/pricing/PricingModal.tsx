@@ -9,7 +9,7 @@ import { Button } from "@/modules/shared/Button";
 import { PricingListingItem } from "@/modules/hotels/pricing/PricingListingItem";
 import { AddProductForm } from "@/modules/hotels/pricing/AddProductForm";
 
-interface PricingModalProps {
+export interface PricingModalProps {
   isVisible: boolean;
   hotelName: string;
   onClose: () => void;
