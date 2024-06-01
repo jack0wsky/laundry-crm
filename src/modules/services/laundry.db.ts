@@ -190,7 +190,7 @@ export const db = {
 
   customers: {
     addNew: async (payload: AddCustomerPayload) => {
-      const { status } = await clientDB.from(Table.Customers).insert(payload);
+      await clientDB.from(Table.Customers).insert(payload);
     },
     listAll: async () => {
       const { data } = await clientDB

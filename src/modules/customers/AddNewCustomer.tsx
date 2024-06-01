@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/modules/shared/Input";
 import { Button } from "@/modules/shared/Button";
 import { Drawer } from "@/modules/shared/Drawer";
-import { useCreateCustomer } from "@/modules/comarch/api/customers.controller";
+import { useCreateCustomer } from "@/modules/customers/api/customers.controller";
 import { useState } from "react";
 import { CreateComarchCustomerPayload } from "@/modules/comarch/types";
 

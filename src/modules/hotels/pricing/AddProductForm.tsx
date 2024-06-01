@@ -1,5 +1,5 @@
 import { Combobox, Transition } from "@headlessui/react";
-import { useListProducts } from "@/modules/comarch/api/products.controller";
+import { useListProducts } from "@/modules/hotels/pricing/api/products.controller";
 import {
   useAddPricingItem,
   useListPricing,

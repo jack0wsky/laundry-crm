@@ -6,7 +6,7 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useListCustomers } from "@/modules/comarch/api/customers.controller";
+import { useListCustomers } from "@/modules/customers/api/customers.controller";
 import { columns } from "@/modules/customers/customers-table/columns";
 import { Customer } from "@/modules/hotels/types";
 import { useState } from "react";
