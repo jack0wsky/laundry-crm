@@ -56,7 +56,7 @@ export const AddProductForm = ({
             price: Number(price),
             product: selectedOption.id,
             hotel: hotelName,
-            order: lastItem.order + 1,
+            order: pricing.length > 0 ? lastItem.order + 1 : 1,
           },
           { onSuccess: onProductAdded },
         );
