@@ -54,7 +54,7 @@ export const CustomersTable = () => {
 
         <tbody className="px-4 rounded-lg">
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="bg-white border-b border-gray-100">
+            <tr key={row.id} className="bg-white border-b border-gray-100 rounded-lg">
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="py-2">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}

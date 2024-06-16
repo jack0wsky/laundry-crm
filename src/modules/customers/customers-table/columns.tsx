@@ -13,7 +13,9 @@ import {
 export const columns: ColumnDef<Customer>[] = [
   {
     accessorKey: "name",
-    header: () => <p className="pl-4 py-2 text-sm text-palette-gray-500">Nazwa</p>,
+    header: () => (
+      <p className="pl-4 py-2 text-sm text-palette-gray-500">Nazwa</p>
+    ),
     cell: ({ row }) => {
       return <p className="pl-4">{row.getValue("name")}</p>;
     },
@@ -28,7 +30,7 @@ export const columns: ColumnDef<Customer>[] = [
     header: () => null,
     cell: () => (
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild>
           <button className="w-7 h-7 flex justify-center items-center group">
             <KebabMenuIcon className="text-palette-gray-600 group-hover:text-black" />
           </button>

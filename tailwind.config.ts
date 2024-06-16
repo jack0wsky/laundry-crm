@@ -23,6 +23,9 @@ const config = {
     extend: {
       colors: {
         palette: {
+          green: {
+            500: "#1FBA66",
+          },
           gray: {
             800: "#4B4B4B",
             700: "#626262",
