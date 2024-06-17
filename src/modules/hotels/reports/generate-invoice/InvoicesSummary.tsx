@@ -42,12 +42,14 @@ export const InvoiceSummary = ({
   const lastDayOfPreviousMonth = lastDayOfMonth(sub(new Date(), { months: 1 }));
 
   const generateInvoice = async () => {
+    const MAIN_BANK_ACCOUNT_ID = 10158354;
+
     onCreate.action({
       PaymentTypeId: selectedPaymentMethodId,
       PurchasingPartyId: customerId,
       ProductCurrencyPrice: Number(sumUpPrice.toFixed(2)),
       PaymentStatus: PaymentStatus.NotPaid,
-      BankAccountId: 10158354,
+      BankAccountId: MAIN_BANK_ACCOUNT_ID,
       SalesDate: lastDayOfPreviousMonth.toISOString(),
       Items: providedProducts.map((product) => ({
         Quantity: product.amount,

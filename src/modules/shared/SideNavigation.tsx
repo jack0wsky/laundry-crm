@@ -5,6 +5,7 @@ import { HotelsListing } from "@/modules/hotels/HotelsListing";
 import { useRouter } from "next/router";
 import { AddHotelModal } from "@/modules/hotels/add-hotel/AddHotelModal";
 import { CurrentUser } from "@/modules/shared/CurrentUser";
+import { Route } from "@/modules/utils/routes";
 
 export const SideNavigation = () => {
   const router = useRouter();
@@ -12,23 +13,35 @@ export const SideNavigation = () => {
 
   const activeUrl = (router.query.hotelId || router.route) as string;
 
-  const ROUTE = "/turnovers";
-
   return (
     <nav className="w-[300px] bg-gray-900 flex flex-col h-full fixed p-3">
       <CurrentUser />
       <Link
-        href={ROUTE}
+        href={Route.Turnovers}
         className={classNames(
           "flex px-3 py-2 w-full text-left capitalize rounded-lg transition-all text-white",
           {
-            "bg-blue-800": activeUrl === ROUTE,
+            "bg-blue-800": activeUrl === Route.Turnovers,
             "opacity-70 hover:opacity-100 hover:bg-gray-800":
-              activeUrl !== ROUTE,
+              activeUrl !== Route.Turnovers,
           },
         )}
       >
         Obroty
+      </Link>
+
+      <Link
+        href={Route.Customers}
+        className={classNames(
+          "flex px-3 py-2 w-full text-left capitalize rounded-lg transition-all text-white",
+          {
+            "bg-blue-800": activeUrl === Route.Customers,
+            "opacity-70 hover:opacity-100 hover:bg-gray-800":
+              activeUrl !== Route.Customers,
+          },
+        )}
+      >
+        Klienci
       </Link>
 
       <HotelsListing activeUrl={activeUrl} />

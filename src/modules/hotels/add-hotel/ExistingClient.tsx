@@ -1,4 +1,4 @@
-import { useListCustomers } from "@/modules/comarch/api/customers.controller";
+import { useListCustomers } from "@/modules/customers/api/customers.controller";
 import { SelectInput } from "@/modules/shared/SelectInput";
 import { Input } from "@/modules/shared/Input";
 import { useForm } from "react-hook-form";
