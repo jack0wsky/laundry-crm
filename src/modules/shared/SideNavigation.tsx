@@ -1,17 +1,19 @@
+"use client";
+
 import React, { useState } from "react";
 import Link from "next/link";
 import { clsx } from "clsx";
 import { HotelsListing } from "@/modules/hotels/HotelsListing";
-import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 import { AddHotelModal } from "@/modules/hotels/add-hotel/AddHotelModal";
 import { CurrentUser } from "@/modules/shared/CurrentUser";
 import { Route } from "@/modules/utils/routes";
 
 export const SideNavigation = () => {
-  const router = useRouter();
+  const pathname = usePathname();
   const [openAddHotelModal, setOpenAddHotelModal] = useState(false);
 
-  const activeUrl = (router.query.hotelId || router.route) as string;
+  const activeUrl = pathname;
 
   return (
     <nav className="w-[300px] bg-gray-900 flex flex-col h-full fixed p-3">

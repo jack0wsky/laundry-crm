@@ -1,3 +1,5 @@
+"use client";
+
 import { eachMonthOfInterval } from "date-fns";
 import { MonthTurnover } from "@/modules/analytics/MonthTurnover";
 import { useMemo } from "react";

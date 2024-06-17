@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { useAuth } from "@/modules/auth/Auth.context";
 import { Dialog } from "@headlessui/react";

@@ -1,8 +1,14 @@
+"use client";
+
 import { useEffect } from "react";
 import { useListHotels } from "@/modules/hotels/api/hotels.controller";
-import { AuthProvider } from "@/modules/auth/Auth.context";
 import { LoginModal } from "@/modules/auth/LoginModal";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+import { Metadata } from "next";
+
+// export const metadata: Metadata = {
+//   title: "CRM | L&apos;aqua",
+// };
 
 export default function Home() {
   const router = useRouter();
@@ -15,9 +21,5 @@ export default function Home() {
     router.push(`/${hotels[0].id}`);
   }, [hotels]);
 
-  return (
-    <AuthProvider>
-      <LoginModal />
-    </AuthProvider>
-  );
+  return <LoginModal />;
 }

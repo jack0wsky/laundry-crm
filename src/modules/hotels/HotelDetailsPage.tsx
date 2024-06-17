@@ -1,12 +1,13 @@
-import { useState } from "react";
-import { useListHotels } from "@/modules/hotels/api/hotels.controller";
-import { useRouter } from "next/router";
+"use client";
+
 import { Header } from "@/modules/shared/Header";
 import { ReportProductsTable } from "@/modules/hotels/reports/ReportProductsTable";
+import { useParams } from "next/navigation";
+import { useListHotels } from "@/modules/hotels/api/hotels.controller";
+import { useState } from "react";
 import { useActiveMonth } from "@/modules/utils/useActiveMonth";
 
-export default function Hotel() {
-  const router = useRouter();
+export const HotelDetailsPage = () => {
   const { hotels } = useListHotels();
 
   const [openModal, setOpenModal] = useState(false);
@@ -14,14 +15,14 @@ export default function Hotel() {
   const { previousMonth, nextMonth, activeDate } = useActiveMonth();
   const closeModal = () => setOpenModal(false);
 
-  const hotelId = router.query.hotelId as string;
+  const params = useParams<{ hotelId: string }>();
 
-  const activeHotel = hotels.find((hotel) => hotel.id === hotelId);
+  const activeHotel = hotels.find((hotel) => hotel.id === params?.hotelId);
 
   if (!activeHotel) return null;
 
   return (
-    <div className="ml-[300px] min-w-3/4 overflow-x-hidden w-full min-h-screen">
+    <div className="content-width ml-[300px] overflow-x-hidden min-h-screen">
       <Header
         activeHotel={activeHotel}
         activeDate={activeDate}
@@ -40,4 +41,4 @@ export default function Hotel() {
       />
     </div>
   );
-}
+};

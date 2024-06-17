@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { db } from "@/modules/services/laundry.db";
-import axios from "axios";
 import { CreateComarchCustomerPayload } from "@/modules/comarch/types";
 import { DEFAULT_LAUNDRY_ID } from "@/modules/utils/config";
+import { addNewCustomer } from "@/modules/comarch/add-new-customer.action";
 
 const listCustomersKey = () => ["customers"];
 
@@ -27,8 +27,7 @@ export const useCreateCustomer = (options?: { onSuccess: () => void }) => {
     Error,
     CreateComarchCustomerPayload
   >({
-    mutationFn: (payload: CreateComarchCustomerPayload) =>
-      axios.post("/api/customers/add-new", payload),
+    mutationFn: addNewCustomer,
     onSuccess: async (data, variables) => {
       await db.customers.addNew({
         id: data.data,

@@ -1,52 +1,13 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import PDFTable from "pdfkit-table";
 import path from "node:path";
+import { groupReportsByProduct } from "@/modules/hotels/pdf-summary/utils";
 import { clientDB } from "@/modules/services/laundry.db";
 import { constructPdfFileName } from "@/modules/utils/construct-pdf-file-name";
+import { NextApiRequest } from "next";
 
-interface Request extends NextApiRequest {
-  body: {
-    month: number;
-    year: number;
-    hotelName: string;
-    reports: any[];
-  };
-}
+export async function POST(request: NextApiRequest) {
+  const { hotelName, reports, month, year } = request.body;
 
-interface GroupedReport {
-  name: string;
-  reports: { date: string; amount: number }[];
-}
-
-const groupReportsByProduct = (reports: any[]): GroupedReport[] => {
-  let items: any[] = [];
-
-  reports.forEach((item) => {
-    const exists = items.find((i) => i.name === item.product.name);
-    if (exists) {
-      items = [
-        ...items.filter((i) => i.name !== item.product.name),
-        {
-          ...exists,
-          reports: [
-            ...exists.reports,
-            { date: item.date, amount: item.amount },
-          ].sort((a, b) => a.date.localeCompare(b.date)),
-        },
-      ];
-    } else {
-      items.push({
-        name: item.product.name,
-        reports: [{ date: item.date, amount: item.amount }],
-      });
-    }
-  });
-
-  return items;
-};
-
-export default async function handler(req: Request, res: NextApiResponse) {
-  const { hotelName, reports, month, year } = req.body;
   const doc = new PDFTable({
     margin: 10,
     size: "A4",
@@ -109,5 +70,5 @@ export default async function handler(req: Request, res: NextApiResponse) {
 
   doc.end();
 
-  res.status(200).json(items);
+  return Response.json(items);
 }
