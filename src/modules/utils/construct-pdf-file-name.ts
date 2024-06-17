@@ -3,5 +3,9 @@ export const constructPdfFileName = (
   month: number,
   year: number,
 ) => {
-  return `Zestawienie_${hotelName}_${month}_${year}.pdf`;
+  const serializedHotelName = hotelName
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+
+  return `Zestawienie_${serializedHotelName}_${month}_${year}.pdf`;
 };
