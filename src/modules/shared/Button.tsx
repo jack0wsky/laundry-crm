@@ -1,5 +1,5 @@
 import { ButtonHTMLAttributes, PropsWithChildren } from "react";
-import classNames from "classnames";
+import { clsx } from "clsx";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary";
@@ -17,13 +17,11 @@ export const Button = ({
   if (props.onClick || props.type === "submit" || props.type === "button") {
     return (
       <button
-        className={classNames(
+        className={clsx(
           "flex gap-x-2 justify-center items-center px-6 py-3 rounded-xl font-medium disabled:opacity-40",
-          {
-            "bg-blue-600 hover:bg-blue-700 text-white": variant === "primary",
-            "bg-white hover:bg-gray-200 text-gray-800 border border-gray-300 disabled:text-gray-500":
-              variant === "secondary",
-          },
+          variant === "primary" && "bg-blue-600 hover:bg-blue-700 text-white",
+          variant === "secondary" &&
+            "bg-white hover:bg-gray-200 text-gray-800 border border-gray-300 disabled:text-gray-500",
           className,
         )}
         {...props}
@@ -40,13 +38,11 @@ export const Button = ({
       href={href}
       target="_blank"
       rel="noreferrer"
-      className={classNames(
+      className={clsx(
         "flex gap-x-2 justify-center items-center px-6 py-3 rounded-xl font-medium disabled:opacity-40",
-        {
-          "bg-blue-600 hover:bg-blue-700 text-white": variant === "primary",
-          "bg-white hover:bg-gray-100 text-gray-800 border border-gray-300 disabled:text-gray-500":
-            variant === "secondary",
-        },
+        variant === "primary" && "bg-blue-600 hover:bg-blue-700 text-white",
+        variant === "secondary" &&
+          "bg-white hover:bg-gray-100 text-gray-800 border border-gray-300 disabled:text-gray-500",
         className,
       )}
     >

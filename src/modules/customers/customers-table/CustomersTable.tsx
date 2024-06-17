@@ -10,7 +10,7 @@ import { useListCustomers } from "@/modules/customers/api/customers.controller";
 import { columns } from "@/modules/customers/customers-table/columns";
 import { Customer } from "@/modules/hotels/types";
 import { useState } from "react";
-import classNames from "classnames";
+import { clsx } from "clsx";
 
 const noResults: Customer[] = [];
 
@@ -54,7 +54,10 @@ export const CustomersTable = () => {
 
         <tbody className="px-4 rounded-lg">
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="bg-white border-b border-gray-100 rounded-lg">
+            <tr
+              key={row.id}
+              className="bg-white border-b border-gray-100 rounded-lg"
+            >
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="py-2">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -73,9 +76,10 @@ export const CustomersTable = () => {
             onClick={() => table.previousPage()}
           >
             <LeftArrowIcon
-              className={classNames("text-black", {
-                "text-palette-gray-500": !table.getCanPreviousPage(),
-              })}
+              className={clsx(
+                "text-black",
+                !table.getCanPreviousPage() && "text-palette-gray-500",
+              )}
             />
           </button>
 
@@ -83,12 +87,10 @@ export const CustomersTable = () => {
             {Array.from({ length: table.getPageCount() }).map((_, index) => (
               <div
                 key={index}
-                className={classNames(
+                className={clsx(
                   "h-7 w-7 flex justify-center items-center rounded-full",
-                  {
-                    "bg-blue-500 text-white":
-                      table.getState().pagination.pageIndex === index,
-                  },
+                  table.getState().pagination.pageIndex === index &&
+                    "bg-blue-500 text-white",
                 )}
               >
                 {index + 1}
@@ -102,9 +104,10 @@ export const CustomersTable = () => {
             onClick={() => table.nextPage()}
           >
             <RightArrowIcon
-              className={classNames("text-black", {
-                "text-palette-gray-500": !table.getCanNextPage(),
-              })}
+              className={clsx(
+                "text-black",
+                !table.getCanNextPage() && "text-palette-gray-500",
+              )}
             />
           </button>
         </div>

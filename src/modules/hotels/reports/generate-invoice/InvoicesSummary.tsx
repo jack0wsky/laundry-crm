@@ -10,7 +10,7 @@ import lastDayOfMonth from "date-fns/lastDayOfMonth";
 import sub from "date-fns/sub";
 import { Dialog } from "@headlessui/react";
 import { CancelIcon } from "@/modules/shared/icons/cancel.icon";
-import classNames from "classnames";
+import { clsx } from "clsx";
 import { Button } from "@/modules/shared/Button";
 
 interface InvoiceSummaryProps {
@@ -88,9 +88,9 @@ export const InvoiceSummary = ({
             {paymentMethods.map((paymentMethod) => (
               <button
                 key={paymentMethod.id}
-                className={classNames(
+                className={clsx(
                   "w-full flex justify-center items-center py-2 rounded-full font-bold",
-                  { "bg-white": paymentMethod.id === selectedPaymentMethodId },
+                  paymentMethod.id === selectedPaymentMethodId && "bg-white",
                 )}
                 onClick={() => changePaymentMethod(paymentMethod.id)}
               >

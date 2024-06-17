@@ -1,5 +1,5 @@
 import Link from "next/link";
-import classNames from "classnames";
+import { clsx } from "clsx";
 import { useListHotels } from "@/modules/hotels/api/hotels.controller";
 
 interface HotelsListingProps {
@@ -30,13 +30,11 @@ export const HotelsListing = ({ activeUrl }: HotelsListingProps) => {
             <li key={hotel.id} className="w-full">
               <Link
                 href={`/${hotel.id}`}
-                className={classNames(
+                className={clsx(
                   "flex px-3 h-10 items-center w-full text-left capitalize rounded-lg transition-all",
-                  {
-                    "bg-blue-800 text-white": activeUrl === hotel.id,
-                    "opacity-70 hover:opacity-100 hover:bg-gray-800":
-                      activeUrl !== hotel.id,
-                  },
+                  activeUrl === hotel.id
+                    ? "bg-blue-800 text-white"
+                    : "opacity-70 hover:opacity-100 hover:bg-gray-800",
                 )}
               >
                 {hotel.displayName || hotel.name}
