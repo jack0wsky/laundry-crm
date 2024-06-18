@@ -50,25 +50,7 @@ export const db = {
         password,
       });
 
-      localStorage.setItem(
-        "laundry-token",
-        data.session?.access_token as string,
-      );
-    },
-
-    logout: async () => {
-      await clientDB.auth.signOut();
-      localStorage.removeItem("laundry-token");
-    },
-
-    checkSession: async () => {
-      const { data } = await clientDB.auth.getSession();
-
-      return {
-        accessToken: data.session?.access_token,
-        expiration: data.session?.expires_at,
-        user: data.session?.user,
-      };
+      return data;
     },
   },
 

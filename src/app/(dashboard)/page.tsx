@@ -2,9 +2,7 @@
 
 import { useEffect } from "react";
 import { useListHotels } from "@/modules/hotels/api/hotels.controller";
-import { LoginModal } from "@/modules/auth/LoginModal";
 import { useRouter } from "next/navigation";
-import { Metadata } from "next";
 
 // export const metadata: Metadata = {
 //   title: "CRM | L&apos;aqua",
@@ -21,5 +19,5 @@ export default function Home() {
     router.push(`/${hotels[0].id}`);
   }, [hotels]);
 
-  return <LoginModal />;
+  return null;
 }

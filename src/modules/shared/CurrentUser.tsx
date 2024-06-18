@@ -1,11 +1,11 @@
-import { useAuth } from "@/modules/auth/Auth.context";
+import { useSession, signOut } from "next-auth/react";
 
 export const CurrentUser = () => {
-  const { user } = useAuth();
+  const { data } = useSession();
 
-  if (!user) return null;
+  if (!data) return null;
 
-  const host = user.email?.split("@")[1];
+  const host = data.user?.email?.split("@")[1];
 
   return (
     <div className="flex items-center gap-x-3 py-3 border-b border-b-white/10 mb-2">
@@ -14,7 +14,14 @@ export const CurrentUser = () => {
           {host?.slice(0, 1)}
         </p>
       </div>
-      <p className="text-base text-white/80">{user.email}</p>
+      <p className="text-base text-white/80">{data.user?.email}</p>
+
+      <button
+        onClick={() => signOut({ redirect: true, callbackUrl: "/login" })}
+        className="text-white"
+      >
+        Wyloguj
+      </button>
     </div>
   );
 };
