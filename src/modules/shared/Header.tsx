@@ -39,7 +39,7 @@ export const Header = ({
   );
   const { reports } = useListMonthReport(yearAndMonth, activeHotel.id);
 
-  const { generatePdfReport } = useGeneratePdfReport({
+  const { generatePdfReport, isPending } = useGeneratePdfReport({
     onSuccess: setDownloadUrl,
   });
 
@@ -89,9 +89,11 @@ export const Header = ({
           <Button
             variant="secondary"
             onClick={generatePDF}
+            className={isPending ? "animate-pulse" : ""}
+            disabled={isPending}
             prefix={<PDFFileIcon className="text-xl" />}
           >
-            Generuj zestawienie
+            {isPending ? "Generowanie..." : "Generuj zestawienie"}
           </Button>
           <Button onClick={onGenerateInvoiceClick}>Zobacz podsumowanie</Button>
         </div>

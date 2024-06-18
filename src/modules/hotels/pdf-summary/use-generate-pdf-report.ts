@@ -12,7 +12,7 @@ export const useGeneratePdfReport = (options?: {
       month: number;
       year: number;
     }) => {
-      return axios.post(`/api/table`, payload);
+      return axios.post(`/api/generate-pdf-summary`, payload);
     },
     onSuccess: (_, variables) => {
       setTimeout(async () => {
@@ -26,6 +26,9 @@ export const useGeneratePdfReport = (options?: {
           options?.onSuccess(data.signedUrl);
         }
       }, 1000);
+    },
+    onError: (error) => {
+      console.log("download url error", error);
     },
   });
 

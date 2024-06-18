@@ -13,8 +13,6 @@ export const SideNavigation = () => {
   const pathname = usePathname();
   const [openAddHotelModal, setOpenAddHotelModal] = useState(false);
 
-  const activeUrl = pathname;
-
   return (
     <nav className="w-[300px] bg-gray-900 flex flex-col h-full fixed p-3">
       <CurrentUser />
@@ -22,7 +20,7 @@ export const SideNavigation = () => {
         href={Route.Turnovers}
         className={clsx(
           "flex px-3 py-2 w-full text-left capitalize rounded-lg transition-all text-white",
-          activeUrl === Route.Turnovers
+          pathname === Route.Turnovers
             ? "bg-blue-800"
             : "opacity-70 hover:opacity-100 hover:bg-gray-800",
         )}
@@ -34,7 +32,7 @@ export const SideNavigation = () => {
         href={Route.Customers}
         className={clsx(
           "flex px-3 py-2 w-full text-left capitalize rounded-lg transition-all text-white",
-          activeUrl === Route.Customers
+          pathname === Route.Customers
             ? "bg-blue-800"
             : "opacity-70 hover:opacity-100 hover:bg-gray-800",
         )}
@@ -42,7 +40,7 @@ export const SideNavigation = () => {
         Klienci
       </Link>
 
-      <HotelsListing activeUrl={activeUrl} />
+      <HotelsListing />
 
       {openAddHotelModal && (
         <AddHotelModal
