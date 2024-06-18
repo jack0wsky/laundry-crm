@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { db } from "@/modules/services/laundry.db";
 import axios from "axios";
 
-export const useGeneratePdfReport = (hotelId: string, options?: {
+export const useGeneratePdfReport = (options?: {
   onSuccess: (downloadFileUrl: string) => void;
 }) => {
   const { mutate, isPending } = useMutation({
@@ -12,7 +12,7 @@ export const useGeneratePdfReport = (hotelId: string, options?: {
       month: number;
       year: number;
     }) => {
-      return axios.post(`/api/${hotelId}`, payload);
+      return axios.post(`/api/table`, payload);
     },
     onSuccess: (_, variables) => {
       setTimeout(async () => {

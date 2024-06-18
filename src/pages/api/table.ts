@@ -3,10 +3,13 @@ import path from "node:path";
 import { groupReportsByProduct } from "@/modules/hotels/pdf-summary/utils";
 import { clientDB } from "@/modules/services/laundry.db";
 import { constructPdfFileName } from "@/modules/utils/construct-pdf-file-name";
-import { NextApiRequest } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 
-export async function POST(request: NextApiRequest) {
-  const { hotelName, reports, month, year } = request.body;
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  const { hotelName, reports, month, year } = req.body;
 
   const doc = new PDFTable({
     margin: 10,
@@ -70,5 +73,5 @@ export async function POST(request: NextApiRequest) {
 
   doc.end();
 
-  return Response.json(items);
+  return res.status(200).json(items);
 }
