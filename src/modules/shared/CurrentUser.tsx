@@ -3,6 +3,8 @@ import { useSession } from "next-auth/react";
 export const CurrentUser = () => {
   const { data } = useSession();
 
+  console.log("data", data);
+
   if (!data) return null;
 
   const host = data.user?.email?.split("@")[1];

@@ -88,6 +88,9 @@ export const {
     async session({ session, token }: { session: Session; token?: JWT }) {
       if (!token) return session;
 
+      session.accessToken = token.accessToken;
+      session.accessTokenExpires = token.accessTokenExpires;
+      session.refreshToken = token.refreshToken;
       session.user = {
         id: token.sub,
         email: token.email,
