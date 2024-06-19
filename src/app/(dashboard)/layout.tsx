@@ -8,14 +8,12 @@ export const metadata: Metadata = {
   title: "CRM | L'aqua",
 };
 
-export default function RootLayout({ children }: PropsWithChildren) {
+export default function Layout({ children }: PropsWithChildren) {
   return (
     <html lang="pl">
       <body>
-        <Providers>
-          <SideNavigation />
-          {children}
-        </Providers>
+        <SideNavigation />
+        {children}
       </body>
     </html>
   );

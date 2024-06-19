@@ -5,11 +5,10 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/modules/shared/Button";
-import { signIn } from "next-auth/react";
 import Image from "next/image";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { clientDB } from "@/modules/services/laundry.db";
+import { useCheckSession } from "@/modules/auth/auth.controller";
 
 const schema = z.object({
   email: z.string().email(),
@@ -19,8 +18,8 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 export const LoginPage = () => {
-  const supabase = createClientComponentClient();
   const router = useRouter();
+  const { user } = useCheckSession();
 
   const { register, handleSubmit, formState } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -29,6 +28,10 @@ export const LoginPage = () => {
       email: "biuro@laqua.pl",
     },
   });
+
+  if (user) {
+    return router.push("/");
+  }
 
   return (
     <div className="w-full h-screen flex justify-center items-center">
