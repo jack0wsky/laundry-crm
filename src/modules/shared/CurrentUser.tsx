@@ -1,7 +1,18 @@
 import { useSession } from "next-auth/react";
+import { clientDB } from "@/modules/services/laundry.db";
+import { useEffect } from "react";
 
 export const CurrentUser = () => {
   const { data } = useSession();
+
+  const checkSession = async () => {
+    const { data, error } = await clientDB.auth.getSession();
+    console.log("supabase session", data, error);
+  };
+
+  useEffect(() => {
+    checkSession();
+  }, []);
 
   console.log("data", data);
 
