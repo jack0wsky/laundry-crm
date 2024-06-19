@@ -1,4 +1,4 @@
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 export const CurrentUser = () => {
   const { data } = useSession();
@@ -15,13 +15,6 @@ export const CurrentUser = () => {
         </p>
       </div>
       <p className="text-base text-white/80">{data.user?.email}</p>
-
-      <button
-        onClick={() => signOut({ redirect: true, callbackUrl: "/login" })}
-        className="text-white"
-      >
-        Wyloguj
-      </button>
     </div>
   );
 };

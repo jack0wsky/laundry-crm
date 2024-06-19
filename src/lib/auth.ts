@@ -86,23 +86,8 @@ export const {
       return token;
     },
     async session({ session, token }: { session: Session; token?: JWT }) {
-      console.log("session", session);
       if (!token) return session;
-      // session.developerAccessToken = token.developerAccessToken;
-      // session.developerRefreshToken = token.developerRefreshToken;
-      // session.developerAccessTokenExpires = token.developerAccessTokenExpires;
-      //
-      // session.user = {
-      //   authType: token.authType,
-      //   email: token.email,
-      //   id: token.id,
-      //   name: token.name,
-      //   organizationId: token.organizationId,
-      //   role: token.role,
-      //   termsAcceptance: token.termsAcceptance,
-      //   versionName: token.versionName,
-      // };
-      // session.refreshToken = token.refreshToken;
+
       session.user = {
         id: token.sub,
         email: token.email,
