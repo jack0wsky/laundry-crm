@@ -3,6 +3,8 @@ import { useAuth } from "@/modules/auth/Auth.context";
 export const CurrentUser = () => {
   const { user } = useAuth();
 
+  console.log("user", user);
+
   if (!user) return null;
 
   const host = user.email?.split("@")[1];
