@@ -52,6 +52,12 @@ export const db = {
 
       return data;
     },
+
+    checkSession: async () => {
+      const { data } = await clientDB.auth.getSession();
+
+      return data;
+    },
   },
 
   addNewClient: async (payload: { nip: number; name: string }) => {

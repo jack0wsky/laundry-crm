@@ -11,7 +11,19 @@ import { COOKIE_PREFIX, AUTH_SECRET } from "@/lib/auth";
 import { updateSessionCookie } from "@/lib/auth/update-session-cookie";
 import { refreshAccessToken } from "@/lib/auth/refresh-access-token";
 import { JWT } from "next-auth/jwt";
+import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
+import { clientDB, db } from "@/modules/services/laundry.db";
 
+export async function middleware(req: NextRequest) {
+  const res = NextResponse.next();
+
+  // Refresh session if expired - required for Server Components
+  await clientDB.auth.getSession();
+
+  return res;
+}
+
+/*
 export default async function middleware(request: NextRequest) {
   const { searchParams } = request.nextUrl;
 
@@ -173,6 +185,8 @@ export default async function middleware(request: NextRequest) {
     return response;
   }
 }
+
+ */
 
 export const config = {
   matcher: [

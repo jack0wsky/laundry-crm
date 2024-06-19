@@ -1,24 +1,18 @@
 import { useSession } from "next-auth/react";
 import { clientDB } from "@/modules/services/laundry.db";
 import { useEffect } from "react";
+import { useCheckSession } from "@/modules/auth/auth.controller";
 
 export const CurrentUser = () => {
-  const { data } = useSession();
+  // const { data } = useSession();
 
-  const checkSession = async () => {
-    const { data, error } = await clientDB.auth.getSession();
-    console.log("supabase session", data, error);
-  };
+  const { user } = useCheckSession();
 
-  useEffect(() => {
-    checkSession();
-  }, []);
+  console.log('user', user)
 
-  console.log("data", data);
+  if (!user) return null;
 
-  if (!data) return null;
-
-  const host = data.user?.email?.split("@")[1];
+  const host = user?.email?.split("@")[1];
 
   return (
     <div className="flex items-center gap-x-3 py-3 border-b border-b-white/10 mb-2">
@@ -27,7 +21,7 @@ export const CurrentUser = () => {
           {host?.slice(0, 1)}
         </p>
       </div>
-      <p className="text-base text-white/80">{data.user?.email}</p>
+      <p className="text-base text-white/80">{user?.email}</p>
     </div>
   );
 };
