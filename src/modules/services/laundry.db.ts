@@ -1,18 +1,10 @@
-import type { Database } from "@/modules/services/supabase.types";
 import type { Hotel } from "@/modules/hotels/types";
 import type { Pricing } from "@/modules/hotels/pricing/types";
 import type { Product } from "@/modules/comarch/types";
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "@/lib/auth/supabase/client";
 import { constructPdfFileName } from "@/modules/utils/construct-pdf-file-name";
 
-const clientKey = process.env.NEXT_PUBLIC_SUPABASE_API_KEY || "";
-const serverKey = process.env.SUPABASE_API_KEY || "";
-
-const apiKey = serverKey || clientKey;
-export const clientDB = createClient<Database>(
-  "https://wsphrpbhhpjdhfeuwixi.supabase.co",
-  apiKey,
-);
+export const clientDB = createClient();
 
 enum Table {
   Pricing = "pricing",
