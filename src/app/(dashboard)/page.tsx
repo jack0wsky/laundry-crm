@@ -1,23 +1,20 @@
-"use client";
+import { HomePage } from "@/app/HomePage";
+import { Metadata } from "next";
+import { createClient } from "@/lib/auth/supabase/server";
+import { redirect } from "next/navigation";
 
-import { useEffect } from "react";
-import { useListHotels } from "@/modules/hotels/api/hotels.controller";
-import { useRouter } from "next/navigation";
+export const metadata: Metadata = {
+  title: "CRM | L&apos;aqua",
+};
 
-// export const metadata: Metadata = {
-//   title: "CRM | L&apos;aqua",
-// };
+export default async function Home() {
+  const supabase = createClient();
 
-export default function Home() {
-  const router = useRouter();
+  const { data } = await supabase.auth.getSession();
 
-  const { hotels } = useListHotels();
+  if (!data.session) {
+    return redirect("/login");
+  }
 
-  useEffect(() => {
-    if (hotels.length === 0) return;
-
-    router.push(`/${hotels[0].id}`);
-  }, [hotels]);
-
-  return null;
+  return <HomePage />;
 }

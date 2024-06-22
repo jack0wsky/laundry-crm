@@ -12,7 +12,7 @@ export default async function Page() {
 
   const { data, error } = await supabase.auth.getSession();
 
-  if (data && !error) {
+  if (!!data.session && !error) {
     return redirect("/");
   }
 

@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { db } from "@/modules/services/laundry.db";
 import { login } from "@/modules/auth/login.action";
 import { useRouter } from "next/navigation";
+import { logout } from "@/modules/auth/log-out.action";
 
 const sessionQueryKey = () => ["session"];
 
@@ -31,6 +32,22 @@ export const useLogin = () => {
 
   return {
     login: mutate,
+    isPending,
+  };
+};
+
+export const useLogout = () => {
+  const router = useRouter();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => logout(),
+    onSuccess: () => {
+      router.push("/login");
+    },
+  });
+
+  return {
+    logout: mutate,
     isPending,
   };
 };

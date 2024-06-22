@@ -16,7 +16,7 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 export const LoginPage = () => {
-  const { login } = useLogin();
+  const { login, isPending } = useLogin();
 
   const { register, handleSubmit, formState } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -51,8 +51,12 @@ export const LoginPage = () => {
           />
         </fieldset>
 
-        <Button className="w-full" type="submit" disabled={!formState.isValid}>
-          Zaloguj
+        <Button
+          className="w-full"
+          type="submit"
+          disabled={!formState.isValid || isPending}
+        >
+          {isPending ? "Logowanie..." : "Zaloguj"}
         </Button>
       </form>
     </div>
