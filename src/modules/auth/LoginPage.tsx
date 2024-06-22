@@ -7,8 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/modules/shared/Button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { clientDB } from "@/modules/services/laundry.db";
-import { useCheckSession } from "@/modules/auth/auth.controller";
+import { useLogin } from "@/modules/auth/auth.controller";
 
 const schema = z.object({
   email: z.string().email(),
@@ -19,7 +18,8 @@ type FormValues = z.infer<typeof schema>;
 
 export const LoginPage = () => {
   const router = useRouter();
-  const { user } = useCheckSession();
+
+  const { login } = useLogin();
 
   const { register, handleSubmit, formState } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -29,24 +29,11 @@ export const LoginPage = () => {
     },
   });
 
-  if (user) {
-    return router.push("/");
-  }
-
   return (
     <div className="w-full h-screen flex justify-center items-center">
       <form
         className="w-[400px] p-5 bg-white rounded-2xl"
-        onSubmit={handleSubmit(async (data) => {
-          const { error } = await clientDB.auth.signInWithPassword({
-            email: data.email,
-            password: data.password,
-          });
-
-          if (!error) {
-            router.push("/");
-          }
-        })}
+        onSubmit={handleSubmit((data) => login(data))}
       >
         <div className="w-full flex justify-center">
           <Image
