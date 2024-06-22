@@ -8,7 +8,7 @@ export default async function Page() {
   const { data, error } = await supabase.auth.getSession();
 
   if (data && !error) {
-    return redirect("/");
+    // return redirect("/");
   }
 
   return <LoginPage />;
