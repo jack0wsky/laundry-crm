@@ -6,7 +6,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/modules/shared/Button";
 import { useAddHotel } from "@/modules/hotels/api/hotels.controller";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 const schema = z.object({
   customerName: z.string(),
@@ -30,7 +30,7 @@ export const ExistingClient = ({ onSubmitted }: ExistingClientProps) => {
 
   const { addHotel, loading } = useAddHotel({
     onSuccess: async (hotelId) => {
-      await router.push(`/${hotelId}`);
+      router.push(`/${hotelId}`);
       onSubmitted();
     },
   });

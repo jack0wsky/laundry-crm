@@ -1,3 +1,5 @@
+"use client";
+
 import { LeftArrowIcon } from "@/modules/shared/icons/left-arrow.icon";
 import { RightArrowIcon } from "@/modules/shared/icons/right-arrow.icon";
 import {

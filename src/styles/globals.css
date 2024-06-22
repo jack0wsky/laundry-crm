@@ -27,6 +27,10 @@ body {
   background-color: #efefef;
 }
 
+.content-width {
+  width: calc(100% - 300px);
+}
+
 button {
   cursor: pointer;
   font-size: 1em;

@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { clsx } from "clsx";
 import { useListHotels } from "@/modules/hotels/api/hotels.controller";
+import { usePathname } from "next/navigation";
 
-interface HotelsListingProps {
-  activeUrl: string | null;
-}
-
-export const HotelsListing = ({ activeUrl }: HotelsListingProps) => {
+export const HotelsListing = () => {
   const { hotels, loading } = useListHotels();
+
+  const pathname = usePathname();
 
   return (
     <>
@@ -32,7 +31,7 @@ export const HotelsListing = ({ activeUrl }: HotelsListingProps) => {
                 href={`/${hotel.id}`}
                 className={clsx(
                   "flex px-3 h-10 items-center w-full text-left capitalize rounded-lg transition-all",
-                  activeUrl === hotel.id
+                  pathname?.includes(hotel.id)
                     ? "bg-blue-800 text-white"
                     : "opacity-70 hover:opacity-100 hover:bg-gray-800",
                 )}

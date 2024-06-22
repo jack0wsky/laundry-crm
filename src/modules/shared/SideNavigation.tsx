@@ -1,17 +1,17 @@
+"use client";
+
 import React, { useState } from "react";
 import Link from "next/link";
 import { clsx } from "clsx";
 import { HotelsListing } from "@/modules/hotels/HotelsListing";
-import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 import { AddHotelModal } from "@/modules/hotels/add-hotel/AddHotelModal";
 import { CurrentUser } from "@/modules/shared/CurrentUser";
 import { Route } from "@/modules/utils/routes";
 
 export const SideNavigation = () => {
-  const router = useRouter();
+  const pathname = usePathname();
   const [openAddHotelModal, setOpenAddHotelModal] = useState(false);
-
-  const activeUrl = (router.query.hotelId || router.route) as string;
 
   return (
     <nav className="w-[300px] bg-gray-900 flex flex-col h-full fixed p-3">
@@ -20,7 +20,7 @@ export const SideNavigation = () => {
         href={Route.Turnovers}
         className={clsx(
           "flex px-3 py-2 w-full text-left capitalize rounded-lg transition-all text-white",
-          activeUrl === Route.Turnovers
+          pathname === Route.Turnovers
             ? "bg-blue-800"
             : "opacity-70 hover:opacity-100 hover:bg-gray-800",
         )}
@@ -32,7 +32,7 @@ export const SideNavigation = () => {
         href={Route.Customers}
         className={clsx(
           "flex px-3 py-2 w-full text-left capitalize rounded-lg transition-all text-white",
-          activeUrl === Route.Customers
+          pathname === Route.Customers
             ? "bg-blue-800"
             : "opacity-70 hover:opacity-100 hover:bg-gray-800",
         )}
@@ -40,7 +40,7 @@ export const SideNavigation = () => {
         Klienci
       </Link>
 
-      <HotelsListing activeUrl={activeUrl} />
+      <HotelsListing />
 
       {openAddHotelModal && (
         <AddHotelModal

@@ -1,12 +1,10 @@
 import { Dialog } from "@headlessui/react";
-import { CreateInvoice } from "@/modules/hotels/reports/types";
 import type { ReportItem } from "@/modules/services/supabase.types";
 import type { Pricing } from "@/modules/hotels/pricing/types";
-import { InvoiceSummary } from "@/modules/hotels/reports/generate-invoice/InvoicesSummary";
-import { SuccessStateView } from "@/modules/hotels/reports/generate-invoice/SucessStateView";
-import axios from "axios";
+import { InvoiceSummary } from "@/modules/hotels/reports/invoices/InvoicesSummary";
+import { SuccessStateView } from "@/modules/hotels/reports/invoices/SucessStateView";
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useGenerateInvoice } from "@/modules/hotels/reports/invoices/api/invoices.controller";
 
 export interface GenerateInvoiceModalProps {
   isVisible: boolean;
@@ -25,18 +23,8 @@ export const GenerateInvoiceModal = ({
 }: GenerateInvoiceModalProps) => {
   const [invoiceCreated, setInvoiceCreated] = useState(false);
 
-  const {
-    data: invoiceId,
-    isPending,
-    mutate: generateInvoice,
-  } = useMutation<number, Error, CreateInvoice>({
-    mutationFn: async (payload: CreateInvoice) => {
-      const { data } = await axios.post("/api/invoices/create", payload);
-      return data;
-    },
-    onSuccess: () => {
-      setInvoiceCreated(true);
-    },
+  const { generateInvoice, invoiceId, isPending } = useGenerateInvoice({
+    onSuccess: () => setInvoiceCreated(true),
   });
 
   return (

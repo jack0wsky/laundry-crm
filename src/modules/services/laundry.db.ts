@@ -1,18 +1,10 @@
-import type { Database } from "@/modules/services/supabase.types";
 import type { Hotel } from "@/modules/hotels/types";
 import type { Pricing } from "@/modules/hotels/pricing/types";
 import type { Product } from "@/modules/comarch/types";
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "@/lib/auth/supabase/client";
 import { constructPdfFileName } from "@/modules/utils/construct-pdf-file-name";
 
-const clientKey = process.env.NEXT_PUBLIC_SUPABASE_API_KEY || "";
-const serverKey = process.env.SUPABASE_API_KEY || "";
-
-const apiKey = serverKey || clientKey;
-export const clientDB = createClient<Database>(
-  "https://wsphrpbhhpjdhfeuwixi.supabase.co",
-  apiKey,
-);
+export const clientDB = createClient();
 
 enum Table {
   Pricing = "pricing",
@@ -50,25 +42,13 @@ export const db = {
         password,
       });
 
-      localStorage.setItem(
-        "laundry-token",
-        data.session?.access_token as string,
-      );
-    },
-
-    logout: async () => {
-      await clientDB.auth.signOut();
-      localStorage.removeItem("laundry-token");
+      return data;
     },
 
     checkSession: async () => {
       const { data } = await clientDB.auth.getSession();
 
-      return {
-        accessToken: data.session?.access_token,
-        expiration: data.session?.expires_at,
-        user: data.session?.user,
-      };
+      return data;
     },
   },
 

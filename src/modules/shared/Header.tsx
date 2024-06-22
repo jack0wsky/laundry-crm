@@ -4,13 +4,12 @@ import { RightArrowIcon } from "@/modules/shared/icons/right-arrow.icon";
 import { PricingModal } from "@/modules/hotels/pricing/PricingModal";
 import { Button } from "@/modules/shared/Button";
 import { MONTHS } from "@/modules/utils/months";
-import axios from "axios";
 import type { Hotel } from "@/modules/hotels/types";
 import { format } from "date-fns";
 import { useListMonthReport } from "@/modules/hotels/reports/api/reports.controller";
-import { db } from "@/modules/services/laundry.db";
 import { PDFFileIcon } from "@/modules/shared/icons/pdf-file.icon";
 import { HotelName } from "@/modules/shared/HotelName";
+import { useGeneratePdfReport } from "@/modules/hotels/pdf-summary/use-generate-pdf-report";
 
 interface HeaderProps {
   activeDate: {
@@ -40,28 +39,18 @@ export const Header = ({
   );
   const { reports } = useListMonthReport(yearAndMonth, activeHotel.id);
 
+  const { generatePdfReport, isPending } = useGeneratePdfReport({
+    onSuccess: setDownloadUrl,
+  });
+
   const generatePDF = async () => {
     const activeMonth = activeDate.month + 1;
-    const { status } = await axios.post(`/api/table`, {
+    generatePdfReport({
       month: activeMonth,
       year: activeDate.year,
       hotelName: activeHotel.name,
       reports,
     });
-
-    if (status === 200) {
-      setTimeout(async () => {
-        const data = await db.downloadPDF(
-          activeHotel.name,
-          activeMonth,
-          activeDate.year,
-        );
-
-        if (data) {
-          setDownloadUrl(data.signedUrl);
-        }
-      }, 1000);
-    }
   };
 
   useEffect(() => {
@@ -100,9 +89,11 @@ export const Header = ({
           <Button
             variant="secondary"
             onClick={generatePDF}
+            className={isPending ? "animate-pulse" : ""}
+            disabled={isPending}
             prefix={<PDFFileIcon className="text-xl" />}
           >
-            Generuj zestawienie
+            {isPending ? "Generowanie..." : "Generuj zestawienie"}
           </Button>
           <Button onClick={onGenerateInvoiceClick}>Zobacz podsumowanie</Button>
         </div>
