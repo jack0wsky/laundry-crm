@@ -2,16 +2,13 @@
 
 import { Header } from "@/modules/shared/Header";
 import { ReportProductsTable } from "@/modules/hotels/reports/ReportProductsTable";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useListHotels } from "@/modules/hotels/api/hotels.controller";
 import { useState } from "react";
 import { useActiveMonth } from "@/modules/utils/useActiveMonth";
-import { useCheckSession } from "@/modules/auth/auth.controller";
 
 export const HotelDetailsPage = () => {
   const { hotels } = useListHotels();
-  const router = useRouter();
-  const { user } = useCheckSession();
 
   const [openModal, setOpenModal] = useState(false);
 
@@ -21,10 +18,6 @@ export const HotelDetailsPage = () => {
   const params = useParams<{ hotelId: string }>();
 
   const activeHotel = hotels.find((hotel) => hotel.id === params?.hotelId);
-
-  if (!user) {
-    return router.push("/login");
-  }
 
   if (!activeHotel) return null;
 

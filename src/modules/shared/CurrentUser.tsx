@@ -1,14 +1,7 @@
-import { useSession } from "next-auth/react";
-import { clientDB } from "@/modules/services/laundry.db";
-import { useEffect } from "react";
 import { useCheckSession } from "@/modules/auth/auth.controller";
 
 export const CurrentUser = () => {
-  // const { data } = useSession();
-
   const { user } = useCheckSession();
-
-  console.log('user', user)
 
   if (!user) return null;
 

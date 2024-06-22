@@ -6,7 +6,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/modules/shared/Button";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useLogin } from "@/modules/auth/auth.controller";
 
 const schema = z.object({
@@ -17,8 +16,6 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 export const LoginPage = () => {
-  const router = useRouter();
-
   const { login } = useLogin();
 
   const { register, handleSubmit, formState } = useForm<FormValues>({
