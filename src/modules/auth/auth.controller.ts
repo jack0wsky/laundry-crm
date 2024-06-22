@@ -6,6 +6,17 @@ import { logout } from "@/modules/auth/log-out.action";
 
 const sessionQueryKey = () => ["session"];
 
+export const useLaundryId = () => {
+  const { user } = useCheckSession();
+  const { data } = useQuery({
+    queryKey: ["laundryId", user?.id],
+    queryFn: () => db.auth.getLaundryId(user?.id),
+    enabled: !!user?.id,
+  });
+
+  return data?.id;
+};
+
 export const useCheckSession = () => {
   const { data } = useQuery({
     queryKey: sessionQueryKey(),

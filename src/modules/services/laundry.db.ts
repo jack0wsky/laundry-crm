@@ -12,6 +12,7 @@ enum Table {
   Customers = "customers",
   Products = "products",
   Reports = "reports",
+  Laundries = "laundries",
 }
 
 export interface CreatePricingItemPayload {
@@ -50,6 +51,15 @@ export const db = {
 
       return data;
     },
+    getLaundryId: async (userId: string | undefined) => {
+      const { data } = await clientDB
+        .from(Table.Laundries)
+        .select("*")
+        .eq("owner", userId)
+        .single();
+
+      return data;
+    },
   },
 
   addNewClient: async (payload: { nip: number; name: string }) => {
@@ -73,11 +83,12 @@ export const db = {
       return data;
     },
 
-    getAll: async () => {
+    getAll: async (laundryId: string) => {
       const { data } = await clientDB
         .from(Table.Hotels)
         .select<"*, customer(*)", Hotel>("*, customer(*)")
-        .order("order", { ascending: true });
+        .order("order", { ascending: true })
+        .eq("laundryId", laundryId);
 
       return data || [];
     },
@@ -172,10 +183,11 @@ export const db = {
     addNew: async (payload: AddCustomerPayload) => {
       await clientDB.from(Table.Customers).insert(payload);
     },
-    listAll: async () => {
+    listAll: async (laundryId: string) => {
       const { data } = await clientDB
         .from(Table.Customers)
-        .select<"*", Customer>("*");
+        .select<"*", Customer>("*")
+        .eq("laundryId", laundryId);
 
       return data || [];
     },
