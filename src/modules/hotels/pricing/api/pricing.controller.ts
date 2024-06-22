@@ -1,12 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Pricing } from "@/modules/hotels/pricing/types";
 import { db, CreatePricingItemPayload } from "@/modules/services/laundry.db";
+import { useCheckSession } from "@/modules/auth/auth.controller";
 
-const listPricing = (hotelName: string) => ["pricing", hotelName];
+const listPricing = (hotelName: string, userId: string | undefined) => [
+  "pricing",
+  hotelName,
+  userId,
+];
 
 export const useListPricing = (hotelName: string) => {
+  const { user } = useCheckSession();
+
   const { data, isLoading } = useQuery<Pricing[], Error>({
-    queryKey: listPricing(hotelName),
+    queryKey: listPricing(hotelName, user?.id),
     queryFn: () => db.getPricing(hotelName),
   });
 
@@ -23,7 +30,9 @@ interface UpdateHotelPricing {
 }
 
 export const useUpdatePrice = () => {
+  const { user } = useCheckSession();
   const queryClient = useQueryClient();
+
   const { mutate, isPending, error } = useMutation<
     void,
     Error,
@@ -32,7 +41,7 @@ export const useUpdatePrice = () => {
     mutationFn: (payload) => db.pricing.updateOne(payload.id, payload.price),
     onSuccess: (_, variables) => {
       void queryClient.invalidateQueries({
-        queryKey: listPricing(variables.hotelName),
+        queryKey: listPricing(variables.hotelName, user?.id),
       });
     },
   });
@@ -45,7 +54,9 @@ export const useUpdatePrice = () => {
 };
 
 export const useAddPricingItem = () => {
+  const { user } = useCheckSession();
   const queryClient = useQueryClient();
+
   const { mutate, isPending } = useMutation<
     void,
     Error,
@@ -53,7 +64,9 @@ export const useAddPricingItem = () => {
   >({
     mutationFn: (payload) => db.pricing.addNew(payload),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: listPricing(variables.hotel) });
+      queryClient.invalidateQueries({
+        queryKey: listPricing(variables.hotel, user?.id),
+      });
     },
   });
 

@@ -7,12 +7,15 @@ import {
 } from "@/modules/utils/get-total-hotel-usage";
 import { useMemo } from "react";
 import { useListHotels } from "@/modules/hotels/api/hotels.controller";
+import { useCheckSession } from "@/modules/auth/auth.controller";
 
 export const useGetTurnover = (yearAndMonth: string) => {
   const { hotels, fetched } = useListHotels();
 
+  const { user } = useCheckSession();
+
   const { data, isPending } = useQuery({
-    queryKey: ["turnover", yearAndMonth],
+    queryKey: ["turnover", yearAndMonth, user?.id],
     queryFn: async () => {
       const allPrices: ProvidedProduct[] = [];
 

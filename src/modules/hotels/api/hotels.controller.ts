@@ -1,14 +1,21 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { db } from "@/modules/services/laundry.db";
 import type { Hotel } from "@/modules/hotels/types";
+import { useCheckSession, useLaundryId } from "@/modules/auth/auth.controller";
 
-export const hotelsQueryKey = () => ["hotels"];
+export const hotelsQueryKey = (userId: string | undefined) => [
+  "hotels",
+  userId,
+];
 
 export const useListHotels = () => {
+  const { user } = useCheckSession();
+  const laundryId = useLaundryId();
+
   const { data, isPending, isSuccess } = useQuery<Hotel[], Error>({
-    queryKey: hotelsQueryKey(),
-    queryFn: () => db.hotels.getAll(),
-    staleTime: Infinity,
+    queryKey: hotelsQueryKey(user?.id),
+    queryFn: () => db.hotels.getAll(laundryId),
+    enabled: !!laundryId,
   });
 
   return {
@@ -20,12 +27,15 @@ export const useListHotels = () => {
 
 export const useUpdateHotelName = (options?: { onSuccess: () => void }) => {
   const queryClient = useQueryClient();
+  const { user } = useCheckSession();
 
   const { mutate } = useMutation({
     mutationFn: ({ id, name }: { id: string; name: string }) =>
       db.hotels.updateHotelName(id, name),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: hotelsQueryKey() });
+      await queryClient.invalidateQueries({
+        queryKey: hotelsQueryKey(user?.id),
+      });
       options?.onSuccess();
     },
   });
@@ -57,6 +67,7 @@ export const useAddHotel = (options?: {
 }) => {
   const { hotels } = useListHotels();
   const queryClient = useQueryClient();
+  const { user } = useCheckSession();
 
   const lastHotel = hotels.sort((a, b) => b.order - a.order)[0];
 
@@ -64,7 +75,9 @@ export const useAddHotel = (options?: {
     mutationFn: (hotel: { name: string; customer: string }) =>
       db.hotels.addNew({ ...hotel, order: lastHotel.order + 5 }),
     onSuccess: (data) => {
-      void queryClient.invalidateQueries({ queryKey: hotelsQueryKey() });
+      void queryClient.invalidateQueries({
+        queryKey: hotelsQueryKey(user?.id),
+      });
 
       if (!data) return;
       options?.onSuccess(data[0].id);

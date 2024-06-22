@@ -1,15 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { db } from "@/modules/services/laundry.db";
 import { v4 as uuid } from "uuid";
+import { useCheckSession } from "@/modules/auth/auth.controller";
 
-const listMonthReportQueryKey = (yearAndMonth: string, hotelId: string) => [
-  "report",
-  yearAndMonth,
-  hotelId,
-];
+const listMonthReportQueryKey = (
+  yearAndMonth: string,
+  hotelId: string,
+  userId: string | undefined,
+) => ["report", yearAndMonth, hotelId, userId];
+
 export const useListMonthReport = (yearAndMonth: string, hotelId: string) => {
+  const { user } = useCheckSession();
+
   const { data, refetch } = useQuery({
-    queryKey: listMonthReportQueryKey(yearAndMonth, hotelId),
+    queryKey: listMonthReportQueryKey(yearAndMonth, hotelId, user?.id),
     queryFn: () => db.getReport(hotelId, yearAndMonth),
   });
 
@@ -28,6 +32,7 @@ export const useCreateReport = (
   activeHotelId: string,
   yearAndMonth: string,
 ) => {
+  const { user } = useCheckSession();
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
@@ -45,7 +50,11 @@ export const useCreateReport = (
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({
-        queryKey: listMonthReportQueryKey(yearAndMonth, activeHotelId),
+        queryKey: listMonthReportQueryKey(
+          yearAndMonth,
+          activeHotelId,
+          user?.id,
+        ),
       });
     },
   });
