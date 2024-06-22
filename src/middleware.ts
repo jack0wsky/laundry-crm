@@ -1,18 +1,4 @@
-import {
-  decode,
-  encode,
-  isTokenExpired,
-  handleUnauthorizedRequest,
-} from "@/lib/auth/utils";
-import { AUTH_JWT_AGE } from "@/lib/auth/config";
-import { getChunkedTokenFromRequest } from "@/lib/auth/get-chunked-request";
-import { NextRequest, NextResponse } from "next/server";
-import { COOKIE_PREFIX, AUTH_SECRET } from "@/lib/auth";
-import { updateSessionCookie } from "@/lib/auth/update-session-cookie";
-import { refreshAccessToken } from "@/lib/auth/refresh-access-token";
-import { JWT } from "next-auth/jwt";
-import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
-import { clientDB, db } from "@/modules/services/laundry.db";
+import { NextRequest } from "next/server";
 import { updateSession } from "@/lib/auth/supabase/middleware";
 
 export async function middleware(request: NextRequest) {

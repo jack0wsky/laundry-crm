@@ -6,8 +6,6 @@ import {
   jwtDecrypt,
 } from "jose";
 import type { JWT, JWTDecodeParams, JWTEncodeParams } from "next-auth/jwt";
-import { NextRequest, NextResponse } from "next/server";
-import { COOKIE_PREFIX } from "@/lib/auth";
 import { ALG, AUTH_JWT_AGE, ENC } from "@/lib/auth/config";
 
 type Digest = Parameters<typeof calculateJwkThumbprint>[1];
@@ -85,22 +83,4 @@ export async function decode(params: JWTDecodeParams): Promise<JWT | null> {
   } catch (error) {
     return null;
   }
-}
-
-export function handleUnauthorizedRequest(
-  request: NextRequest,
-  unauthorizedUrl: string | URL,
-): NextResponse {
-  const response = NextResponse.redirect(unauthorizedUrl);
-  request.cookies.getAll().forEach((cookie) => {
-    if (cookie.name.startsWith(`${COOKIE_PREFIX}session`))
-      response.cookies.delete(cookie.name);
-  });
-  return response;
-}
-
-export function isTokenExpired(expires?: number): boolean {
-  if (!expires) return true;
-  const timestamp = Math.floor(Date.now() / 1000);
-  return timestamp >= expires;
 }
