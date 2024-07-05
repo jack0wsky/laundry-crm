@@ -7,20 +7,22 @@ import { HotelsListing } from "@/modules/hotels/HotelsListing";
 import { usePathname } from "next/navigation";
 import { AddHotelModal } from "@/modules/hotels/add-hotel/AddHotelModal";
 import { CurrentUser } from "@/modules/shared/CurrentUser";
-import { Route } from "@/modules/utils/routes";
+import { routes } from "@/modules/utils/routes";
+import { useLaundryId } from "@/modules/utils/use-params";
 
 export const SideNavigation = () => {
   const pathname = usePathname();
+  const laundryId = useLaundryId();
   const [openAddHotelModal, setOpenAddHotelModal] = useState(false);
 
   return (
     <nav className="w-[300px] bg-gray-900 flex flex-col h-full fixed p-3">
       <CurrentUser />
       <Link
-        href={Route.Turnovers}
+        href={routes.turnovers.getPath(laundryId)}
         className={clsx(
           "flex px-3 py-2 w-full text-left capitalize rounded-lg transition-all text-white",
-          pathname === Route.Turnovers
+          pathname === routes.turnovers.getPath(laundryId)
             ? "bg-blue-800"
             : "opacity-70 hover:opacity-100 hover:bg-gray-800",
         )}
@@ -29,10 +31,10 @@ export const SideNavigation = () => {
       </Link>
 
       <Link
-        href={Route.Customers}
+        href={routes.customers.getPath(laundryId)}
         className={clsx(
           "flex px-3 py-2 w-full text-left capitalize rounded-lg transition-all text-white",
-          pathname === Route.Customers
+          pathname === routes.customers.getPath(laundryId)
             ? "bg-blue-800"
             : "opacity-70 hover:opacity-100 hover:bg-gray-800",
         )}

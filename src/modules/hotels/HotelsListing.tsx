@@ -2,9 +2,13 @@ import Link from "next/link";
 import { clsx } from "clsx";
 import { useListHotels } from "@/modules/hotels/api/hotels.controller";
 import { usePathname } from "next/navigation";
+import { useLaundryId } from "@/modules/utils/use-params";
+import { routes } from "@/modules/utils/routes";
 
 export const HotelsListing = () => {
   const { hotels, loading } = useListHotels();
+
+  const laundryId = useLaundryId();
 
   const pathname = usePathname();
 
@@ -28,7 +32,7 @@ export const HotelsListing = () => {
           {hotels.map((hotel) => (
             <li key={hotel.id} className="w-full">
               <Link
-                href={`/${hotel.id}`}
+                href={routes.hotelDetails.getPath(laundryId, hotel.id)}
                 className={clsx(
                   "flex px-3 h-10 items-center w-full text-left capitalize rounded-lg transition-all",
                   pathname?.includes(hotel.id)

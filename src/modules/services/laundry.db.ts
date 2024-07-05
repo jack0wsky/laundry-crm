@@ -12,6 +12,7 @@ enum Table {
   Customers = "customers",
   Products = "products",
   Reports = "reports",
+  Laundries = "laundries",
 }
 
 export interface CreatePricingItemPayload {
@@ -34,6 +35,19 @@ interface AddCustomerPayload {
   laundryId: string;
 }
 
+interface CreateHotelPayload {
+  name: string;
+  customer: string;
+  order: number;
+  laundryId: string;
+}
+
+interface CreateCustomerPayload {
+  name: string;
+  nip: number;
+  laundryId: string | null | undefined;
+}
+
 export const db = {
   auth: {
     login: async (email: string, password: string) => {
@@ -50,9 +64,19 @@ export const db = {
 
       return data;
     },
+
+    getLaundryId: async (userId: string) => {
+      const { data } = await clientDB
+        .from(Table.Laundries)
+        .select("id")
+        .eq("owner", userId)
+        .single();
+
+      return data?.id;
+    },
   },
 
-  addNewClient: async (payload: { nip: number; name: string }) => {
+  addNewClient: async (payload: CreateCustomerPayload) => {
     await clientDB.from(Table.Customers).insert(payload);
   },
 
@@ -61,11 +85,7 @@ export const db = {
       await clientDB.from("hotels").update({ name }).eq("id", id);
     },
 
-    addNew: async (payload: {
-      name: string;
-      customer: string;
-      order: number;
-    }) => {
+    addNew: async (payload: CreateHotelPayload) => {
       const { data } = await clientDB
         .from(Table.Hotels)
         .insert(payload)
@@ -73,11 +93,12 @@ export const db = {
       return data;
     },
 
-    getAll: async () => {
+    getAll: async (laundryId: string) => {
       const { data } = await clientDB
         .from(Table.Hotels)
         .select<"*, customer(*)", Hotel>("*, customer(*)")
-        .order("order", { ascending: true });
+        .order("order", { ascending: true })
+        .eq("laundryId", laundryId);
 
       return data || [];
     },
@@ -172,10 +193,11 @@ export const db = {
     addNew: async (payload: AddCustomerPayload) => {
       await clientDB.from(Table.Customers).insert(payload);
     },
-    listAll: async () => {
+    listAll: async (laundryId: string) => {
       const { data } = await clientDB
         .from(Table.Customers)
-        .select<"*", Customer>("*");
+        .select<"*", Customer>("*")
+        .eq("laundryId", laundryId);
 
       return data || [];
     },

@@ -1,10 +1,14 @@
 import { useCheckSession, useLogout } from "@/modules/auth/auth.controller";
 import { LogoutIcon } from "@/modules/shared/icons/logout.icon";
+import { useRouter } from "next/navigation";
 
 export const CurrentUser = () => {
   const { user } = useCheckSession();
+  const router = useRouter();
 
-  const { logout, isPending } = useLogout();
+  const { logout, isPending } = useLogout({
+    onSuccess: () => router.push("/login"),
+  });
 
   if (!user) return null;
 

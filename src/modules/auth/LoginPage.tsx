@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/modules/shared/Button";
 import Image from "next/image";
 import { useLogin } from "@/modules/auth/auth.controller";
+import { useRouter } from "next/navigation";
 
 const schema = z.object({
   email: z.string().email(),
@@ -16,7 +17,10 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 export const LoginPage = () => {
-  const { login, isPending } = useLogin();
+  const router = useRouter();
+  const { login, isPending } = useLogin({
+    onSuccess: (laundryId) => router.push(`/${laundryId}`),
+  });
 
   const { register, handleSubmit, formState } = useForm<FormValues>({
     resolver: zodResolver(schema),
