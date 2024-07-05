@@ -2,9 +2,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { db } from "@/modules/services/laundry.db";
 import { CreateComarchCustomerPayload } from "@/modules/comarch/types";
-import { DEFAULT_LAUNDRY_ID } from "@/modules/utils/config";
 import { addNewCustomer } from "@/modules/comarch/add-new-customer.action";
-import { useCheckSession, useLaundryId } from "@/modules/auth/auth.controller";
+import { useCheckSession } from "@/modules/auth/auth.controller";
+import { useLaundryId } from "@/modules/utils/use-params";
 
 const listCustomersKey = (userId: string | undefined) => ["customers", userId];
 

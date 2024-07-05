@@ -1,21 +1,10 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { db } from "@/modules/services/laundry.db";
 import { login } from "@/modules/auth/login.action";
-import { useRouter } from "next/navigation";
 import { logout } from "@/modules/auth/log-out.action";
+import { da } from "date-fns/locale";
 
 const sessionQueryKey = () => ["session"];
-
-export const useLaundryId = () => {
-  const { user } = useCheckSession();
-  const { data } = useQuery({
-    queryKey: ["laundryId", user?.id],
-    queryFn: () => db.auth.getLaundryId(user?.id),
-    enabled: !!user?.id,
-  });
-
-  return data?.id;
-};
 
 export const useCheckSession = () => {
   const { data } = useQuery({
@@ -30,14 +19,15 @@ export const useCheckSession = () => {
   };
 };
 
-export const useLogin = () => {
-  const router = useRouter();
-
+export const useLogin = (options?: {
+  onSuccess: (laundryId: string) => void;
+}) => {
   const { mutate, isPending } = useMutation({
     mutationFn: (payload: { email: string; password: string }) =>
       login(payload.email, payload.password),
-    onSuccess: () => {
-      router.push("/");
+    onSuccess: async (data) => {
+      const laundryId = await db.auth.getLaundryId(data.userId as string);
+      options?.onSuccess(laundryId as string);
     },
   });
 
@@ -47,13 +37,11 @@ export const useLogin = () => {
   };
 };
 
-export const useLogout = () => {
-  const router = useRouter();
-
+export const useLogout = (options?: { onSuccess: () => void }) => {
   const { mutate, isPending } = useMutation({
     mutationFn: () => logout(),
     onSuccess: () => {
-      router.push("/login");
+      options?.onSuccess();
     },
   });
 

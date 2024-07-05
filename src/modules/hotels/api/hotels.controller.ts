@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { db } from "@/modules/services/laundry.db";
 import type { Hotel } from "@/modules/hotels/types";
-import { useCheckSession, useLaundryId } from "@/modules/auth/auth.controller";
+import { useCheckSession } from "@/modules/auth/auth.controller";
+import { useLaundryId } from "@/modules/utils/use-params";
 
 export const hotelsQueryKey = (userId: string | undefined) => [
   "hotels",
@@ -10,6 +11,7 @@ export const hotelsQueryKey = (userId: string | undefined) => [
 
 export const useListHotels = () => {
   const { user } = useCheckSession();
+
   const laundryId = useLaundryId();
 
   const { data, isPending, isSuccess } = useQuery<Hotel[], Error>({
@@ -51,8 +53,10 @@ export interface AddCustomerPayload {
 }
 
 export const useAddCustomer = (options?: { onSuccess: () => void }) => {
+  const laundryId = useLaundryId();
   const { mutate, isPending } = useMutation({
-    mutationFn: (payload: AddCustomerPayload) => db.addNewClient(payload),
+    mutationFn: (payload: AddCustomerPayload) =>
+      db.addNewClient({ ...payload, laundryId }),
     onSuccess: options?.onSuccess,
   });
 
@@ -68,12 +72,13 @@ export const useAddHotel = (options?: {
   const { hotels } = useListHotels();
   const queryClient = useQueryClient();
   const { user } = useCheckSession();
+  const laundryId = useLaundryId();
 
   const lastHotel = hotels.sort((a, b) => b.order - a.order)[0];
 
   const { mutate, isPending } = useMutation({
     mutationFn: (hotel: { name: string; customer: string }) =>
-      db.hotels.addNew({ ...hotel, order: lastHotel.order + 5 }),
+      db.hotels.addNew({ ...hotel, order: lastHotel.order + 5, laundryId }),
     onSuccess: (data) => {
       void queryClient.invalidateQueries({
         queryKey: hotelsQueryKey(user?.id),
