@@ -27,7 +27,7 @@ export const useGetTurnover = (yearAndMonth: string) => {
 
       return allPrices;
     },
-    refetchOnMount: true,
+    // refetchOnMount: true,
     enabled: fetched,
   });
 
