@@ -88,8 +88,8 @@ function NavItem({ icon, href, label, active }: NavItemProps) {
     <Link href={href} className="flex items-center gap-x-2 p-2">
       <div
         className={clsx(
-          "w-9 h-9 flex justify-center items-center rounded-lg bg-palette-gray-50",
-          active && "bg-palette-blue-600/10 text-palette-blue-600",
+          "w-9 h-9 flex justify-center items-center rounded-lg",
+          active ? "bg-palette-blue-600/10 text-palette-blue-600" : 'bg-palette-gray-50',
         )}
       >
         {icon}

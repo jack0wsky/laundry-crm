@@ -28,6 +28,12 @@ interface Customer {
   nip: number;
 }
 
+export type CustomersHotel = Pick<Hotel, "id" | "name" | "displayName">;
+
+export interface CustomerWithHotels extends Customer {
+  hotels: CustomersHotel[];
+}
+
 interface AddCustomerPayload {
   id: number;
   name: string;
@@ -181,6 +187,13 @@ export const db = {
         .select<"*", Customer>("*");
 
       return data || [];
+    },
+    listAllWithHotels: async () => {
+      const { data, error } = await clientDB
+        .from(Table.Customers)
+        .select<string, CustomerWithHotels>("*, hotels(id, name, displayName)");
+
+      return data;
     },
   },
 };

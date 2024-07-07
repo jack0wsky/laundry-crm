@@ -2,22 +2,21 @@ import { useState } from "react";
 import { Modal } from "@/modules/shared/Modal";
 import { Button } from "@/modules/shared/Button";
 import { NewClient } from "@/modules/hotels/add-hotel/NewClient";
-import { ExistingClient } from "@/modules/hotels/add-hotel/ExistingClient";
 
 interface AddHotelModalProps {
   open: boolean;
   onClose: () => void;
 }
 export const AddHotelModal = ({ open, onClose }: AddHotelModalProps) => {
-  const [clientType, setClientType] = useState<"existing" | "new" | null>('existing');
+  const [clientType, setClientType] = useState<"existing" | "new" | null>(
+    "existing",
+  );
 
   return (
     <Modal title="Dodaj hotel" open={open} onClose={onClose}>
       {clientType === "new" && (
         <NewClient onGoBack={() => setClientType(null)} />
       )}
-
-      {clientType === "existing" && <ExistingClient onSubmitted={onClose} />}
 
       {!clientType && (
         <div className="max-w-[450px]">

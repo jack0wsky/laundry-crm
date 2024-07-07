@@ -10,6 +10,7 @@ import { useCreateCustomer } from "@/modules/customers/api/customers.controller"
 import { useState } from "react";
 import { CreateComarchCustomerPayload } from "@/modules/comarch/types";
 import { CheckIcon } from "@/modules/shared/icons/check.icon";
+import { clsx } from "clsx";
 
 const schema = z.object({
   name: z.string(),
@@ -72,30 +73,32 @@ export const AddNewCustomer = () => {
     createCustomer(payload);
   };
 
+  const isSuccess = step === "success";
+
   return (
     <Drawer
       open={open}
       toggleOpen={setOpen}
-      hideHeader={step === "success"}
-      hideFooter={step === "success"}
+      hideHeader={isSuccess}
+      hideFooter={isSuccess}
       title="Dodaj nowego klienta"
       trigger={
-        <Button onClick={() => setOpen(true)} type="button">
+        <Button variant="secondary" onClick={() => setOpen(true)} type="button">
           Dodaj klienta
         </Button>
       }
       footer={
         <Button
-          className="w-full"
+          className={clsx("w-full", loading && "animate-pulse")}
           disabled={!formState.isValid || loading}
           form="add-customer"
           type="submit"
         >
-          {loading ? "Dodawanie hotelu..." : "Dodaj hotel"}
+          Dodaj klienta
         </Button>
       }
     >
-      {step === "success" && (
+      {isSuccess && (
         <div className="w-full h-full flex flex-col gap-y-5 justify-center items-center">
           <div className="w-16 h-16 bg-palette-green-500 rounded-full flex justify-center items-center">
             <CheckIcon className="w-10 h-10 text-white" />

@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { db } from "@/modules/services/laundry.db";
 import type { Hotel } from "@/modules/hotels/types";
+import { listCustomersWithHotelsKey } from "@/modules/customers/api/customers.controller";
 
 export const hotelsQueryKey = () => ["hotels"];
 
@@ -21,17 +22,23 @@ export const useListHotels = () => {
 export const useUpdateHotelName = (options?: { onSuccess: () => void }) => {
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: ({ id, name }: { id: string; name: string }) =>
       db.hotels.updateHotelName(id, name),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: hotelsQueryKey() });
+      await queryClient.invalidateQueries({
+        queryKey: listCustomersWithHotelsKey(),
+      });
+      await queryClient.invalidateQueries({
+        queryKey: hotelsQueryKey(),
+      });
       options?.onSuccess();
     },
   });
 
   return {
     updateName: mutate,
+    loading: isPending,
   };
 };
 
@@ -65,6 +72,9 @@ export const useAddHotel = (options?: {
       db.hotels.addNew({ ...hotel, order: lastHotel.order + 5 }),
     onSuccess: (data) => {
       void queryClient.invalidateQueries({ queryKey: hotelsQueryKey() });
+      void queryClient.invalidateQueries({
+        queryKey: listCustomersWithHotelsKey(),
+      });
 
       if (!data) return;
       options?.onSuccess(data[0].id);

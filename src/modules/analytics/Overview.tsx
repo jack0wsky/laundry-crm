@@ -5,30 +5,28 @@ import { MONTHS } from "@/modules/utils/months";
 
 interface OverviewProps {
   currentYear: number;
-  months: number[];
 }
 
-export const Overview = ({ currentYear, months }: OverviewProps) => {
-  const currenMonthLabel = MONTHS[months[0]];
+export const Overview = ({ currentYear }: OverviewProps) => {
+  const today = new Date();
+
+  const currenMonthLabel = MONTHS[today.getMonth()];
 
   const currentYearAndMonth = format(
-    new Date(currentYear, months[0]),
+    new Date(currentYear, today.getMonth()),
     "yyyy-MM",
   );
 
   const previousYearAndMonth = format(
-    new Date(currentYear, months[1]),
+    new Date(currentYear, today.getMonth() - 1),
     "yyyy-MM",
   );
 
   const { turnover: currentTurnover, loading: currentTurnoverLoading } =
     useGetTurnover(currentYearAndMonth);
 
-  const {
-    allPrices,
-    turnover: previousTurnover,
-    loading: previousTurnoverLoading,
-  } = useGetTurnover(previousYearAndMonth);
+  const { turnover: previousTurnover, loading: previousTurnoverLoading } =
+    useGetTurnover(previousYearAndMonth);
 
   const percentage = Number(
     ((previousTurnover / currentTurnover) * 100).toFixed(0),
@@ -36,6 +34,10 @@ export const Overview = ({ currentYear, months }: OverviewProps) => {
 
   const parsedPercentage =
     percentage > 0 ? `+${percentage}%` : `-${percentage}%`;
+
+  const previousMonthTurnover = `${previousTurnover.toLocaleString(
+    "pl-PL",
+  )} zł`;
 
   return (
     <div className="flex bg-white w-full h-[230px] mt-10 px-9 py-8 rounded-[20px]">
@@ -48,13 +50,21 @@ export const Overview = ({ currentYear, months }: OverviewProps) => {
         </div>
 
         <div>
-          <p className="text-palette-gray-300 uppercase font-bold text-sm">
-            Poprzedni miesiąc: {previousTurnover.toLocaleString("pl-PL")} zł
-          </p>
-          <div className="flex items-center gap-x-3">
-            <p className="font-bold text-[32px]">
-              {currentTurnover.toLocaleString("pl-PL")} zł
+          {previousTurnoverLoading ? (
+            <div className="h-5 w-[160px] animate-pulse bg-palette-gray-50 rounded-lg" />
+          ) : (
+            <p className="text-palette-gray-300 uppercase font-bold text-sm">
+              Poprzedni miesiąc: {previousMonthTurnover}
             </p>
+          )}
+          <div className="flex items-center gap-x-3">
+            {currentTurnoverLoading ? (
+              <div className="h-12 w-[200px] animate-pulse bg-palette-gray-50 rounded-lg" />
+            ) : (
+              <p className="font-bold text-[32px]">
+                {currentTurnover.toLocaleString("pl-PL")} zł
+              </p>
+            )}
 
             {currentTurnover > 0 && (
               <p

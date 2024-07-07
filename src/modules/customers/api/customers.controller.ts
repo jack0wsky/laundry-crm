@@ -7,6 +7,8 @@ import { addNewCustomer } from "@/modules/comarch/add-new-customer.action";
 
 const listCustomersKey = () => ["customers"];
 
+export const listCustomersWithHotelsKey = () => ["customers-with-hotels"];
+
 export const useListCustomers = () => {
   const { data, isPending } = useQuery({
     queryKey: listCustomersKey(),
@@ -16,6 +18,17 @@ export const useListCustomers = () => {
   return {
     customers: data || [],
     loading: isPending,
+  };
+};
+
+export const useListCustomersWithHotels = () => {
+  const { data } = useQuery({
+    queryKey: listCustomersWithHotelsKey(),
+    queryFn: () => db.customers.listAllWithHotels(),
+  });
+
+  return {
+    customers: data || [],
   };
 };
 
