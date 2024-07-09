@@ -25,7 +25,7 @@ export const DayInput = ({
       name={name}
       onChange={({ target }) => setValue(Number(target.value))}
       onBlur={() => onChange(value)}
-      className="w-[80px] p-2 rounded-md"
+      className="w-[80px] p-2 rounded-md border border-palette-gray-100"
     />
   );
 };

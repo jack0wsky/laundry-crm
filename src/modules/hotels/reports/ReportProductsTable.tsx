@@ -9,7 +9,12 @@ import { GenerateInvoiceModal } from "@/modules/hotels/reports/GenerateInvoiceMo
 import type { Hotel } from "@/modules/hotels/types";
 import { getDaysInMonth } from "date-fns";
 import { DayNumbersList } from "@/modules/hotels/reports/DayNumbersList";
-import { useEffect, useRef } from "react";
+import {useEffect, useRef, useState} from "react";
+import { MONTHS } from "@/modules/utils/months";
+import { CalendarIcon } from "@/modules/shared/icons/calendar.icon";
+import { LeftArrowIcon } from "@/modules/shared/icons/left-arrow.icon";
+import { RightArrowIcon } from "@/modules/shared/icons/right-arrow.icon";
+import {useGeneratePdfReport} from "@/modules/hotels/pdf-summary/use-generate-pdf-report";
 
 interface ReportProductsTableProps {
   activeHotel: Hotel;
@@ -28,10 +33,24 @@ export const ReportProductsTable = ({
   activeMonth,
   activeYear,
 }: ReportProductsTableProps) => {
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const container = useRef<HTMLDivElement | null>(null);
   const yearAndMonth = format(new Date(activeYear, activeMonth), "yyyy-MM");
   const { reports } = useListMonthReport(yearAndMonth, activeHotel.id);
   const { pricing, loading } = useListPricing(activeHotel.name);
+
+  const { generatePdfReport, isPending } = useGeneratePdfReport({
+    onSuccess: setDownloadUrl,
+  });
+
+  const generatePDF = async () => {
+    generatePdfReport({
+      month: activeMonth + 1,
+      year: activeYear,
+      hotelName: activeHotel.name,
+      reports,
+    });
+  };
 
   const { addReport } = useCreateReport(activeHotel.id, yearAndMonth);
 
@@ -88,8 +107,27 @@ export const ReportProductsTable = ({
           <p>Brak cennika</p>
         </div>
       )}
+
       {customerProducts.length > 0 && (
-        <section className="w-full flex flex-col pb-5 px-4 relative">
+        <section className="w-full flex flex-col pb-5 px-4 relative bg-white rounded-[20px]">
+          <div className="w-full flex justify-between items-center pt-4 pb-6">
+            <div className="flex items-center bg-palette-gray-50 rounded-full w-max py-1 pl-3 pr-1">
+              <div className="flex items-center gap-x-2">
+                <CalendarIcon />
+                <p className="text-base font-medium">{MONTHS[activeMonth]}</p>
+              </div>
+
+              <div className="flex items-center gap-x-1 ml-4">
+                <button className="w-7 h-7 rounded-full bg-white flex justify-center items-center">
+                  <LeftArrowIcon />
+                </button>
+                <button className="w-7 h-7 rounded-full bg-white flex justify-center items-center">
+                  <RightArrowIcon />
+                </button>
+              </div>
+            </div>
+          </div>
+
           <div className="w-full flex">
             {customerProducts.length > 0 && (
               <div className="w-[200px]">

@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { useListHotels } from "@/modules/hotels/api/hotels.controller";
 import { useState } from "react";
 import { useActiveMonth } from "@/modules/utils/useActiveMonth";
+import { AbstractBackground } from "@/modules/shared/AbstractBackground";
 
 export const HotelDetailsPage = () => {
   const { hotels } = useListHotels();
@@ -23,22 +24,24 @@ export const HotelDetailsPage = () => {
 
   return (
     <div className="content-width ml-[300px] overflow-x-hidden min-h-screen">
-      <Header
-        activeHotel={activeHotel}
-        activeDate={activeDate}
-        onPreviousArrowClick={previousMonth}
-        onNextArrowClick={nextMonth}
-        onGenerateInvoiceClick={() => setOpenModal(true)}
-      />
+      <div className='flex flex-col px-5'>
+        <Header
+          activeHotel={activeHotel}
+          activeDate={activeDate}
+          onPreviousArrowClick={previousMonth}
+          onNextArrowClick={nextMonth}
+          onGenerateInvoiceClick={() => setOpenModal(true)}
+        />
 
-      <ReportProductsTable
-        key={activeHotel.id}
-        activeHotel={activeHotel}
-        activeYear={activeDate.year}
-        activeMonth={activeDate.month}
-        openModal={openModal}
-        onCloseModalClick={closeModal}
-      />
+        <ReportProductsTable
+          key={activeHotel.id}
+          activeHotel={activeHotel}
+          activeYear={activeDate.year}
+          activeMonth={activeDate.month}
+          openModal={openModal}
+          onCloseModalClick={closeModal}
+        />
+      </div>
     </div>
   );
 };
