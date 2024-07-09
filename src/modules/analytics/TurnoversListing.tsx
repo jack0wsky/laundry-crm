@@ -44,7 +44,7 @@ export const TurnoversListing = () => {
   }, [timeline]);
 
   return (
-    <ul className="mt-12">
+    <ul className="mt-12 w-full">
       {timelineGrouped.map((item, index) => (
         <li key={index} className="w-full mb-6">
           <p className="text-3xl font-medium">{item.year}</p>
