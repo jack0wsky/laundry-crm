@@ -8,94 +8,239 @@ import { useListPricing } from "@/modules/hotels/pricing/api/pricing.controller"
 import { GenerateInvoiceModal } from "@/modules/hotels/reports/GenerateInvoiceModal";
 import type { Hotel } from "@/modules/hotels/types";
 import { getDaysInMonth } from "date-fns";
-import { DayNumbersList } from "@/modules/hotels/reports/DayNumbersList";
-import {useEffect, useRef, useState} from "react";
+import { CSSProperties, useMemo, useState } from "react";
 import { MONTHS } from "@/modules/utils/months";
 import { CalendarIcon } from "@/modules/shared/icons/calendar.icon";
 import { LeftArrowIcon } from "@/modules/shared/icons/left-arrow.icon";
 import { RightArrowIcon } from "@/modules/shared/icons/right-arrow.icon";
-import {useGeneratePdfReport} from "@/modules/hotels/pdf-summary/use-generate-pdf-report";
+import {
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+  Column,
+  ColumnDef,
+} from "@tanstack/react-table";
+import { useActiveMonth } from "@/modules/utils/useActiveMonth";
+import { DayInput } from "@/modules/hotels/reports/DayInput";
+import { DraggableIcon } from "@/modules/shared/icons/draggable";
+import { Pricing, PricingWithReports } from "@/modules/hotels/pricing/types";
+import { Button } from "@/modules/shared/Button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 interface ReportProductsTableProps {
   activeHotel: Hotel;
-  openModal: boolean;
-  onCloseModalClick: () => void;
-  activeMonth: number;
-  activeYear: number;
 }
 
-const COLUMN_WIDTH = 80 + 12;
+const noResults: PricingWithReports[] = [];
+
+const getCommonPinningStyles = (column: Column<any>): CSSProperties => {
+  const isPinned = column.getIsPinned();
+
+  return {
+    left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
+    right: isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
+    opacity: isPinned ? 0.95 : 1,
+    position: isPinned ? "sticky" : "relative",
+    width: column.getSize(),
+    zIndex: isPinned ? 1 : 0,
+  };
+};
 
 export const ReportProductsTable = ({
   activeHotel,
-  openModal,
-  onCloseModalClick,
-  activeMonth,
-  activeYear,
 }: ReportProductsTableProps) => {
-  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
-  const container = useRef<HTMLDivElement | null>(null);
-  const yearAndMonth = format(new Date(activeYear, activeMonth), "yyyy-MM");
+  const [openInvoiceSummaryModal, setOpenInvoiceSummaryModal] = useState(false);
+  const { previousMonth, nextMonth, activeDate } = useActiveMonth();
+
+  const yearAndMonth = format(
+    new Date(activeDate.year, activeDate.month),
+    "yyyy-MM",
+  );
+
   const { reports } = useListMonthReport(yearAndMonth, activeHotel.id);
   const { pricing, loading } = useListPricing(activeHotel.name);
-
-  const { generatePdfReport, isPending } = useGeneratePdfReport({
-    onSuccess: setDownloadUrl,
-  });
-
-  const generatePDF = async () => {
-    generatePdfReport({
-      month: activeMonth + 1,
-      year: activeYear,
-      hotelName: activeHotel.name,
-      reports,
-    });
-  };
 
   const { addReport } = useCreateReport(activeHotel.id, yearAndMonth);
 
   const days = Array.from(
-    { length: getDaysInMonth(new Date(activeYear, activeMonth)) },
+    { length: getDaysInMonth(new Date(activeDate.year, activeDate.month)) },
     (_, i) => i + 1,
   );
-  const wrapper = document.querySelector(".wrapper");
-
-  useEffect(() => {
-    const reportsWithAmount = reports.filter((item) => item.amount > 0);
-    const latestReport = reportsWithAmount[reportsWithAmount.length - 1];
-    const daysTillToday =
-      new Date(latestReport ? latestReport.date : new Date()).getDate() - 1;
-
-    if (!wrapper) return;
-
-    setTimeout(() => {
-      if (reportsWithAmount.length === 0) {
-        wrapper.scrollTo({ left: 0 });
-      } else {
-        wrapper.scroll({
-          left: COLUMN_WIDTH * daysTillToday,
-        });
-      }
-    }, 800);
-  }, [wrapper, activeHotel.id, reports.length]);
 
   const saveReport = async (productId: number, amount: number, day: number) => {
-    const date = format(new Date(activeYear, activeMonth, day), "yyyy-MM-dd");
+    const date = format(
+      new Date(activeDate.year, activeDate.month, day),
+      "yyyy-MM-dd",
+    );
 
     addReport({ amount, date, productId });
   };
 
   const customerProducts = pricing;
 
+  const productWithReports = useMemo(() => {
+    return customerProducts;
+  }, [customerProducts, activeDate.year, activeDate.month]);
+
+  const columns: ColumnDef<Pricing>[] = [
+    {
+      header: () => (
+        <div className="w-[200px] h-6 bg-gradient-to-r from-white to-transparent" />
+      ),
+      accessorKey: "name",
+      size: 200,
+      cell: ({ row, cell }) => {
+        return (
+          <div
+            style={{ width: cell.column.getSize() }}
+            className="bg-gradient-to-r from-white from-80% to-transparent h-[42px] flex items-center pl-2"
+          >
+            <DraggableIcon className="text-2xl text-palette-gray-300" />
+            <p>{row.original.product.name}</p>
+          </div>
+        );
+      },
+    },
+    ...days.map((day) => {
+      return {
+        header: () => (
+          <span className="text-palette-gray-600 text-sm font-bold">
+            {day.toString()}
+          </span>
+        ),
+        accessorKey: day.toString(),
+        size: 72,
+        // @ts-ignore
+        cell: ({ row }) => {
+          const date = format(
+            new Date(activeDate.year, activeDate.month, day),
+            "yyyy-MM-dd",
+          );
+
+          const report = reports.find(
+            (report) =>
+              report.date === date &&
+              report.product.id === row.original.product.id,
+          );
+
+          return (
+            <DayInput
+              day={day}
+              name={row.original.product.name}
+              defaultValue={report?.amount || 0}
+              onChange={(value) => {
+                console.log(value);
+              }}
+              monthName={MONTHS[activeDate.month]}
+            />
+          );
+        },
+      };
+    }),
+  ];
+
+  const table = useReactTable({
+    data: productWithReports ?? noResults,
+    state: {
+      columnPinning: {
+        left: ["name"],
+      },
+    },
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
   return (
     <>
-      <GenerateInvoiceModal
-        isVisible={openModal}
-        pricing={pricing}
-        summary={reports}
-        customerId={activeHotel.customer.id}
-        onClose={onCloseModalClick}
-      />
+      <div className="flex flex-col bg-white rounded-[20px] mb-5">
+        <div className="w-full flex justify-between items-center pt-4 px-5 pb-6">
+          <div className="flex items-center bg-palette-gray-50 rounded-full w-max py-1 pl-3 pr-1">
+            <div className="flex items-center gap-x-2">
+              <CalendarIcon />
+              <p className="text-base font-medium">
+                {MONTHS[activeDate.month]}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-x-1 ml-4">
+              <button
+                onClick={previousMonth}
+                className="w-7 h-7 rounded-full bg-white flex justify-center items-center"
+              >
+                <LeftArrowIcon />
+              </button>
+              <button
+                onClick={nextMonth}
+                className="w-7 h-7 rounded-full bg-white flex justify-center items-center"
+              >
+                <RightArrowIcon />
+              </button>
+            </div>
+          </div>
+
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button onClick={() => setOpenInvoiceSummaryModal(true)}>
+                Generuj fakturę
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <GenerateInvoiceModal
+                isVisible={openInvoiceSummaryModal}
+                pricing={pricing}
+                summary={reports}
+                customerId={activeHotel.customer.id}
+                onClose={() => setOpenInvoiceSummaryModal(false)}
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
+        <div className="overflow-x-auto w-full max-w-[1200px]">
+          <table style={{ width: table.getTotalSize() }}>
+            <thead className="w-full flex items-center">
+              {table.getHeaderGroups().map((header) => {
+                return (
+                  <tr key={header.id} className="w-full flex gap-x-2">
+                    {header.headers.map((item) => (
+                      <th
+                        key={item.id}
+                        style={{ ...getCommonPinningStyles(item.column) }}
+                      >
+                        {flexRender(
+                          item.column.columnDef.header,
+                          item.getContext(),
+                        )}
+                      </th>
+                    ))}
+                  </tr>
+                );
+              })}
+            </thead>
+            <tbody className="w-full">
+              {table.getRowModel().rows.map((row) => {
+                return (
+                  <tr
+                    key={row.original.product.id}
+                    className="flex items-center gap-x-2 w-full py-2 bg-white pr-4"
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <td
+                        key={cell.id}
+                        style={{ ...getCommonPinningStyles(cell.column) }}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       {loading && (
         <div className="w-full h-1/2 flex justify-center items-center">
@@ -106,77 +251,6 @@ export const ReportProductsTable = ({
         <div className="w-full h-1/2 flex justify-center items-center">
           <p>Brak cennika</p>
         </div>
-      )}
-
-      {customerProducts.length > 0 && (
-        <section className="w-full flex flex-col pb-5 px-4 relative bg-white rounded-[20px]">
-          <div className="w-full flex justify-between items-center pt-4 pb-6">
-            <div className="flex items-center bg-palette-gray-50 rounded-full w-max py-1 pl-3 pr-1">
-              <div className="flex items-center gap-x-2">
-                <CalendarIcon />
-                <p className="text-base font-medium">{MONTHS[activeMonth]}</p>
-              </div>
-
-              <div className="flex items-center gap-x-1 ml-4">
-                <button className="w-7 h-7 rounded-full bg-white flex justify-center items-center">
-                  <LeftArrowIcon />
-                </button>
-                <button className="w-7 h-7 rounded-full bg-white flex justify-center items-center">
-                  <RightArrowIcon />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="w-full flex">
-            {customerProducts.length > 0 && (
-              <div className="w-[200px]">
-                <ul className="flex flex-col w-[200px] gap-y-2 pt-10">
-                  {customerProducts.map((item) => (
-                    <li key={item.id} className="p-2 capitalize">
-                      {item.product.name}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            <div
-              className="flex flex-col gap-x-3 w-full overflow-x-auto wrapper relative"
-              ref={container}
-            >
-              {customerProducts.length > 0 && (
-                <DayNumbersList
-                  activeYear={activeYear}
-                  activeMonth={activeMonth}
-                />
-              )}
-              <div className="flex flex-col gap-y-2 pt-10">
-                {customerProducts.map(({ product }) => {
-                  const productReport = reports
-                    .filter((item) => item.product.id === product.id)
-                    .map(({ amount, date }) => ({
-                      amount: amount || 0,
-                      date,
-                    }));
-
-                  return (
-                    <LaundryService
-                      key={`${product.id}-${activeHotel.id}-${product.name}`}
-                      days={days}
-                      productReport={productReport}
-                      activeMonth={activeMonth}
-                      product={product}
-                      onChange={(value, day) =>
-                        saveReport(product.id, value, day)
-                      }
-                    />
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </section>
       )}
     </>
   );

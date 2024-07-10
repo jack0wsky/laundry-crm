@@ -5,16 +5,9 @@ import { ReportProductsTable } from "@/modules/hotels/reports/ReportProductsTabl
 import { useParams } from "next/navigation";
 import { useListHotels } from "@/modules/hotels/api/hotels.controller";
 import { useState } from "react";
-import { useActiveMonth } from "@/modules/utils/useActiveMonth";
-import { AbstractBackground } from "@/modules/shared/AbstractBackground";
 
 export const HotelDetailsPage = () => {
   const { hotels } = useListHotels();
-
-  const [openModal, setOpenModal] = useState(false);
-
-  const { previousMonth, nextMonth, activeDate } = useActiveMonth();
-  const closeModal = () => setOpenModal(false);
 
   const params = useParams<{ hotelId: string }>();
 
@@ -24,23 +17,10 @@ export const HotelDetailsPage = () => {
 
   return (
     <div className="content-width ml-[300px] overflow-x-hidden min-h-screen">
-      <div className='flex flex-col px-5'>
-        <Header
-          activeHotel={activeHotel}
-          activeDate={activeDate}
-          onPreviousArrowClick={previousMonth}
-          onNextArrowClick={nextMonth}
-          onGenerateInvoiceClick={() => setOpenModal(true)}
-        />
+      <div className="flex flex-col px-5">
+        <Header activeHotel={activeHotel} />
 
-        <ReportProductsTable
-          key={activeHotel.id}
-          activeHotel={activeHotel}
-          activeYear={activeDate.year}
-          activeMonth={activeDate.month}
-          openModal={openModal}
-          onCloseModalClick={closeModal}
-        />
+        <ReportProductsTable key={activeHotel.id} activeHotel={activeHotel} />
       </div>
     </div>
   );

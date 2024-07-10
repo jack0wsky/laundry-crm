@@ -10,3 +10,7 @@ export interface Pricing {
   product: LaundryProduct;
   hotel: string;
 }
+
+export interface PricingWithReports extends Pricing {
+  reports: { amount: number; date: string }[];
+}

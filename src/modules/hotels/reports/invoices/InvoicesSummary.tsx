@@ -62,15 +62,7 @@ export const InvoiceSummary = ({
   return (
     <>
       <div className="w-full flex justify-between items-center mb-4">
-        <Dialog.Title className="font-semibold text-xl">
-          Podsumowanie
-        </Dialog.Title>
-        <button
-          onClick={onClose}
-          className="w-9 h-9 flex justify-center items-center bg-gray-100 rounded-full"
-        >
-          <CancelIcon className="text-2xl" />
-        </button>
+        Podsumowanie
       </div>
 
       {providedProducts.length === 0 && <EmptyState />}

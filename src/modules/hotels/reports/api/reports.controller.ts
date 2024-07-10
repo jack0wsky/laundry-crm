@@ -7,8 +7,16 @@ const listMonthReportQueryKey = (yearAndMonth: string, hotelId: string) => [
   yearAndMonth,
   hotelId,
 ];
+
+export interface Report {
+  amount: number;
+  date: string;
+  hotel: string;
+  id: string;
+  product: { id: number; name: string };
+}
 export const useListMonthReport = (yearAndMonth: string, hotelId: string) => {
-  const { data, refetch } = useQuery({
+  const { data, refetch } = useQuery<Report[]>({
     queryKey: listMonthReportQueryKey(yearAndMonth, hotelId),
     queryFn: () => db.getReport(hotelId, yearAndMonth),
   });

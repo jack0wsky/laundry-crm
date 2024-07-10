@@ -6,12 +6,8 @@ import { HotelName } from "@/modules/shared/HotelName";
 
 interface HeaderProps {
   activeHotel: Hotel;
-  onGenerateInvoiceClick: () => void;
 }
-export const Header = ({
-  activeHotel,
-  onGenerateInvoiceClick,
-}: HeaderProps) => {
+export const Header = ({ activeHotel }: HeaderProps) => {
   const [openPricingModal, setPricingModal] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
 
@@ -48,7 +44,7 @@ export const Header = ({
             ref={downloadLinkRef}
           ></a>
           <Button variant="secondary" onClick={() => setPricingModal(true)}>
-            Cennik
+            Produkty
           </Button>
           {/*<Button*/}
           {/*  variant="secondary"*/}
@@ -59,7 +55,6 @@ export const Header = ({
           {/*>*/}
           {/*  {isPending ? "Generowanie..." : "Generuj zestawienie"}*/}
           {/*</Button>*/}
-          <Button onClick={onGenerateInvoiceClick}>Zobacz podsumowanie</Button>
         </div>
       </div>
     </header>
