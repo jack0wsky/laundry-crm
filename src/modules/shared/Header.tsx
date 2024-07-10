@@ -3,6 +3,7 @@ import { PricingModal } from "@/modules/hotels/pricing/PricingModal";
 import { Button } from "@/modules/shared/Button";
 import type { Hotel } from "@/modules/hotels/types";
 import { HotelName } from "@/modules/shared/HotelName";
+import { ProductsDrawer } from "@/modules/hotels/pricing/ProductsDrawer";
 
 interface HeaderProps {
   activeHotel: Hotel;
@@ -43,9 +44,9 @@ export const Header = ({ activeHotel }: HeaderProps) => {
             target="_blank"
             ref={downloadLinkRef}
           ></a>
-          <Button variant="secondary" onClick={() => setPricingModal(true)}>
-            Produkty
-          </Button>
+
+          <ProductsDrawer hotelName={activeHotel.name} />
+
           {/*<Button*/}
           {/*  variant="secondary"*/}
           {/*  onClick={generatePDF}*/}

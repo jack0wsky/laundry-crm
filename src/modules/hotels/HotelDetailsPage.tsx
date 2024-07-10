@@ -4,7 +4,6 @@ import { Header } from "@/modules/shared/Header";
 import { ReportProductsTable } from "@/modules/hotels/reports/ReportProductsTable";
 import { useParams } from "next/navigation";
 import { useListHotels } from "@/modules/hotels/api/hotels.controller";
-import { useState } from "react";
 
 export const HotelDetailsPage = () => {
   const { hotels } = useListHotels();
