@@ -7,6 +7,7 @@ import {
 import { KebabMenuIcon } from "@/modules/shared/icons/kebab-menu.icon";
 import { PencilIcon } from "@/modules/shared/icons/pencil.icon";
 import { TrashIcon } from "@/modules/shared/icons/trash.icon";
+import { motion } from "framer-motion";
 
 interface PricingListingItemProps {
   name: string;
@@ -21,11 +22,17 @@ export const PricingListingItem = ({
   onDelete,
 }: PricingListingItemProps) => {
   return (
-    <li className="w-full flex justify-between border-b border-palette-gray-100 pb-2 items-center">
-      <p className="font-medium text-lg mr-2">{name}</p>
+    <motion.li
+      variants={{
+        hidden: { opacity: 0, y: 100 },
+        animate: { opacity: 1, y: 0 },
+      }}
+      className="w-full flex justify-between border-b border-palette-gray-100 pb-2 items-center"
+    >
+      <p className="font-medium text-lg mr-2 w-full">{name}</p>
 
       <div className="flex items-center">
-        <div className="flex items-center gap-x-1 px-3 py-1.5 border border-palette-gray-100 rounded-full">
+        <div className="flex items-center gap-x-1 px-3 py-1.5 bg-palette-gray-50 rounded-full min-w-9">
           <p>{price}</p> zł
         </div>
 
@@ -41,16 +48,16 @@ export const PricingListingItem = ({
               <PencilIcon className="text-xl" />
               <span className="text-base">Edytuj</span>
             </DropdownMenuItem>
-            <DropdownMenuItem
+            {/*<DropdownMenuItem
               onClick={onDelete}
               className="flex items-center gap-x-2 text-palette-red-500 hover:bg-palette-red-500/10 cursor-pointer"
             >
               <TrashIcon className="text-xl" />
               <span className="text-base">Usuń</span>
-            </DropdownMenuItem>
+            </DropdownMenuItem>*/}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-    </li>
+    </motion.li>
   );
 };

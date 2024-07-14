@@ -8,26 +8,35 @@ import {
 import { PlusIcon } from "@/modules/shared/icons/plus.icon";
 import { ProductsListing } from "@/modules/hotels/pricing/ProductsListing";
 import { AddProductForm } from "@/modules/hotels/pricing/AddProductForm";
+import { AnimatePresence } from "framer-motion";
+import { Pricing } from "@/modules/hotels/pricing/types";
+import { DeleteProduct } from "@/modules/hotels/pricing/DeleteProduct";
 
 interface ProductsDrawerProps {
   hotelName: string;
 }
 
+type Mode =
+  | { type: "listing" }
+  | { type: "new-product" }
+  | { type: "edit-product"; payload: Pricing }
+  | { type: "delete-product"; payload: Pricing };
+
 export const ProductsDrawer = ({ hotelName }: ProductsDrawerProps) => {
-  const [mode, setMode] = useState<
-    "listing" | "new-product" | "edit-product" | "delete-product"
-  >("listing");
+  const [mode, setMode] = useState<Mode>({ type: "listing" });
   const [open, setOpen] = useState(false);
 
   const { pricing } = useListPricing(hotelName);
   const { updatePrice } = useUpdatePrice();
 
   const getTitle = () => {
-    if (mode === "new-product") return "Dodaj produkt";
-    if (mode === "edit-product") return "Edytuj produkt";
-    if (mode === "delete-product") return "Usuń produkt";
+    if (mode.type === "new-product") return "Dodaj produkt";
+    if (mode.type === "edit-product") return "Edytuj produkt";
+    if (mode.type === "delete-product") return "Usuń produkt";
     return "Produkty";
   };
+
+  const goToListing = () => setMode({ type: "listing" });
 
   return (
     <Drawer
@@ -42,34 +51,48 @@ export const ProductsDrawer = ({ hotelName }: ProductsDrawerProps) => {
       hideFooter
       toggleOpen={setOpen}
     >
-      <div className="w-full flex flex-col px-5 overflow-y-auto">
-        {mode === "listing" && (
-          <button
-            onClick={() => setMode("new-product")}
-            className="w-full py-3 rounded-full bg-palette-blue-600/10 hover:bg-palette-blue-600/20 transition-colors text-palette-blue-600 my-2 font-bold flex justify-center items-center gap-x-1"
-          >
-            <PlusIcon className="text-xl" />
-            Dodaj produkt
-          </button>
-        )}
+      <AnimatePresence>
+        <div className="w-full flex flex-col px-5 h-full overflow-y-auto">
+          {mode.type === "listing" && (
+            <button
+              onClick={() => setMode({ type: "new-product" })}
+              className="w-full py-3 rounded-full bg-palette-blue-600/10 hover:bg-palette-blue-600/20 transition-colors text-palette-blue-600 my-2 font-bold flex justify-center items-center gap-x-1"
+            >
+              <PlusIcon className="text-xl" />
+              Dodaj produkt
+            </button>
+          )}
 
-        {mode === "new-product" && (
-          <AddProductForm
-            hotelName={hotelName}
-            onGoBack={() => setMode("listing")}
-            onProductAdded={() => setMode("listing")}
-            pricing={pricing}
-          />
-        )}
+          {mode.type === "delete-product" && (
+            <DeleteProduct
+              pricing={mode.payload}
+              onGoBack={goToListing}
+              onDeleteConfirm={() => {}}
+            />
+          )}
 
-        {mode === "listing" && (
-          <ProductsListing
-            pricing={pricing}
-            onProductEdit={() => {}}
-            onProductDelete={() => {}}
-          />
-        )}
-      </div>
+          {mode.type === "new-product" && (
+            <AddProductForm
+              hotelName={hotelName}
+              onGoBack={goToListing}
+              onProductAdded={goToListing}
+              pricing={pricing}
+            />
+          )}
+
+          {mode.type === "listing" && (
+            <ProductsListing
+              pricing={pricing}
+              onProductEdit={(product) =>
+                setMode({ type: "edit-product", payload: product })
+              }
+              onProductDelete={(product) =>
+                setMode({ type: "delete-product", payload: product })
+              }
+            />
+          )}
+        </div>
+      </AnimatePresence>
     </Drawer>
   );
 };
