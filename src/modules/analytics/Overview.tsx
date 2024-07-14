@@ -28,12 +28,16 @@ export const Overview = ({ currentYear }: OverviewProps) => {
   const { turnover: previousTurnover, loading: previousTurnoverLoading } =
     useGetTurnover(previousYearAndMonth);
 
-  const percentage = Number(
-    ((previousTurnover / currentTurnover) * 100).toFixed(0),
-  );
+  const percentage =
+    (1 -
+      Number(currentTurnover.toFixed(0)) /
+        Number(previousTurnover.toFixed(0))) *
+    100;
 
   const parsedPercentage =
-    percentage > 0 ? `+${percentage}%` : `-${percentage}%`;
+    percentage > 100
+      ? `+${percentage.toFixed(0)}%`
+      : `-${percentage.toFixed(0)}%`;
 
   const previousMonthTurnover = `${previousTurnover.toLocaleString(
     "pl-PL",
@@ -70,7 +74,7 @@ export const Overview = ({ currentYear }: OverviewProps) => {
               <p
                 className={clsx(
                   "px-2 py-1.5 rounded-full font-bold",
-                  percentage > 0
+                  percentage > 100
                     ? "text-palette-green-700 bg-palette-green-700/10"
                     : "text-palette-red-500 bg-palette-red-500/10",
                 )}
