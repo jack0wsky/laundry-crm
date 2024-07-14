@@ -42,32 +42,45 @@ export const Navigation = () => {
                 ![Route.Customers, Route.Turnovers].includes(pathname as Route)
               }
             />
-            <button className="w-7 h-7 rounded-full flex justify-center items-center bg-palette-blue-600/10">
+            {/*<button className="w-7 h-7 rounded-full flex justify-center items-center bg-palette-blue-600/10">
               <PlusIcon className="text-lg text-palette-blue-600" />
-            </button>
+            </button>*/}
           </div>
 
-          <ul className="flex flex-col h-full overflow-y-auto pl-6">
-            {hotels.map((hotel) => (
-              <li
-                key={hotel.id}
-                className={clsx(
-                  "border-l border-l-palette-gray-100 py-1",
-                  pathname?.includes(hotel.id) && "border-l-palette-gray-800",
-                )}
-              >
-                <Link
-                  href={`/${hotel.id}`}
+          {loading && (
+            <div className="flex flex-col w-full gap-y-2 px-6">
+              {Array.from({ length: 15 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="w-full h-8 rounded-md bg-palette-gray-50 animate-pulse"
+                />
+              ))}
+            </div>
+          )}
+
+          {!loading && hotels.length > 0 && (
+            <ul className="flex flex-col h-full overflow-y-auto pl-6">
+              {hotels.map((hotel) => (
+                <li
+                  key={hotel.id}
                   className={clsx(
-                    "font-base pl-6",
-                    pathname?.includes(hotel.id) && "font-bold",
+                    "border-l border-l-palette-gray-100 py-1",
+                    pathname?.includes(hotel.id) && "border-l-palette-gray-800",
                   )}
                 >
-                  {hotel.displayName || hotel.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
+                  <Link
+                    href={`/${hotel.id}`}
+                    className={clsx(
+                      "font-base pl-6",
+                      pathname?.includes(hotel.id) && "font-bold",
+                    )}
+                  >
+                    {hotel.displayName || hotel.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </nav>
 
@@ -89,7 +102,9 @@ function NavItem({ icon, href, label, active }: NavItemProps) {
       <div
         className={clsx(
           "w-9 h-9 flex justify-center items-center rounded-lg",
-          active ? "bg-palette-blue-600/10 text-palette-blue-600" : 'bg-palette-gray-50',
+          active
+            ? "bg-palette-blue-600/10 text-palette-blue-600"
+            : "bg-palette-gray-50",
         )}
       >
         {icon}

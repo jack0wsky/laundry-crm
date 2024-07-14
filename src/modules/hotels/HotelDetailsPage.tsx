@@ -2,26 +2,25 @@
 
 import { Header } from "@/modules/shared/Header";
 import { ReportProductsTable } from "@/modules/hotels/reports/ReportProductsTable";
-import { useParams } from "next/navigation";
-import { useListHotels } from "@/modules/hotels/api/hotels.controller";
+import { useHotelDetails } from "@/modules/hotels/api/hotels.controller";
 
-export const HotelDetailsPage = () => {
-  const { hotels, loading } = useListHotels();
+interface HotelDetailsPageProps {
+  hotelId: string;
+}
 
-  const params = useParams<{ hotelId: string }>();
-
-  const activeHotel = hotels.find((hotel) => hotel.id === params?.hotelId);
+export const HotelDetailsPage = ({ hotelId }: HotelDetailsPageProps) => {
+  const { hotel, loading } = useHotelDetails(hotelId);
 
   if (loading) return <Skeleton />;
 
-  if (!activeHotel) return null;
+  if (!hotel) return null;
 
   return (
     <div className="content-width ml-[300px] overflow-x-hidden min-h-screen">
-      <div className="flex flex-col px-5">
-        <Header activeHotel={activeHotel} />
+      <div className="flex flex-col">
+        <Header activeHotel={hotel} />
 
-        <ReportProductsTable key={activeHotel.id} activeHotel={activeHotel} />
+        <ReportProductsTable key={hotelId} activeHotel={hotel} />
       </div>
     </div>
   );

@@ -1,35 +1,38 @@
-import { useAddPricingItem } from "@/modules/hotels/pricing/api/pricing.controller";
-import { useState } from "react";
-import { Button } from "@/modules/shared/Button";
-import { Pricing } from "@/modules/hotels/pricing/types";
 import { LeftArrowIcon } from "@/modules/shared/icons/left-arrow.icon";
-import { ProductSelector } from "@/modules/hotels/pricing/ProductSelector";
+import { Button } from "@/modules/shared/Button";
+import {
+  Option,
+  ProductSelector,
+} from "@/modules/hotels/pricing/ProductSelector";
+import { useState } from "react";
+import { Pricing } from "@/modules/hotels/pricing/types";
+import { useUpdatePrice } from "@/modules/hotels/pricing/api/pricing.controller";
 
-interface Option {
-  id: number;
-  name: string;
-  order: number;
-}
-
-interface AddProductFormProps {
+interface EditProductFormProps {
   hotelName: string;
-  onProductAdded: () => void;
   onGoBack: () => void;
   pricing: Pricing[];
+  defaultValues: {
+    name: Option;
+    price: string;
+    databaseId: string;
+  };
 }
 
-export const AddProductForm = ({
+export const EditProductForm = ({
   hotelName,
-  onProductAdded,
-  pricing,
   onGoBack,
-}: AddProductFormProps) => {
-  const [selectedOption, setSelectedOption] = useState<Option | null>(null);
-  const [price, setPrice] = useState("");
+  defaultValues,
+  pricing,
+}: EditProductFormProps) => {
+  const [selectedOption, setSelectedOption] = useState(defaultValues.name);
+  const [price, setPrice] = useState(defaultValues.price);
 
-  const { addProductWithPrice, loading } = useAddPricingItem();
+  const { updatePrice } = useUpdatePrice();
 
-  const lastItem = pricing[pricing.length - 1];
+  const hasChanges =
+    selectedOption?.id.toString() !== defaultValues.name.id.toString() ||
+    price !== defaultValues.price;
 
   return (
     <>
@@ -46,17 +49,11 @@ export const AddProductForm = ({
         onSubmit={(event) => {
           event.preventDefault();
 
-          if (!selectedOption) return;
-
-          addProductWithPrice(
-            {
-              price: Number(price),
-              product: selectedOption.id,
-              hotel: hotelName,
-              order: pricing.length > 0 ? lastItem.order + 1 : 1,
-            },
-            { onSuccess: onProductAdded },
-          );
+          updatePrice({
+            hotelName,
+            price: Number(price),
+            id: selectedOption.id.toString(),
+          });
         }}
       >
         <ProductSelector
@@ -72,7 +69,6 @@ export const AddProductForm = ({
               type="number"
               className="text-base rounded-lg bg-white text-left border border-gray-200 py-3 px-5 w-full"
               value={price}
-              min={0}
               onChange={(event) => setPrice(event.target.value)}
             />
             <p className="px-5">zł</p>
@@ -82,9 +78,9 @@ export const AddProductForm = ({
         <Button
           type="submit"
           className="w-full mt-6"
-          disabled={!selectedOption || !price}
+          disabled={!hasChanges || !price}
         >
-          Dodaj
+          Zapisz zmiany
         </Button>
       </form>
     </>

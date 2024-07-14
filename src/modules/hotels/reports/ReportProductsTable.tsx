@@ -59,7 +59,7 @@ export const ReportProductsTable = ({
 
   return (
     <>
-      <div className="flex flex-col bg-white rounded-[20px] mb-5">
+      <div className="flex flex-col bg-white rounded-[20px] mb-5 mx-5">
         <div className="w-full flex justify-between items-center pt-4 px-5 pb-6">
           <div className="flex items-center bg-palette-gray-50 rounded-full w-max py-1 pl-3 pr-1">
             <div className="flex items-center gap-x-2">
@@ -93,7 +93,6 @@ export const ReportProductsTable = ({
             </DialogTrigger>
             <DialogContent>
               <GenerateInvoiceModal
-                isVisible={openInvoiceSummaryModal}
                 pricing={pricing}
                 summary={reports}
                 customerId={activeHotel.customer.id}

@@ -2,7 +2,7 @@ import { ButtonHTMLAttributes, PropsWithChildren } from "react";
 import { clsx } from "clsx";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "destructive";
+  variant?: "primary" | "secondary" | "destructive" | "outline";
   href?: string;
   prefix?: any;
 }
@@ -23,6 +23,8 @@ export const Button = ({
           variant === "secondary" &&
             "bg-white hover:bg-gray-200 text-gray-800 border border-gray-300 disabled:text-gray-500",
           variant === "destructive" && "bg-palette-red-500 text-white",
+          variant === "outline" &&
+            "border border-white text-white hover:bg-white hover:text-black",
           className,
         )}
         {...props}

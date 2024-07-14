@@ -1,4 +1,3 @@
-import { Dialog } from "@headlessui/react";
 import type { ReportItem } from "@/modules/services/supabase.types";
 import type { Pricing } from "@/modules/hotels/pricing/types";
 import { InvoiceSummary } from "@/modules/hotels/reports/invoices/InvoicesSummary";
@@ -7,7 +6,6 @@ import { useState } from "react";
 import { useGenerateInvoice } from "@/modules/hotels/reports/invoices/api/invoices.controller";
 
 export interface GenerateInvoiceModalProps {
-  isVisible: boolean;
   onClose: () => void;
   summary: ReportItem[];
   pricing: Pricing[];
@@ -15,7 +13,6 @@ export interface GenerateInvoiceModalProps {
 }
 
 export const GenerateInvoiceModal = ({
-  isVisible,
   onClose,
   summary,
   pricing,
@@ -30,7 +27,6 @@ export const GenerateInvoiceModal = ({
   return !invoiceCreated ? (
     <InvoiceSummary
       summary={summary}
-      onClose={onClose}
       pricing={pricing}
       customerId={customerId}
       onCreate={{

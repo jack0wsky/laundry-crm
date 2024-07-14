@@ -65,7 +65,17 @@ export const db = {
 
   hotels: {
     updateHotelName: async (id: string, name: string) => {
-      await clientDB.from("hotels").update({ name }).eq("id", id);
+      await clientDB.from(Table.Hotels).update({ name }).eq("id", id);
+    },
+
+    getOneById: async (id: string) => {
+      const { data } = await clientDB
+        .from(Table.Hotels)
+        .select<"*", Hotel>("*")
+        .eq("id", id)
+        .single();
+
+      return data;
     },
 
     addNew: async (payload: {

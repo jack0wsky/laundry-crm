@@ -14,7 +14,6 @@ import { clsx } from "clsx";
 import { Button } from "@/modules/shared/Button";
 
 interface InvoiceSummaryProps {
-  onClose: () => void;
   onCreate: {
     loading: boolean;
     action: (payload: CreateInvoice) => void;
@@ -27,7 +26,6 @@ interface InvoiceSummaryProps {
 export const InvoiceSummary = ({
   summary,
   pricing,
-  onClose,
   onCreate,
   customerId,
 }: InvoiceSummaryProps) => {
@@ -132,9 +130,7 @@ const ProductsListing = ({ products }: ProductsListingProps) => {
           key={product.product.name}
           className="flex py-2 border-b border-gray-200"
         >
-          <p className="capitalize w-1/2 text-base font-medium">
-            {product.product.name}
-          </p>
+          <p className="w-1/2 text-base font-medium">{product.product.name}</p>
           <p className="w-1/3 font-medium">
             {product.amount} x {product.price.toFixed(2)} zł
           </p>

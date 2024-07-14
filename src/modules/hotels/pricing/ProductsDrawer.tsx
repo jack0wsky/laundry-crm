@@ -11,6 +11,7 @@ import { AddProductForm } from "@/modules/hotels/pricing/AddProductForm";
 import { AnimatePresence } from "framer-motion";
 import { Pricing } from "@/modules/hotels/pricing/types";
 import { DeleteProduct } from "@/modules/hotels/pricing/DeleteProduct";
+import { EditProductForm } from "@/modules/hotels/pricing/EditProductForm";
 
 interface ProductsDrawerProps {
   hotelName: string;
@@ -49,7 +50,10 @@ export const ProductsDrawer = ({ hotelName }: ProductsDrawerProps) => {
       }
       footer={<div />}
       hideFooter
-      toggleOpen={setOpen}
+      toggleOpen={(opened) => {
+        setOpen(opened);
+        if (!opened) setMode({ type: "listing" });
+      }}
     >
       <AnimatePresence>
         <div className="w-full flex flex-col px-5 h-full overflow-y-auto">
@@ -61,6 +65,23 @@ export const ProductsDrawer = ({ hotelName }: ProductsDrawerProps) => {
               <PlusIcon className="text-xl" />
               Dodaj produkt
             </button>
+          )}
+
+          {mode.type === "edit-product" && (
+            <EditProductForm
+              hotelName={hotelName}
+              onGoBack={goToListing}
+              defaultValues={{
+                name: {
+                  name: mode.payload.product.name,
+                  id: mode.payload.product.id,
+                  order: mode.payload.order,
+                },
+                databaseId: mode.payload.id,
+                price: mode.payload.price.toString(),
+              }}
+              pricing={pricing}
+            />
           )}
 
           {mode.type === "delete-product" && (

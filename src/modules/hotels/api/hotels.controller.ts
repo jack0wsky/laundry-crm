@@ -19,6 +19,18 @@ export const useListHotels = () => {
   };
 };
 
+export const useHotelDetails = (hotelId: string) => {
+  const { data, isPending } = useQuery({
+    queryKey: ["hotel", hotelId],
+    queryFn: () => db.hotels.getOneById(hotelId),
+  });
+
+  return {
+    hotel: data,
+    loading: isPending,
+  };
+};
+
 export const useUpdateHotelName = (options?: { onSuccess: () => void }) => {
   const queryClient = useQueryClient();
 
