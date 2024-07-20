@@ -68,6 +68,12 @@ export default async function handler(
         );
     } catch (error) {
       console.error(error);
+      return (
+        res
+          .status(400)
+          // @ts-ignore
+          .json({ ...error, message: "Failed to upload PDF" })
+      );
     }
   });
 
