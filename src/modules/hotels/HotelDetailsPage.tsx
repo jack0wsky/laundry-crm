@@ -16,12 +16,10 @@ export const HotelDetailsPage = ({ hotelId }: HotelDetailsPageProps) => {
   if (!hotel) return null;
 
   return (
-    <div className="content-width ml-[300px] overflow-x-hidden min-h-screen">
-      <div className="flex flex-col">
-        <Header activeHotel={hotel} />
+    <div className="content-width ml-[300px] overflow-x-hidden min-h-screen flex flex-col">
+      <Header activeHotel={hotel} />
 
-        <ReportProductsTable key={hotelId} activeHotel={hotel} />
-      </div>
+      <ReportProductsTable key={hotelId} activeHotel={hotel} />
     </div>
   );
 };
