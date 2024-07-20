@@ -9,6 +9,7 @@ export interface Pricing {
   order: number;
   product: LaundryProduct;
   hotel: string;
+  softDeleted: boolean;
 }
 
 export interface PricingWithReports extends Pricing {

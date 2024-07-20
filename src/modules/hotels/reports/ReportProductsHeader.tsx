@@ -6,12 +6,11 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/modules/shared/Button";
 import { GenerateInvoiceModal } from "@/modules/hotels/reports/GenerateInvoiceModal";
 import { useState, useRef, useEffect } from "react";
-import { Pricing } from "@/modules/hotels/pricing/types";
-import { Report } from "@/modules/hotels/reports/api/reports.controller";
+import type { Pricing } from "@/modules/hotels/pricing/types";
+import type { Report } from "@/modules/hotels/reports/types";
 import { PDFFileIcon } from "@/modules/shared/icons/pdf-file.icon";
 import { useGeneratePdfReport } from "@/modules/hotels/pdf-summary/use-generate-pdf-report";
 import { LoadingSpinner } from "@/modules/shared/LoadingSpinner";
-import { is } from "date-fns/locale";
 
 interface ReportProductsHeaderProps {
   onArrowBackClick: () => void;

@@ -14,6 +14,14 @@ interface CreateItem {
   Quantity: number;
 }
 
+export interface Report {
+  amount: number;
+  date: string;
+  hotel: string;
+  id: string;
+  product: { id: number; name: string };
+}
+
 export interface CreateInvoice {
   PurchasingPartyId: number;
   PaymentTypeId: number;

@@ -92,12 +92,12 @@ export const useReportsTable = (
     }),
   ];
 
-  const productWithReports = useMemo(() => {
+  const availablePricing = useMemo(() => {
     return pricing;
   }, [pricing, activeDate.year, activeDate.month]);
 
   const table = useReactTable({
-    data: productWithReports ?? noResults,
+    data: availablePricing ?? noResults,
     state: {
       columnPinning: {
         left: ["name"],
