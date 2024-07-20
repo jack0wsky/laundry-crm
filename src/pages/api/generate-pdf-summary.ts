@@ -31,28 +31,37 @@ export default async function handler(
 
   const items = groupReportsByProduct(reports);
 
-  await doc.table(
-    {
-      title: hotelName,
-      headers: [
-        { label: "Nazwa", width: 80 },
-        ...days.map((item) => ({ label: item, width: 15 })),
-      ],
-      rows: items.map((item) => {
-        return [
-          item.name,
-          ...item.reports.map(({ amount }) =>
-            amount > 0 ? amount.toString() : "",
-          ),
-        ];
-      }),
-    },
-    {
-      width: 600,
-      prepareHeader: () => doc.font("Satoshi").fontSize(7),
-      prepareRow: () => doc.font("Satoshi").fontSize(7),
-    },
-  );
+  try {
+    await doc.table(
+      {
+        title: hotelName,
+        headers: [
+          { label: "Nazwa", width: 80 },
+          ...days.map((item) => ({ label: item, width: 15 })),
+        ],
+        rows: items.map((item) => {
+          return [
+            item.name,
+            ...item.reports.map(({ amount }) =>
+              amount > 0 ? amount.toString() : "",
+            ),
+          ];
+        }),
+      },
+      {
+        width: 600,
+        prepareHeader: () => doc.font("Satoshi").fontSize(7),
+        prepareRow: () => doc.font("Satoshi").fontSize(7),
+      },
+    );
+  } catch (error) {
+    return (
+      res
+        .status(400)
+        // @ts-ignore
+        .json({ ...error, message: "Failed to generate PDF" })
+    );
+  }
 
   doc.on("data", buffers.push.bind(buffers));
   doc.on("end", async () => {
