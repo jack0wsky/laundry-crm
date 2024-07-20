@@ -66,7 +66,7 @@ export default async function handler(
   doc.on("data", buffers.push.bind(buffers));
   doc.on("end", async () => {
     try {
-      await clientDB.storage
+      const { data, error } = await clientDB.storage
         .from("sheets")
         .upload(
           constructPdfFileName(hotelName, month, year),
@@ -75,6 +75,12 @@ export default async function handler(
             contentType: "application/pdf",
           },
         );
+
+      if (error) {
+        return res.status(400).json(error);
+      }
+
+      return res.status(200).json({ message: "PDF Uploaded", data });
     } catch (error) {
       console.error(error);
       return (
@@ -87,6 +93,4 @@ export default async function handler(
   });
 
   doc.end();
-
-  return res.status(200).json(items);
 }
