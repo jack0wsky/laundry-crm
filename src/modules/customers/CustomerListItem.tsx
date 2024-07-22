@@ -6,6 +6,7 @@ import { HotelListItem } from "@/modules/customers/HotelListItem";
 import { EditHotelModal } from "@/modules/customers/EditHotelModal";
 import { useState } from "react";
 import { AddNewHotelModal } from "@/modules/customers/AddNewHotelModal";
+import { EditCustomerDrawer } from "@/modules/customers/EditCustomerDrawer";
 
 interface CustomerListItemProps {
   customer: CustomerWithHotels;
@@ -52,10 +53,8 @@ export const CustomerListItem = ({ customer }: CustomerListItemProps) => {
           </div>
 
           <div className="flex items-center gap-x-2 mt-6">
-            <button className="flex items-center pl-2 pr-3 py-1.5 rounded-full border border-palette-gray-100 gap-x-1 font-medium hover:bg-palette-gray-100 transition-colors">
-              <PencilIcon />
-              Edytuj
-            </button>
+            <EditCustomerDrawer defaultValues={customer} />
+
             <button className="flex items-center pl-2 pr-3 py-1.5 rounded-full border border-palette-red-100 gap-x-1 font-medium text-palette-red-500 hover:bg-palette-red-100 transition-colors">
               <TrashIcon />
               Usuń

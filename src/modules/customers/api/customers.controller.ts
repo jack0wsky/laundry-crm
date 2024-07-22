@@ -22,13 +22,14 @@ export const useListCustomers = () => {
 };
 
 export const useListCustomersWithHotels = () => {
-  const { data } = useQuery({
+  const { data, isPending } = useQuery({
     queryKey: listCustomersWithHotelsKey(),
     queryFn: () => db.customers.listAllWithHotels(),
   });
 
   return {
     customers: data || [],
+    loading: isPending,
   };
 };
 

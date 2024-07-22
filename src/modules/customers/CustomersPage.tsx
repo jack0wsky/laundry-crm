@@ -1,4 +1,4 @@
-import { AddNewCustomer } from "@/modules/customers/AddNewCustomer";
+import { AddNewCustomerDrawer } from "@/modules/customers/AddNewCustomerDrawer";
 import { AbstractBackground } from "@/modules/shared/AbstractBackground";
 import { CustomersListing } from "@/modules/customers/CustomersListing";
 
@@ -9,7 +9,7 @@ export const CustomersPage = () => {
       <div className="w-full flex items-center justify-between px-5 pt-6">
         <h1 className="text-4xl font-bold text-white">Klienci</h1>
 
-        <AddNewCustomer />
+        <AddNewCustomerDrawer />
       </div>
 
       <CustomersListing />
