@@ -34,7 +34,7 @@ export interface CustomerWithHotels extends Customer {
   hotels: CustomersHotel[];
 }
 
-interface AddCustomerPayload {
+export interface AddCustomerPayload {
   id: number;
   name: string;
   nip: number;
@@ -188,6 +188,12 @@ export const db = {
   },
 
   customers: {
+    updateOne: async (
+      customerId: number,
+      payload: Partial<AddCustomerPayload>,
+    ) => {
+      await clientDB.from(Table.Customers).update(payload).eq("id", customerId);
+    },
     addNew: async (payload: AddCustomerPayload) => {
       await clientDB.from(Table.Customers).insert(payload);
     },

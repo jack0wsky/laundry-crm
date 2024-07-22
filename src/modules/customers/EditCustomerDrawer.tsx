@@ -5,6 +5,7 @@ import { clsx } from "clsx";
 import { Button } from "@/modules/shared/Button";
 import { CustomerForm } from "@/modules/customers/CustomerForm";
 import { Customer } from "@/modules/hotels/types";
+import { useUpdateCustomer } from "@/modules/customers/api/customers.controller";
 
 const FORM_ID = "edit-customer";
 
@@ -16,7 +17,10 @@ export const EditCustomerDrawer = ({
   defaultValues,
 }: EditCustomerDrawerProps) => {
   const [open, setOpen] = useState(false);
-  const [step, setStep] = useState<"form" | "success">("form");
+
+  const { updateCustomer, loading } = useUpdateCustomer(defaultValues.id, {
+    onSuccess: () => setOpen(false),
+  });
 
   return (
     <Drawer
@@ -31,7 +35,7 @@ export const EditCustomerDrawer = ({
       footer={
         <Button
           className={clsx("w-full")}
-          disabled={false}
+          disabled={loading}
           form={FORM_ID}
           type="submit"
         >
@@ -40,18 +44,16 @@ export const EditCustomerDrawer = ({
       }
       toggleOpen={setOpen}
     >
-      {step === "form" && (
-        <CustomerForm
-          formId={FORM_ID}
-          defaultValues={{
-            name: defaultValues.name,
-            nip: defaultValues.nip?.toString(),
-          }}
-          onSubmit={(values) => {
-            console.log("submitted values", values);
-          }}
-        />
-      )}
+      <CustomerForm
+        formId={FORM_ID}
+        defaultValues={{
+          name: defaultValues.name,
+          nip: defaultValues.nip?.toString(),
+        }}
+        onSubmit={(values) => {
+          updateCustomer({ name: values.name, nip: Number(values.nip) });
+        }}
+      />
     </Drawer>
   );
 };

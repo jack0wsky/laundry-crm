@@ -4,6 +4,7 @@ import { db } from "@/modules/services/laundry.db";
 import { CreateComarchCustomerPayload } from "@/modules/comarch/types";
 import { DEFAULT_LAUNDRY_ID } from "@/modules/utils/config";
 import { addNewCustomer } from "@/modules/comarch/add-new-customer.action";
+import { AddCustomerPayload } from "@/modules/services/laundry.db";
 
 const listCustomersKey = () => ["customers"];
 
@@ -29,6 +30,29 @@ export const useListCustomersWithHotels = () => {
 
   return {
     customers: data || [],
+    loading: isPending,
+  };
+};
+
+export const useUpdateCustomer = (
+  customerId: number,
+  options?: { onSuccess: () => void },
+) => {
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (payload: Partial<AddCustomerPayload>) =>
+      db.customers.updateOne(customerId, payload),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: listCustomersWithHotelsKey(),
+      });
+      options?.onSuccess();
+    },
+  });
+
+  return {
+    updateCustomer: mutate,
     loading: isPending,
   };
 };

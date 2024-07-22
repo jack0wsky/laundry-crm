@@ -51,15 +51,6 @@ export const CustomerListItem = ({ customer }: CustomerListItemProps) => {
               NIP: {customer.nip}
             </p>
           </div>
-
-          <div className="flex items-center gap-x-2 mt-6">
-            <EditCustomerDrawer defaultValues={customer} />
-
-            <button className="flex items-center pl-2 pr-3 py-1.5 rounded-full border border-palette-red-100 gap-x-1 font-medium text-palette-red-500 hover:bg-palette-red-100 transition-colors">
-              <TrashIcon />
-              Usuń
-            </button>
-          </div>
         </div>
 
         {customer.hotels.length > 0 && (
