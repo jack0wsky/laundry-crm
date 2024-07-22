@@ -19,6 +19,7 @@ export const useGetTurnover = (yearAndMonth: string) => {
       await Promise.all(
         (hotels || []).map(async (hotel) => {
           const reports = await db.getReport(hotel.id, yearAndMonth);
+          console.log('reports', reports)
           const pricing = (await db.getPricing(hotel.name)) as Pricing[];
           allPrices.push(...getAmounts(reports, pricing));
         }),

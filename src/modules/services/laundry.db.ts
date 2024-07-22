@@ -3,6 +3,7 @@ import type { Pricing } from "@/modules/hotels/pricing/types";
 import type { Product } from "@/modules/comarch/types";
 import { createClient } from "@/lib/auth/supabase/client";
 import { constructPdfFileName } from "@/modules/utils/construct-pdf-file-name";
+import { getDaysInMonth } from "date-fns";
 
 export const clientDB = createClient();
 
@@ -121,11 +122,13 @@ export const db = {
   },
 
   getReport: async (hotelId: string, yearAndMonth: string) => {
+    const days = getDaysInMonth(new Date(`${yearAndMonth}-01`));
     const { data } = await clientDB
       .from(Table.Reports)
       .select("*, product(id, name)")
       .eq("hotel", hotelId)
-      .filter("date", "gte", `${yearAndMonth}-01`);
+      .filter("date", "gte", `${yearAndMonth}-01`)
+      .filter("date", "lte", `${yearAndMonth}-${days}`);
 
     return data || [];
   },
