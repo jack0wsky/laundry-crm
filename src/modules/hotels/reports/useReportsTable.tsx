@@ -2,85 +2,21 @@ import {
   CellContext,
   ColumnDef,
   getCoreRowModel,
-  Row,
   useReactTable,
 } from "@tanstack/react-table";
 import { Pricing, PricingWithReports } from "@/modules/hotels/pricing/types";
-import { DraggableIcon } from "@/modules/shared/icons/draggable";
 import { getDaysInMonth } from "date-fns";
-import { DayInput } from "@/modules/hotels/reports/DayInput";
-import { MONTHS } from "@/modules/utils/months";
-import {
-  useCreateReport,
-  useListMonthReport,
-} from "@/modules/hotels/reports/api/reports.controller";
+import { useListMonthReport } from "@/modules/hotels/reports/api/reports.controller";
 import { useListPricing } from "@/modules/hotels/pricing/api/pricing.controller";
 import { Hotel } from "@/modules/hotels/types";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { formatDate } from "@/modules/utils/format-date";
+import { DailyInputCell } from "@/modules/hotels/reports/products-table/DailyInputCell";
+import { NameCell } from "@/modules/hotels/reports/products-table/NameCell";
+import type { DragEndEvent } from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
 
 const noResults: PricingWithReports[] = [];
-
-interface DayCellProps {
-  day: number;
-  row: Row<Pricing>;
-  activeHotelId: string;
-  activeDate: {
-    month: number;
-    year: number;
-  };
-  reports: any[];
-}
-
-const DayCell = ({
-  day,
-  row,
-  activeDate,
-  reports,
-  activeHotelId,
-}: DayCellProps) => {
-  const date = formatDate({
-    format: "yyyy-MM-dd",
-    ...activeDate,
-    day,
-  });
-
-  const yearAndMonth = formatDate({
-    format: "yyyy-MM",
-    ...activeDate,
-  });
-
-  const report = reports.find(
-    (report) =>
-      report.date === date && report.product.id === row.original.product.id,
-  );
-
-  const { addReport } = useCreateReport(activeHotelId, yearAndMonth);
-
-  const saveReport = async (productId: number, amount: number, day: number) => {
-    addReport({
-      amount,
-      date: formatDate({
-        format: "yyyy-MM-dd",
-        ...activeDate,
-        day,
-      }),
-      productId,
-    });
-  };
-
-  return (
-    <DayInput
-      day={day}
-      name={row.original.product.name}
-      defaultValue={report?.amount || 0}
-      onBlur={(value) => {
-        saveReport(row.original.product.id, value, day);
-      }}
-      monthName={MONTHS[activeDate.month]}
-    />
-  );
-};
 
 export const useReportsTable = (
   activeHotel: Hotel,
@@ -97,6 +33,34 @@ export const useReportsTable = (
   const { reports } = useListMonthReport(yearAndMonth, activeHotel.id);
   const { pricing, loading } = useListPricing(activeHotel.name);
 
+  const [items, setItems] = useState<Pricing[]>([]);
+
+  useEffect(() => {
+    if (pricing.length === 0 || loading) return;
+
+    const cachedPricing = localStorage.getItem("laqua_pricing");
+
+    setItems(cachedPricing ? JSON.parse(cachedPricing) : pricing);
+  }, [pricing, loading]);
+
+  const productsIds = useMemo(
+    () => items.map((item) => item.product.id),
+    [items],
+  );
+
+  const swapItems = ({ active, over }: DragEndEvent) => {
+    if (active && over && active.id !== over.id) {
+      setItems((data) => {
+        const oldIndex = productsIds.indexOf(active.id as number);
+        const newIndex = productsIds.indexOf(over.id as number);
+        const updatedArray = arrayMove(data, oldIndex, newIndex);
+        localStorage.setItem("laqua_pricing", JSON.stringify(updatedArray));
+
+        return updatedArray;
+      });
+    }
+  };
+
   const days = Array.from(
     { length: getDaysInMonth(new Date(activeDate.year, activeDate.month)) },
     (_, i) => i + 1,
@@ -109,17 +73,7 @@ export const useReportsTable = (
       ),
       accessorKey: "name",
       size: 200,
-      cell: ({ row, cell }) => {
-        return (
-          <div
-            style={{ width: cell.column.getSize() }}
-            className="bg-gradient-to-r from-white from-80% to-transparent h-[42px] flex items-center pl-2"
-          >
-            <DraggableIcon className="text-2xl text-palette-gray-300" />
-            <p>{row.original.product.name}</p>
-          </div>
-        );
-      },
+      cell: NameCell,
     },
     ...days.map((day) => {
       return {
@@ -132,7 +86,7 @@ export const useReportsTable = (
         size: 72,
         cell: ({ row }: CellContext<Pricing, unknown>) => {
           return (
-            <DayCell
+            <DailyInputCell
               day={day}
               row={row}
               activeHotelId={activeHotel.id}
@@ -146,8 +100,8 @@ export const useReportsTable = (
   ];
 
   const availablePricing = useMemo(() => {
-    return pricing;
-  }, [pricing, activeDate.year, activeDate.month]);
+    return items;
+  }, [items, activeDate.year, activeDate.month]);
 
   const table = useReactTable({
     data: availablePricing ?? noResults,
@@ -157,7 +111,11 @@ export const useReportsTable = (
       },
     },
     columns,
+    getRowId: (row) => row.product.id.toString(),
     getCoreRowModel: getCoreRowModel(),
+    // debugTable: true,
+    // debugHeaders: true,
+    // debugColumns: true,
   });
 
   return {
@@ -165,5 +123,7 @@ export const useReportsTable = (
     pricing,
     loadingPricing: loading,
     reports,
+    swapItems,
+    productsIds,
   };
 };

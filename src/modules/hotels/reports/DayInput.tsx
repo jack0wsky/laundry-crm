@@ -14,7 +14,7 @@ export const DayInput = ({
   defaultValue,
   monthName,
 }: DayInputProps) => {
-  const [value, setValue] = useState<number>(defaultValue);
+  const [value, setValue] = useState(defaultValue);
 
   return (
     <input
