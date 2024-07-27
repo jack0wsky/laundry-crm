@@ -12,7 +12,6 @@ export default function Layout({ children }: PropsWithChildren) {
     <html lang="pl">
       <body>
         <Navigation />
-        {/*<SideNavigation />*/}
         {children}
       </body>
     </html>
