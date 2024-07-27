@@ -1,7 +1,7 @@
 "use client";
 
 import { Header } from "@/modules/shared/Header";
-import { ReportProductsTable } from "@/modules/hotels/reports/ReportProductsTable";
+import { ReportProductsTable } from "@/modules/hotels/reports/products-table/ReportProductsTable";
 import { useHotelDetails } from "@/modules/hotels/api/hotels.controller";
 
 interface HotelDetailsPageProps {

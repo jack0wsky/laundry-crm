@@ -2,6 +2,7 @@ import type { Hotel } from "@/modules/hotels/types";
 import { HotelName } from "@/modules/shared/HotelName";
 import { ProductsDrawer } from "@/modules/hotels/pricing/ProductsDrawer";
 import { AbstractBackground } from "@/modules/shared/AbstractBackground";
+import { Button } from "@/modules/shared/Button";
 
 interface HeaderProps {
   activeHotel: Hotel;
@@ -17,7 +18,14 @@ export const Header = ({ activeHotel }: HeaderProps) => {
           name={activeHotel.name}
         />
 
-        <ProductsDrawer hotelName={activeHotel.name} />
+        <ProductsDrawer
+          trigger={(openModal) => (
+            <Button onClick={openModal} variant="secondary">
+              Produkty
+            </Button>
+          )}
+          hotelName={activeHotel.name}
+        />
       </div>
     </header>
   );

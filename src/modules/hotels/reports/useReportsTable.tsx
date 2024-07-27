@@ -1,6 +1,8 @@
 import {
+  CellContext,
   ColumnDef,
   getCoreRowModel,
+  Row,
   useReactTable,
 } from "@tanstack/react-table";
 import { Pricing, PricingWithReports } from "@/modules/hotels/pricing/types";
@@ -8,12 +10,71 @@ import { DraggableIcon } from "@/modules/shared/icons/draggable";
 import { format, getDaysInMonth } from "date-fns";
 import { DayInput } from "@/modules/hotels/reports/DayInput";
 import { MONTHS } from "@/modules/utils/months";
-import { useListMonthReport } from "@/modules/hotels/reports/api/reports.controller";
+import {
+  useCreateReport,
+  useListMonthReport,
+} from "@/modules/hotels/reports/api/reports.controller";
 import { useListPricing } from "@/modules/hotels/pricing/api/pricing.controller";
 import { Hotel } from "@/modules/hotels/types";
 import { useMemo } from "react";
 
 const noResults: PricingWithReports[] = [];
+
+interface DayCellProps {
+  day: number;
+  row: Row<Pricing>;
+  activeHotelId: string;
+  activeDate: {
+    month: number;
+    year: number;
+  };
+  reports: any[];
+}
+
+const DayCell = ({
+  day,
+  row,
+  activeDate,
+  reports,
+  activeHotelId,
+}: DayCellProps) => {
+  const date = format(
+    new Date(activeDate.year, activeDate.month, day),
+    "yyyy-MM-dd",
+  );
+  const yearAndMonth = format(
+    new Date(activeDate.year, activeDate.month),
+    "yyyy-MM",
+  );
+
+  const report = reports.find(
+    (report) =>
+      report.date === date && report.product.id === row.original.product.id,
+  );
+
+  const { addReport } = useCreateReport(activeHotelId, yearAndMonth);
+
+  const saveReport = async (productId: number, amount: number, day: number) => {
+    const date = format(
+      new Date(activeDate.year, activeDate.month, day),
+      "yyyy-MM-dd",
+    );
+
+    addReport({ amount, date, productId });
+  };
+
+  return (
+    <DayInput
+      day={day}
+      name={row.original.product.name}
+      defaultValue={report?.amount || 0}
+      onBlur={(value) => {
+        saveReport(row.original.product.id, value, day);
+      }}
+      monthName={MONTHS[activeDate.month]}
+    />
+  );
+};
 
 export const useReportsTable = (
   activeHotel: Hotel,
@@ -63,28 +124,14 @@ export const useReportsTable = (
         ),
         accessorKey: day.toString(),
         size: 72,
-        // @ts-ignore
-        cell: ({ row }) => {
-          const date = format(
-            new Date(activeDate.year, activeDate.month, day),
-            "yyyy-MM-dd",
-          );
-
-          const report = reports.find(
-            (report) =>
-              report.date === date &&
-              report.product.id === row.original.product.id,
-          );
-
+        cell: ({ row }: CellContext<Pricing, unknown>) => {
           return (
-            <DayInput
+            <DayCell
               day={day}
-              name={row.original.product.name}
-              defaultValue={report?.amount || 0}
-              onChange={(value) => {
-                console.log(value);
-              }}
-              monthName={MONTHS[activeDate.month]}
+              row={row}
+              activeHotelId={activeHotel.id}
+              activeDate={activeDate}
+              reports={reports}
             />
           );
         },

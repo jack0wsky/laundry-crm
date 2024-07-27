@@ -1,6 +1,6 @@
 import { Drawer } from "@/modules/shared/Drawer";
 import { Button } from "@/modules/shared/Button";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import {
   useListPricing,
   useUpdatePrice,
@@ -15,6 +15,7 @@ import { EditProductForm } from "@/modules/hotels/pricing/EditProductForm";
 
 interface ProductsDrawerProps {
   hotelName: string;
+  trigger: (openModal: () => void) => ReactElement;
 }
 
 type Mode =
@@ -23,7 +24,7 @@ type Mode =
   | { type: "edit-product"; payload: Pricing }
   | { type: "delete-product"; payload: Pricing };
 
-export const ProductsDrawer = ({ hotelName }: ProductsDrawerProps) => {
+export const ProductsDrawer = ({ hotelName, trigger }: ProductsDrawerProps) => {
   const [mode, setMode] = useState<Mode>({ type: "listing" });
   const [open, setOpen] = useState(false);
 
@@ -43,11 +44,7 @@ export const ProductsDrawer = ({ hotelName }: ProductsDrawerProps) => {
     <Drawer
       open={open}
       title={getTitle()}
-      trigger={
-        <Button onClick={() => setOpen(true)} variant="secondary">
-          Produkty
-        </Button>
-      }
+      trigger={trigger(() => setOpen(true))}
       footer={<div />}
       hideFooter
       toggleOpen={(opened) => {
