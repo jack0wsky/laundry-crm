@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-table";
 import { Pricing, PricingWithReports } from "@/modules/hotels/pricing/types";
 import { DraggableIcon } from "@/modules/shared/icons/draggable";
-import { format, getDaysInMonth } from "date-fns";
+import { getDaysInMonth } from "date-fns";
 import { DayInput } from "@/modules/hotels/reports/DayInput";
 import { MONTHS } from "@/modules/utils/months";
 import {
@@ -17,6 +17,7 @@ import {
 import { useListPricing } from "@/modules/hotels/pricing/api/pricing.controller";
 import { Hotel } from "@/modules/hotels/types";
 import { useMemo } from "react";
+import { formatDate } from "@/modules/utils/format-date";
 
 const noResults: PricingWithReports[] = [];
 
@@ -38,14 +39,16 @@ const DayCell = ({
   reports,
   activeHotelId,
 }: DayCellProps) => {
-  const date = format(
-    new Date(activeDate.year, activeDate.month, day),
-    "yyyy-MM-dd",
-  );
-  const yearAndMonth = format(
-    new Date(activeDate.year, activeDate.month),
-    "yyyy-MM",
-  );
+  const date = formatDate({
+    format: "yyyy-MM-dd",
+    ...activeDate,
+    day,
+  });
+
+  const yearAndMonth = formatDate({
+    format: "yyyy-MM",
+    ...activeDate,
+  });
 
   const report = reports.find(
     (report) =>
@@ -55,12 +58,15 @@ const DayCell = ({
   const { addReport } = useCreateReport(activeHotelId, yearAndMonth);
 
   const saveReport = async (productId: number, amount: number, day: number) => {
-    const date = format(
-      new Date(activeDate.year, activeDate.month, day),
-      "yyyy-MM-dd",
-    );
-
-    addReport({ amount, date, productId });
+    addReport({
+      amount,
+      date: formatDate({
+        format: "yyyy-MM-dd",
+        ...activeDate,
+        day,
+      }),
+      productId,
+    });
   };
 
   return (
@@ -83,10 +89,10 @@ export const useReportsTable = (
     year: number;
   },
 ) => {
-  const yearAndMonth = format(
-    new Date(activeDate.year, activeDate.month),
-    "yyyy-MM",
-  );
+  const yearAndMonth = formatDate({
+    format: "yyyy-MM",
+    ...activeDate,
+  });
 
   const { reports } = useListMonthReport(yearAndMonth, activeHotel.id);
   const { pricing, loading } = useListPricing(activeHotel.name);

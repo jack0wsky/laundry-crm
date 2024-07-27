@@ -1,5 +1,3 @@
-import { format } from "date-fns";
-import { useCreateReport } from "@/modules/hotels/reports/api/reports.controller";
 import type { Hotel } from "@/modules/hotels/types";
 import { flexRender } from "@tanstack/react-table";
 import { useActiveMonth } from "@/modules/utils/useActiveMonth";
@@ -18,28 +16,10 @@ export const ReportProductsTable = ({
 }: ReportProductsTableProps) => {
   const { previousMonth, nextMonth, activeDate } = useActiveMonth();
 
-  const yearAndMonth = format(
-    new Date(activeDate.year, activeDate.month),
-    "yyyy-MM",
-  );
-
-  const { addReport } = useCreateReport(activeHotel.id, yearAndMonth);
-
-  const saveReport = async (productId: number, amount: number, day: number) => {
-    const date = format(
-      new Date(activeDate.year, activeDate.month, day),
-      "yyyy-MM-dd",
-    );
-
-    addReport({ amount, date, productId });
-  };
-
   const { table, pricing, loadingPricing, reports } = useReportsTable(
     activeHotel,
     activeDate,
   );
-
-  console.log("pricing", pricing);
 
   return (
     <>

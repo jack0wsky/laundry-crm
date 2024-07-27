@@ -1,7 +1,7 @@
-import { format } from "date-fns";
 import { useGetTurnover } from "@/modules/analytics/api/turnover.controller";
 import { clsx } from "clsx";
 import { MONTHS } from "@/modules/utils/months";
+import { formatDate } from "@/modules/utils/format-date";
 
 interface OverviewProps {
   currentYear: number;
@@ -12,15 +12,17 @@ export const Overview = ({ currentYear }: OverviewProps) => {
 
   const currenMonthLabel = MONTHS[today.getMonth()];
 
-  const currentYearAndMonth = format(
-    new Date(currentYear, today.getMonth()),
-    "yyyy-MM",
-  );
+  const currentYearAndMonth = formatDate({
+    format: "yyyy-MM",
+    year: currentYear,
+    month: today.getMonth(),
+  });
 
-  const previousYearAndMonth = format(
-    new Date(currentYear, today.getMonth() - 1),
-    "yyyy-MM",
-  );
+  const previousYearAndMonth = formatDate({
+    format: "yyyy-MM",
+    year: currentYear,
+    month: today.getMonth() - 1,
+  });
 
   const { turnover: currentTurnover, loading: currentTurnoverLoading } =
     useGetTurnover(currentYearAndMonth);

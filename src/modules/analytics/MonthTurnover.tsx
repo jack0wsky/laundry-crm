@@ -1,13 +1,17 @@
 import { MONTHS } from "@/modules/utils/months";
-import { format } from "date-fns";
 import { useGetTurnover } from "@/modules/analytics/api/turnover.controller";
+import { formatDate } from "@/modules/utils/format-date";
 
 interface MonthTurnoverProps {
   monthIndex: number;
   year: number;
 }
 export const MonthTurnover = ({ monthIndex, year }: MonthTurnoverProps) => {
-  const yearAndMonth = format(new Date(year, monthIndex - 1), "yyyy-MM");
+  const yearAndMonth = formatDate({
+    format: "yyyy-MM",
+    year,
+    month: monthIndex - 1,
+  });
 
   const { allPrices, turnover, loading } = useGetTurnover(yearAndMonth);
 
