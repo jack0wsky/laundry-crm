@@ -1,4 +1,5 @@
 import { eachMonthOfInterval } from "date-fns";
+import { Timeline } from "@/modules/analytics/types";
 
 const START_TIME = new Date("2023-12-01");
 
@@ -24,11 +25,6 @@ const timeline = eachMonthOfInterval({
     };
   })
   .sort((a, b) => (a.year > b.year ? -1 : 1));
-
-export interface Timeline {
-  year: number;
-  months: number[];
-}
 
 export const groupMonthsByYears = () => {
   return timeline.reduce<Timeline[]>((acc, value) => {

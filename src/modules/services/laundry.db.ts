@@ -4,7 +4,6 @@ import type { Product } from "@/modules/comarch/types";
 import { createClient } from "@/lib/auth/supabase/client";
 import { constructPdfFileName } from "@/modules/utils/construct-pdf-file-name";
 import { getDaysInMonth } from "date-fns";
-import { da } from "date-fns/locale";
 
 export const clientDB = createClient();
 

@@ -1,4 +1,5 @@
 import { FullReport } from "@/modules/hotels/types";
+import { Turnover } from "@/modules/analytics/types";
 
 const mergeReportsWithProductPrice = ({ reports, pricing }: FullReport) => {
   return reports.map((report) => {
@@ -12,10 +13,6 @@ const mergeReportsWithProductPrice = ({ reports, pricing }: FullReport) => {
     };
   });
 };
-
-interface Turnover extends FullReport {
-  total: number;
-}
 
 export const mapFullReportToTurnover = (items: FullReport[]): Turnover[] => {
   return items.map((item) => {
