@@ -5,7 +5,7 @@ import { AbstractBackground } from "@/modules/shared/AbstractBackground";
 import { Button } from "@/modules/shared/Button";
 
 interface HeaderProps {
-  activeHotel: Hotel;
+  activeHotel: Pick<Hotel, "id" | "name">;
 }
 export const Header = ({ activeHotel }: HeaderProps) => {
   return (
