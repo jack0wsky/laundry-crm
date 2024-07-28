@@ -1,4 +1,4 @@
-import { useGetTurnover } from "@/modules/analytics/api/turnover.controller";
+import { useTurnover } from "@/modules/analytics/api/turnover.controller";
 import { clsx } from "clsx";
 import { MONTHS } from "@/modules/utils/months";
 import { formatDate } from "@/modules/utils/format-date";
@@ -25,10 +25,10 @@ export const Overview = ({ currentYear }: OverviewProps) => {
   });
 
   const { turnover: currentTurnover, loading: currentTurnoverLoading } =
-    useGetTurnover(currentYearAndMonth);
+    useTurnover(currentYearAndMonth);
 
   const { turnover: previousTurnover, loading: previousTurnoverLoading } =
-    useGetTurnover(previousYearAndMonth);
+    useTurnover(previousYearAndMonth);
 
   const percentage =
     (1 -
@@ -46,7 +46,7 @@ export const Overview = ({ currentYear }: OverviewProps) => {
   )} zł`;
 
   return (
-    <div className="flex bg-white w-full h-[230px] mt-10 px-9 py-8 rounded-[20px]">
+    <div className="flex bg-white w-full h-[230px] mt-10 px-9 py-8 rounded-[20px] border border-palette-gray-100">
       <div className="flex flex-col justify-between">
         <div className="flex flex-col">
           <p className="text-palette-gray-300 uppercase font-black text-xs">
@@ -60,7 +60,7 @@ export const Overview = ({ currentYear }: OverviewProps) => {
             <div className="h-5 w-[160px] animate-pulse bg-palette-gray-50 rounded-lg" />
           ) : (
             <p className="text-palette-gray-300 uppercase font-bold text-sm">
-              Poprzedni miesiąc: {previousMonthTurnover}
+              Poprzedni miesiąc: {previousMonthTurnover} netto
             </p>
           )}
           <div className="flex items-center gap-x-3">
@@ -68,7 +68,7 @@ export const Overview = ({ currentYear }: OverviewProps) => {
               <div className="h-12 w-[200px] animate-pulse bg-palette-gray-50 rounded-lg" />
             ) : (
               <p className="font-bold text-[32px]">
-                {currentTurnover.toLocaleString("pl-PL")} zł
+                {currentTurnover.toLocaleString("pl-PL")} zł netto
               </p>
             )}
 

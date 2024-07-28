@@ -1,5 +1,5 @@
 import { MONTHS } from "@/modules/utils/months";
-import { useGetTurnover } from "@/modules/analytics/api/turnover.controller";
+import { useTurnover } from "@/modules/analytics/api/turnover.controller";
 import { formatDate } from "@/modules/utils/format-date";
 
 interface MonthTurnoverProps {
@@ -13,13 +13,13 @@ export const MonthTurnover = ({ monthIndex, year }: MonthTurnoverProps) => {
     month: monthIndex - 1,
   });
 
-  const { allPrices, turnover, loading } = useGetTurnover(yearAndMonth);
+  const { turnover, loading } = useTurnover(yearAndMonth);
 
   return (
     <li className="flex justify-between items-center w-full py-2 px-3 bg-white rounded-lg text-base">
       <p>{MONTHS[monthIndex - 1]}</p>
 
-      {allPrices.length === 0 && loading && <p>Obliczanie...</p>}
+      {turnover === 0 && loading && <p>Obliczanie...</p>}
 
       {!loading && (
         <p>
