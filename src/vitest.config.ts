@@ -9,8 +9,7 @@ export default defineConfig({
     environment: "jsdom",
     env: {
       NEXT_PUBLIC_SUPABASE_URL: "https://wsphrpbhhpjdhfeuwixi.supabase.co",
-      NEXT_PUBLIC_SUPABASE_ANON_KEY:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndzcGhycGJoaHBqZGhmZXV3aXhpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDA5MjIzODgsImV4cCI6MjAxNjQ5ODM4OH0.HRIhWRzNbJUa8Dk_BWDSjqoBgzz-17J2ynW0Zrf7NFM",
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: "ey12345",
     },
     globals: true,
   },
