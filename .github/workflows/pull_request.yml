@@ -1,7 +1,7 @@
 on: [pull_request]
 
 jobs:
-  test:
+  hello_world_job:
     runs-on: 'ubuntu-latest'
     name: 'Run tests',
     steps:
