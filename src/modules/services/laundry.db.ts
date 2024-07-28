@@ -178,6 +178,13 @@ export const db = {
     },
   },
 
+  changeProductOrder: async (productId: string, newOrder: number) => {
+    await clientDB
+      .from(Table.Pricing)
+      .update({ order: newOrder })
+      .eq("id", productId);
+  },
+
   downloadPDF: async (
     activeHotelName: string,
     activeMonth: number,

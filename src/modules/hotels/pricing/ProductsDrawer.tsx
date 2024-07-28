@@ -1,10 +1,6 @@
 import { Drawer } from "@/modules/shared/Drawer";
-import { Button } from "@/modules/shared/Button";
 import { ReactElement, useState } from "react";
-import {
-  useListPricing,
-  useUpdatePrice,
-} from "@/modules/hotels/pricing/api/pricing.controller";
+import { useListPricing } from "@/modules/hotels/pricing/api/pricing.controller";
 import { PlusIcon } from "@/modules/shared/icons/plus.icon";
 import { ProductsListing } from "@/modules/hotels/pricing/ProductsListing";
 import { AddProductForm } from "@/modules/hotels/pricing/AddProductForm";
@@ -29,7 +25,6 @@ export const ProductsDrawer = ({ hotelName, trigger }: ProductsDrawerProps) => {
   const [open, setOpen] = useState(false);
 
   const { pricing } = useListPricing(hotelName);
-  const { updatePrice } = useUpdatePrice();
 
   const getTitle = () => {
     if (mode.type === "new-product") return "Dodaj produkt";
@@ -100,6 +95,7 @@ export const ProductsDrawer = ({ hotelName, trigger }: ProductsDrawerProps) => {
 
           {mode.type === "listing" && (
             <ProductsListing
+              hotelName={hotelName}
               pricing={pricing}
               onProductEdit={(product) =>
                 setMode({ type: "edit-product", payload: product })

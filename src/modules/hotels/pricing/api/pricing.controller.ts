@@ -8,6 +8,7 @@ export const useListPricing = (hotelName: string) => {
   const { data, isLoading } = useQuery<Pricing[], Error>({
     queryKey: listPricing(hotelName),
     queryFn: () => db.getPricing(hotelName),
+    select: (data) => data.sort((a, b) => (a.order > b.order ? 1 : -1)),
   });
 
   return {
@@ -41,6 +42,23 @@ export const useUpdatePrice = () => {
     updatePrice: mutate,
     isLoading: isPending,
     error,
+  };
+};
+
+export const useUpdateProductOrder = (hotelName: string) => {
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (payload: { productId: string; newOrderNumber: number }) =>
+      db.changeProductOrder(payload.productId, payload.newOrderNumber),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: listPricing(hotelName) });
+    },
+  });
+
+  return {
+    updateProductOrder: mutate,
+    loading: isPending,
   };
 };
 

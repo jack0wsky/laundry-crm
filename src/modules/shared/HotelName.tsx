@@ -32,7 +32,7 @@ export const HotelName = ({ id, name }: HotelNameProps) => {
           onChange={({ target }) => setHotelName(target.value)}
         />
       ) : (
-        <h2 className="text-3xl capitalize font-bold">{name}</h2>
+        <h2 className="text-3xl font-bold">{name}</h2>
       )}
 
       {!editMode ? (

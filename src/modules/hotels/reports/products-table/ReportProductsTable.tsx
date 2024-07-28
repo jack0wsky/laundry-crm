@@ -5,20 +5,6 @@ import { ReportProductsHeader } from "@/modules/hotels/reports/products-table/Re
 import { EmptyState } from "@/modules/hotels/reports/products-table/EmptyState";
 import { TableHeader } from "@/modules/hotels/reports/products-table/TableHeader";
 import { ProductRow } from "@/modules/hotels/reports/products-table/ProductRow";
-import {
-  DndContext,
-  KeyboardSensor,
-  MouseSensor,
-  TouchSensor,
-  closestCenter,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
 
 interface ReportProductsTableProps {
   activeHotel: Hotel;
@@ -29,22 +15,13 @@ export const ReportProductsTable = ({
 }: ReportProductsTableProps) => {
   const { previousMonth, nextMonth, activeDate } = useActiveMonth();
 
-  const { table, pricing, loadingPricing, reports, swapItems, productsIds } =
-    useReportsTable(activeHotel, activeDate);
-
-  const sensors = useSensors(
-    useSensor(MouseSensor, {}),
-    useSensor(TouchSensor, {}),
-    useSensor(KeyboardSensor, {}),
+  const { table, pricing, loadingPricing, reports } = useReportsTable(
+    activeHotel,
+    activeDate,
   );
 
   return (
-    <DndContext
-      collisionDetection={closestCenter}
-      modifiers={[restrictToVerticalAxis]}
-      sensors={sensors}
-      onDragEnd={swapItems}
-    >
+    <>
       <div
         style={{ height: "calc(100vh - 110px)" }}
         className="flex flex-col bg-white rounded-[20px] mb-5 mx-5"
@@ -76,21 +53,14 @@ export const ReportProductsTable = ({
               <TableHeader table={table} />
 
               <tbody className="w-full">
-                <SortableContext
-                  items={productsIds}
-                  strategy={verticalListSortingStrategy}
-                >
-                  {table.getRowModel().rows.map((row) => {
-                    return (
-                      <ProductRow key={row.original.product.id} row={row} />
-                    );
-                  })}
-                </SortableContext>
+                {table.getRowModel().rows.map((row) => {
+                  return <ProductRow key={row.original.product.id} row={row} />;
+                })}
               </tbody>
             </table>
           </div>
         )}
       </div>
-    </DndContext>
+    </>
   );
 };
