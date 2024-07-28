@@ -4,17 +4,17 @@ interface DayInputProps {
   day: number;
   name: string;
   defaultValue: number;
-  onChange: (value: number) => void;
+  onBlur: (value: number) => void;
   monthName: string;
 }
 export const DayInput = ({
   day,
   name,
-  onChange,
+  onBlur,
   defaultValue,
   monthName,
 }: DayInputProps) => {
-  const [value, setValue] = useState<number>(defaultValue);
+  const [value, setValue] = useState(defaultValue);
 
   return (
     <input
@@ -24,8 +24,8 @@ export const DayInput = ({
       value={value > 0 ? value : ""}
       name={name}
       onChange={({ target }) => setValue(Number(target.value))}
-      onBlur={() => onChange(value)}
-      className="w-[80px] p-2 rounded-md"
+      onBlur={() => onBlur(value)}
+      className="w-[72px] p-2 rounded-md border border-palette-gray-100"
     />
   );
 };

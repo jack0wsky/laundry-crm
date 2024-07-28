@@ -1,4 +1,4 @@
-import type { Hotel } from "@/modules/hotels/types";
+import { FullReport, Hotel } from "@/modules/hotels/types";
 import type { Pricing } from "@/modules/hotels/pricing/types";
 import type { Product } from "@/modules/comarch/types";
 import { createClient } from "@/lib/auth/supabase/client";
@@ -28,7 +28,13 @@ interface Customer {
   nip: number;
 }
 
-interface AddCustomerPayload {
+export type CustomersHotel = Pick<Hotel, "id" | "name" | "displayName">;
+
+export interface CustomerWithHotels extends Customer {
+  hotels: CustomersHotel[];
+}
+
+export interface AddCustomerPayload {
   id: number;
   name: string;
   nip: number;
@@ -59,7 +65,17 @@ export const db = {
 
   hotels: {
     updateHotelName: async (id: string, name: string) => {
-      await clientDB.from("hotels").update({ name }).eq("id", id);
+      await clientDB.from(Table.Hotels).update({ name }).eq("id", id);
+    },
+
+    getOneById: async (id: string) => {
+      const { data } = await clientDB
+        .from(Table.Hotels)
+        .select<"*", Hotel>("*")
+        .eq("id", id)
+        .single();
+
+      return data;
     },
 
     addNew: async (payload: {
@@ -111,6 +127,20 @@ export const db = {
     return data || [];
   },
 
+  getFullReport: async (yearAndMonth: string) => {
+    const days = getDaysInMonth(new Date(`${yearAndMonth}-01`));
+
+    const { data } = await clientDB
+      .from(Table.Hotels)
+      .select<string, FullReport>(
+        "name, id, reports(product, amount, date), pricing(product, price)",
+      )
+      .filter("reports.date", "gte", `${yearAndMonth}-01`)
+      .filter("reports.date", "lte", `${yearAndMonth}-${days}`);
+
+    return data || [];
+  },
+
   getPricing: async (customerName: string) => {
     const { data } = await clientDB
       .from(Table.Pricing)
@@ -148,6 +178,13 @@ export const db = {
     },
   },
 
+  changeProductOrder: async (productId: string, newOrder: number) => {
+    await clientDB
+      .from(Table.Pricing)
+      .update({ order: newOrder })
+      .eq("id", productId);
+  },
+
   downloadPDF: async (
     activeHotelName: string,
     activeMonth: number,
@@ -172,6 +209,12 @@ export const db = {
   },
 
   customers: {
+    updateOne: async (
+      customerId: number,
+      payload: Partial<AddCustomerPayload>,
+    ) => {
+      await clientDB.from(Table.Customers).update(payload).eq("id", customerId);
+    },
     addNew: async (payload: AddCustomerPayload) => {
       await clientDB.from(Table.Customers).insert(payload);
     },
@@ -181,6 +224,13 @@ export const db = {
         .select<"*", Customer>("*");
 
       return data || [];
+    },
+    listAllWithHotels: async () => {
+      const { data, error } = await clientDB
+        .from(Table.Customers)
+        .select<string, CustomerWithHotels>("*, hotels(id, name, displayName)");
+
+      return data;
     },
   },
 };

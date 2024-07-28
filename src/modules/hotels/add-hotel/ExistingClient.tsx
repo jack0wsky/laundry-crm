@@ -1,56 +1,36 @@
-import { useListCustomers } from "@/modules/customers/api/customers.controller";
-import { SelectInput } from "@/modules/shared/SelectInput";
 import { Input } from "@/modules/shared/Input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/modules/shared/Button";
-import { useAddHotel } from "@/modules/hotels/api/hotels.controller";
-import { useRouter } from "next/navigation";
+import { clsx } from "clsx";
 
 const schema = z.object({
-  customerName: z.string(),
   hotelName: z.string().min(1),
 });
 
-type FormValues = z.infer<typeof schema>;
+export type FormValues = z.infer<typeof schema>;
 
 interface ExistingClientProps {
-  onSubmitted: () => void;
+  submitLabel: string;
+  defaultValues?: FormValues;
+  onSubmit: (values: FormValues) => void;
+  loading: boolean;
 }
 
-export const ExistingClient = ({ onSubmitted }: ExistingClientProps) => {
-  const { customers } = useListCustomers();
-
-  const router = useRouter();
-
-  const { handleSubmit, setValue, register, formState } = useForm<FormValues>({
+export const ExistingClient = ({
+  submitLabel,
+  defaultValues,
+  onSubmit,
+  loading,
+}: ExistingClientProps) => {
+  const { handleSubmit, register, formState } = useForm<FormValues>({
     resolver: zodResolver(schema),
-  });
-
-  const { addHotel, loading } = useAddHotel({
-    onSuccess: async (hotelId) => {
-      router.push(`/${hotelId}`);
-      onSubmitted();
-    },
+    defaultValues,
   });
 
   return (
-    <form
-      onSubmit={handleSubmit(({ hotelName, customerName }) =>
-        addHotel({ name: hotelName, customer: customerName }),
-      )}
-      className="flex flex-col gap-y-4"
-    >
-      <SelectInput
-        label="Klient"
-        options={customers.map((customer) => ({
-          id: customer.id,
-          name: customer.name,
-        }))}
-        onSelect={(customerName) => setValue("customerName", customerName)}
-      />
-
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4">
       <Input
         label="Nazwa hotelu"
         registerName="hotelName"
@@ -60,9 +40,9 @@ export const ExistingClient = ({ onSubmitted }: ExistingClientProps) => {
       <Button
         disabled={!formState.isValid || loading}
         type="submit"
-        className="w-full"
+        className={clsx("w-full", loading && "animate-pulse")}
       >
-        {loading ? "Dodawanie..." : "Dodaj hotel"}
+        {submitLabel}
       </Button>
     </form>
   );

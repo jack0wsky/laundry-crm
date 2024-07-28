@@ -1,4 +1,4 @@
-import { Customers } from "@/modules/customers/view";
+import { CustomersPage } from "@/modules/customers/CustomersPage";
 import { Metadata } from "next";
 import { createClient } from "@/lib/auth/supabase/server";
 import { redirect } from "next/navigation";
@@ -16,5 +16,5 @@ export default async function Page() {
     return redirect("/login");
   }
 
-  return <Customers />;
+  return <CustomersPage />;
 }

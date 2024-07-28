@@ -7,6 +7,7 @@ const listMonthReportQueryKey = (yearAndMonth: string, hotelId: string) => [
   yearAndMonth,
   hotelId,
 ];
+
 export const useListMonthReport = (yearAndMonth: string, hotelId: string) => {
   const { data, refetch } = useQuery({
     queryKey: listMonthReportQueryKey(yearAndMonth, hotelId),
