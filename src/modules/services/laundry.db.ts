@@ -71,7 +71,7 @@ export const db = {
     getOneById: async (id: string) => {
       const { data } = await clientDB
         .from(Table.Hotels)
-        .select<"*", Hotel>("*")
+        .select<string, Hotel>("*, customer(id, name, nip)")
         .eq("id", id)
         .single();
 

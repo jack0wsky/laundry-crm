@@ -104,7 +104,7 @@ export const ReportProductsHeader = ({
           {isPending ? "Generowanie PDF..." : "Generuj zestawienie"}
         </Button>
 
-        <Dialog open={openInvoiceSummaryModal}>
+        <Dialog open={openInvoiceSummaryModal} onOpenChange={setOpenInvoiceSummaryModal}>
           <DialogTrigger asChild>
             <Button onClick={() => setOpenInvoiceSummaryModal(true)}>
               Generuj fakturę
